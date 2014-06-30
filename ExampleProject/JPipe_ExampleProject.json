@@ -1,0 +1,54 @@
+{
+	"Pipeline": {
+
+        	"Module1": {
+        		"Filename": 
+        			"/Users/Markus/Documents/Markus/Jterator/ExampleProject/LIB/function1.m",
+        		"Input": [ 
+        			"/read/location/in/hdf5" 
+        		],
+        		"Output": [ 
+        			"/write/location/in/hdf5", 
+        			"/write/location/in/hdf5" 
+        		],
+        		"Parameters": [
+        		]
+        	},
+
+        	"Module2": {
+        		"Filename": 
+        			"/Users/Markus/Documents/Markus/Jterator/ExampleProject/LIB/function2.R",
+        		"Input": [ 
+        			"/read/location/in/hdf5", 
+        			"/read/location/in/hdf5" 
+        		],
+        		"Output": [ 
+        			"/write/location/in/hdf5", 
+        			"/write/location/in/hdf5", 
+        			"/write/location/in/hdf5" 
+        		],
+        		"Parameters": [
+        		]
+        	},
+
+        	"Module3": {
+        		"Filename": 
+        			"/Users/Markus/Documents/Markus/Jterator/ExampleProject/LIB/function3.py",
+        		"Input": [ 
+        			"/read/location/in/hdf5" 
+        		],
+        		"Output": [ 
+        			"/write/location/in/hdf5" 
+        		],
+        		"Parameters": [
+        		]
+        	}
+
+	},
+
+	"JCluster": {
+		"cycles_per_batch": 4,
+		"memory": "1500",
+		"time": "8:00"
+	}
+}
