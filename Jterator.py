@@ -1,9 +1,9 @@
 #!/usr/local/bin/python
-
 import os
 import glob
 import h5py as h5
 import json
+from jterator.utils import invoke
 
 
 PATH_NAME = '/Users/Markus/Documents/Markus/Jterator/ExampleProject'
@@ -43,7 +43,7 @@ def JPipe_read(PATH_NAME):
 		output_args[module] = pipeline[module]['Output']
 
 	return function_names
-	return input_args 
+	return input_args
 	return output_args
 
 
@@ -59,7 +59,7 @@ def JPipe_check(pipeline,input_args,output_args):
 		for arg in sorted(input_args.values())[i]:
 			if not arg in sum(sorted(output_args.values())[0:i+1],[]):
 				raise IOError('Error: Input argument %s needs to be created before its use in module #%d. Please check "Pipeline" for "Input" and "Output" keys in %s.' %(arg,i,json_filename))
-	
+
 
 
 def JHandles_create(PATH_NAME):
@@ -69,7 +69,7 @@ def JHandles_create(PATH_NAME):
 	hdf5_file = h5.File(hdf5_filename,'w-')
 
 	# default image directory
-	hdf5_file.create_dataset('/Pipeline/defaultImageDirectory', '%s/TIFF' % PATH_NAME, dtype=h5.special_dtype(vlen=str)) 
+	hdf5_file.create_dataset('/Pipeline/defaultImageDirectory', '%s/TIFF' % PATH_NAME, dtype=h5.special_dtype(vlen=str))
 	# write as string dataset: http://docs.h5py.org/en/latest/strings.html
 
 	return hdf5_filename
@@ -82,10 +82,10 @@ def JModules_create(function_names,input_args):
 	# create shell commands
 	commands = dict()
 	for module in function_names:
-		# to do: 
+		# to do:
 		# 	- variable input (multiple input arguments) => json file
 		#		-> 1st argument: hdf5_filename
-		#		-> further arguments: 
+		#		-> further arguments:
 		#				- locations in hdf5 file for reading module input
 		#				- locations in hdf5 file for writing module output
 		# 	- parameters specified in json file
@@ -95,7 +95,11 @@ def JModules_create(function_names,input_args):
 		elif function_names[module][-2:] == '.R':
 			commands[module] =  'R CMD BATCH -%s %s' %(input_args[module],function_names[module]) # use commandArgs() in R
 		elif function_names[module][-3:] == '.py':
-			commands[module] = 'python %s %s' %(function_names[module],input_args[module])
+			#commands[module] = 'python -c"%(function_name)s(%(function_args)s)"' % {
+			commands[module] = 'python -c"%(function_name)s()"' % {
+				'function_name': function_names[module],
+				#'function_args': input_args[module])
+			}
 
 	return commands
 
@@ -118,7 +122,10 @@ def JPipe_run(function_names,input_args,output_args,commands):
 				raise IOError('Error: Input argument for module 1 "%s" does not exist in %s.' %(input_arg,hdf5_filename))
 
 		# run module in command line
-		os.system(commands[module])
+		##os.system(commands[module])
+		json_input = input_args[module]
+		#JSON = '{"foo": "bar"}'
+		output = invoke(commands[module], _in=json_input)
 
 		# are there any errors? -> log file?
 
