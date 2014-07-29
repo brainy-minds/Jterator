@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+'''
+Command-line interface for Jterator.
+
+Copyright (c) 2014 Yauhen Yakimovich, Markus Herrmann
+
+Licensed under the MIT License (MIT). Read a copy of LICENSE distributed with
+this code.
+
+See README and project page at https://github.com/HackerMD/Jterator
+'''
+import os
+import sys
+import argparse
+import logging
+from functools import partial
+import jterator
+from jterator.error import JteratorError
+
+
+class MissingCliArgs(JteratorError):
+    '''Malformed arguments provided in the command-line.'''
+
+
+class JteratorCli(object):
+    logger = logging.getLogger(__name__)
+
+    def __init__(self, args):
+        self.args = args
+
+    def create(self):
+        '''
+        Create a minimal working project for Jterator.
+        '''
+
+    def run(self):
+        '''
+        Run Jterator pipe if it is found in the current working folder.
+        '''
+        jt = Jterator(pipeline_folder_path=self.args.path)
+        jt.
+
+    @staticmethod
+    def process_commands(args, subparser):
+        cli = JteratorCli(args)
+        if subparser.prog == 'jt create':
+            cli.create()
+        elif subparser.prog == 'jt run':
+            cli.run()
+        else:
+            subparser.print_help()
+
+
+class ArgumentParser(argparse.ArgumentParser):
+
+    def error(self, message):
+        self.print_help(sys.stderr)
+        self.exit(2, '%s: error: %s\n' % (self.prog, message))
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser(description='Command-line interface for Jterator.')
+    parser.add_argument('-i', '--interactive', action='store_true',
+                        default=False)
+    parser.add_argument("-v", "--verbosity", action="count", default=1,
+                        help='Increase logging verbosity (-v WARN, -vv INFO, '
+                        '-vvv DEBUG)')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s ' + jterator.__version__)
+
+    subparsers = parser.add_subparsers()
+
+    # 'jt create' parser
+    create_command_parser = subparsers.add_parser('create')
+    create_command_parser.set_defaults(handler=partial(
+        JteratorCli.process_commands, subparser=create_command_parser))
+
+    # 'jt run' parser
+    run_command_parser = subparsers.add_parser('run')
+    run_command_parser.add_argument('path', default=os.getcwd())
+    run_command_parser.set_defaults(handler=partial(
+        JteratorCli.process_commands, subparser=run_command_parser))
+
+    # Parse arguments.
+    args = parser.parse_args()
+    # On error this will print help and cause exit with explanation message.
+    is_interactive = args.interactive
+
+    # Configure logging.
+    # if is_interactive:
+    #     set_interactive_logging(args.verbosity)
+
+    try:
+        if args.handler:
+            args.handler(args)
+        else:
+            parser.print_help()
+    except JteratorError as error:
+        print 'Failed.'
+        if type(error) is MissingCliArgs:
+            print 'Missing one of the required command-line arguments.'
+        print 'Error message: "%s"' % str(error)
+
