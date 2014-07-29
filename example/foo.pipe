@@ -1,0 +1,26 @@
+{ 
+	// Define a trivial Jterator pipeline description
+	"name": "Foo",
+	"version": "0.0.1",
+	// "more_optional_metadata": "some value",
+	// "path": "by default is the same directory where foo.jt is found",
+
+	// Define modules as list of descriptions
+	"pipeline": [
+		{
+			"name": "Bar",
+			"module": "bar",
+			"input": [],
+			"output": ["bar"]
+		}, {
+			"name": "Baz",
+			"module": "baz",
+			"input": ["bar"],
+			"output": []
+		}
+	]
+
+	//"tests": [
+	//	{},
+	//]
+}
