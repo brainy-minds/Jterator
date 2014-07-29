@@ -10,7 +10,7 @@ Input.handles:
 JSON file that serves as input argument for each module. It provides the location of input and output data within the HDF5 file (see below) and additional information required for execution of the module. There will be n .handles files, where n is the number of modules. The "files" (can also be standard input) will be created by Jterator.py and passed to the call of the modules.
 
 Module.jt:
-a function in any of the following languages: Python, Matlab, R. This function receives a string (filename of a the .handles JSON file) as input argument. It reads the content of the JSON file into the environment, loads the required input data from the HDF5 file, does whatever processing, and writes the output data into the HDF5 file.
+an executable file (function) in any of the following languages: Python, Matlab, R. This function receives a string (filename of a the .handles JSON file) as input argument. It reads the content of the JSON file into the environment, loads the required input data from the HDF5 file, does whatever processing, and writes the output data into the HDF5 file.
 
 Data.h5
 serves as key-value storage file for input and output data of the modules.

@@ -1,18 +1,12 @@
 import sys
 import json
-from pprint import pprint as pp
+# from pprint import pprint as pp
 
 
-def bar():
-    print 'This is a bar function'
+def get_handles():
+    '''Reading input arguments "handles" from standard input as JSON.'''
     handles = json.loads(sys.stdin.read())
-    # pp(handles)
-    # print(type(handles))
-    baz(handles)
+    return handles
 
 
-# Parse JSON and pass it as handles input into the function
-def baz(handles):
-    pp(handles)
-    print(type(handles))
 

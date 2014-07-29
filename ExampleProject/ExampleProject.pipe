@@ -1,0 +1,26 @@
+{ 
+        // Define a trivial Jterator pipeline description
+        "name": "Foo",
+        "version": "0.0.1",
+        // "more_optional_metadata": "some value",
+        // "path": "by default is the same directory where foo.jt is found",
+
+        // Define modules as list of descriptions
+        "pipeline": [
+                {
+                        "name": "read_filenames",
+                        "module": "./JT/modules/read_filenames.jt",
+                        "input": [],
+                        "output": ["bar"]
+                }, {
+                        "name": "correct_for_illumination",
+                        "module": "./JT/modules/illum_correct.jt",
+                        "input": ["bar"],
+                        "output": []
+                }
+        ]
+
+        //"tests": [
+        //      {},
+        //]
+}
