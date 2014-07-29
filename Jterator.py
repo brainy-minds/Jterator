@@ -49,7 +49,7 @@ def JPipe_read(PATH_NAME):
 
 def JPipe_check(pipeline, input_args, output_args):
 
-    # make sure modul names are identical between "Pipeline", "Input" and "Output"
+    # make sure module names are identical between "Pipeline", "Input" and "Output"
     if not len(function_names)==len(input_args)==len(output_args):
         raise IOError('Error: Modules are not specified correctly. Please check "Pipeline" for "Filename", "Input" and "Output" keys in %s.' %(pipeline[module],json_filename))
 
