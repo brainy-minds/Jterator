@@ -14,7 +14,7 @@ import sys
 import argparse
 import logging
 from functools import partial
-import jterator
+from jterator import Jterator
 from jterator.error import JteratorError
 
 
@@ -38,7 +38,8 @@ class JteratorCli(object):
         Run Jterator pipe if it is found in the current working folder.
         '''
         jt = Jterator(pipeline_folder_path=self.args.path)
-        jt.
+        jt.build_pipeline()
+        jt.execute_pipeline()
 
     @staticmethod
     def process_commands(args, subparser):
