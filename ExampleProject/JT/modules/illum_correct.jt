@@ -1,21 +1,6 @@
 function illum_correct
 
-    import module_m
-
-    handles = module_m.get_handles()
-    input_args = module_m.read_input_args(handles)
-
-    % here comes the actual processing
-    output_args = illum_correct_run(input_args)
-
-    module_m.write_output_args(handles, output_args)
-
-end
-
-
-function output_args = illum_correct_run(input_args)
-
-    % Define expected input and output arguments in JSON:
+    % Define expected input and output arguments for module in JSON:
     %
     % $$$ input_args $$$
     %
@@ -37,7 +22,20 @@ function output_args = illum_correct_run(input_args)
     %
     % $$$
 
-    
+    import module_m
+
+    handles = module_m.get_handles()
+    input_args = module_m.read_input_args(handles)
+
+    output_args = illum_correct_run(input_args)
+
+    module_m.write_output_args(handles, output_args)
+
+end
+
+
+function output_args = illum_correct_run(input_args)
+
     % check whether input arguments are correctly specified and passed 
     p = inputParser;
     addParamValue(p, 'OrigBlue', 0, ...
