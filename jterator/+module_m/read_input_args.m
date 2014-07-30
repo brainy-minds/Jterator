@@ -3,7 +3,7 @@ function input_args = read_input_args(handles)
     % using the location specified in "handles".
     filename <- handles.hdf5_filename;
 
-    input_args = {};
+    input_args = struct();
     keys = fieldnames(handles.input_keys);
     for key in 1:length(keys)
         location = handles.input_keys(key);
