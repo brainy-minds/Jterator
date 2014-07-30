@@ -1,0 +1,18 @@
+function illum_correct
+
+    import module_m
+
+    handles = module_m.get_handles()
+    input_args = module_m.read_input_args(handles)
+
+    % here comes the actual processing
+    output_args = illum_correct_run(input_args)
+
+    module_m.write_output_args(handles, output_args)
+
+end
+
+
+function output_args = illum_correct_run(input_args)
+
+end
