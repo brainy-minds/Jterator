@@ -4,13 +4,13 @@ function illum_correct
     %
     % $$$ input_args $$$
     %
-    % {"OrigBlue":
-    %   {"class": "double",
-    %    "attributes": [ "nonempty", "size", [10,10] ]
-    %   },
-    % "Filename": 
-    %   {"class": "char",
-    %    "attributes": [ "nrows", 1 ]
+    % {"name": OrigBlue",
+    %  "class": "double",
+    %  "attributes": [ "nonempty", "size", [10,10] ]
+    % },
+    % {"name": "Filename", 
+    %  "class": "char",
+    %  "attributes": [ "nrows", 1 ]
     % }
     %
     % $$$
