@@ -10,17 +10,20 @@
 		{
 			"name": "Bar",
 			"module": "bar",
-			"input": [],
-			"output": ["bar"]
+			"handles": "input/some_bar",
 		}, {
 			"name": "Baz",
 			"module": "baz",
-			"input": ["bar"],
-			"output": []
+			"handles": "input/some_baz",
 		}
 	]
 
-	//"tests": [
-	//	{},
-	//]
+	"tests": [
+		{
+			"type": "hdf5_dependency",
+			"module_name": baz,
+			"input": ["bar"],
+			"output": ["baz"]
+		},
+	]
 }
