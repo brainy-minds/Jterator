@@ -3,11 +3,11 @@ import json
 import h5py as h5
 
 
-def get_handles():
+def get_handles(handles_filename):
     '''
     Reading "handles" from standard input as JSON.
     '''
-    handles = json.loads(sys.stdin.read())
+    handles = json.load(open(sys.argv[1])) # json.loads(sys.stdin.read())
 
     return handles
 
@@ -22,10 +22,25 @@ def read_input_args(handles):
 
     input_args = dict()
     for key in handles['input_keys']:
-        location = handles['input_keys'][key]
-        input_args[key] = hdf5_root[location]
+        location = handles['input_keys'][key]['hdf5_location']
+        input_args[key] = dict()
+        input_args[key]['data'] = hdf5_root[location]
+        input_args[key]['class'] = handles['input_keys'][key]['class']
+        input_args[key]['attributes'] = handles['input_keys'][key]['attributes']
 
     return input_args
+
+
+def check_input_args(input_args):
+    '''
+    Checks input arguments for class and attributes.
+    '''
+
+    # how do I check for "type" consistent over different languages?
+    # (e.g. Matlab -> Python: 'double' -> 'float64', 'string' -> '|S1')
+    for key in input_args:
+        print input_args[key]['data'].dtype
+
 
 
 def write_output_args(handles, output_args):
