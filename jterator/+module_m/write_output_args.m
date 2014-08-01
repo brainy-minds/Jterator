@@ -5,7 +5,7 @@ function write_output_args(handles, output_args)
 
     keys = fieldnames(output_args);
     for key in 1:length(keys)
-        location = handles.output_keys(key);
+        location = handles.output_keys(key).hdf5_location;
         value = output_args(keys);
         % works for strings, numbers, matrices and cell array of strings
         % (one could also implement structure arrays -> "Compound"

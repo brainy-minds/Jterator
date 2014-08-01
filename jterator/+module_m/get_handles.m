@@ -1,4 +1,6 @@
-function handles = get_handles(pipe_name)
+function handles = get_handles(handles_filename)
+
     % Reading handles from standard input as JSON.
-    handles = loadjson(pipe_name)
+    handles = loadjson(handles_filename);
+
 end
