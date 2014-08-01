@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+import jterator
+import os
+import h5py as h5
+
+
+# this module is the python entry point
+# so we should actually just import the following functions and execute them
+def read_filenames(path_name):
+
+    # -------------------------------------------------------------------------
+
+    # here comes the actual processing
+    if not (os.path.exists(path_name)):
+        raise IOError('Error: directory %s does not exist' % path_name)
+
+    # -------------------------------------------------------------------------
+
+    return results
+
+
+# wrapper for Jterator
+if __name__ == '__main__':
+    handles = jterator.module.get_handles()
+    input_args = jterator.module.read_input_args(handles)
+    output_args = read_filenames(**input_args)
+    jterator.module.write_output_args(handles, output_args)

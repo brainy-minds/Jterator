@@ -18,11 +18,14 @@ Such JSON contains all the input settings required by the module.
 
 ---
 
-Pipeline.JSON 
-serves as descriptor file for the pipeline, i.e. the details (e.g. input, output) for the modules (functions in different languages) that will be processes one after another (may ultimately be replaced by JAML)
+Pipeline.pipe: 
+JSON file that serves as descriptor of the pipeline, i.e. provides the details (e.g. input, output) for the modules (functions in different high-level languages) that will be executed one after another (may ultimately be replaced by YAML)
 
-Module_i.JSON
-serves as input file for each module. There will be n Module_i.JSON files (i=1:n), where n is the number of modules. The files will be created by Jterator.py and passed to the call of the modules.
+Input.handles:
+JSON file that serves as input argument for each module. It provides the location of input and output data within the HDF5 file (see below) and additional information required for execution of the module. There will be n .handles files, where n is the number of modules. The "files" (can also be standard input) will be created by Jterator.py and passed to the call of the modules.
 
-Handles.h5
-serves as "handles" file for handling input and output of the modules. The information required by modules will thus not be kept in memory. In addition, it allows chaining different languages.
+Module.jt:
+an executable file (function) in any of the following languages: Python, Matlab, R. This function receives a string (filename of a the .handles JSON file) as input argument. It reads the content of the JSON file into the environment, loads the required input data from the HDF5 file, does whatever processing, and writes the output data into the HDF5 file.
+
+Data.h5
+serves as key-value storage file for input and output data of the modules.
