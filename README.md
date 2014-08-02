@@ -21,10 +21,10 @@ Getting started
 
 Each pipeline has the following layout on the disk:
 
-* **input** folder contains all the JSON handles files, the are passed as STDIN into *modules*.
+* **handles** folder contains all the JSON handles files, the are passed as STDIN to *modules*.
 * **modules** folder contains all the executable plus code for programs corresponding
 * **logs** folder contains all the output from STDOU and STERR streams, obtain for each executable that has been executed.
-* **output** folder contains all the heavy data output like HDF5, etc.
+* **data** folder contains all the heavy data output like HDF5, etc. These data are shared between modules. 
 
 
 Developing new modules
