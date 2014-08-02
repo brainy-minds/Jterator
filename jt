@@ -39,7 +39,7 @@ class JteratorCli(object):
         '''
         jt = JteratorRunner(pipeline_folder_path=self.args.path)
         jt.build_pipeline()
-        jt.execute_pipeline()
+        jt.run_pipeline()
 
     @staticmethod
     def process_commands(args, subparser):

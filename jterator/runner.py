@@ -2,6 +2,7 @@ import os
 import json
 from jterator.error import JteratorError
 from jterator.module import Module
+from jterator.minify_json import json_minify as clean_json
 
 
 PIPE_FILENAMES = ['JteratorPipe.json', 'jt.pipe']
@@ -19,6 +20,20 @@ class JteratorRunner(object):
     def logs_path(self):
         return os.path.join(self.pipeline_folder_path, 'logs')
 
+    def read_json(self, json_filepath):
+        json_data = open(json_filepath).read()
+        try:
+            json_data = clean_json(json_data, strip_space=False)
+            return json.loads(json_data)
+        except ValueError as json_error:
+            linelabeled_json = '\n'.join(['%i: %s' % (index, line)
+                                          for index, line
+                                          in enumerate(json_data.split('\n'))])
+            raise JteratorError('JSON description of the pipeline (%s) '
+                                'contains an error:\n%s\n%s\n%s' %
+                                (self.pipeline_filepath, str(json_error),
+                                 '='*80, linelabeled_json))
+
     def locate_pipeline_filepath(self):
         '''Detect filepath to pipeline description if found.'''
         # Where is the pipeline description file?
@@ -34,8 +49,8 @@ class JteratorRunner(object):
         if self.pipeline_filepath is None:
             raise JteratorError('Failed to load pipeline description. '
                                 'Make sure to put one of the files "%s"'
-                                ' into your pipeline path.' %
-                                PIPE_FILENAMES)
+                                ' into your pipeline path: %s' %
+                                (PIPE_FILENAMES, self.pipeline_folder_path))
 
     @property
     def description(self):
@@ -43,20 +58,21 @@ class JteratorRunner(object):
             self.locate_pipeline_filepath()
             # Read and parse JSON.
             # TODO: perform expected JSON schema validation.
-            description_in_json = open(self.pipeline_filepath).read()
-            self.__description = json.loads(description_in_json)
+            self.__description = self.read_json(self.pipeline_filepath)
+
         return self.__description
 
     def build_pipeline(self):
         '''Build pipeline from JSON description.'''
-        for module_description in self.description:
+        for module_description in self.description['pipeline']:
             executable_path = os.path.join(
                 self.pipeline_folder_path,
+                'modules',
                 module_description['module'],
             )
             handles_filepath = os.path.join(
                 self.pipeline_folder_path,
-                module_description['handles_filepath'],
+                module_description['handles'],
             )
             if not os.path.exists(executable_path):
                 raise JteratorError('Missing module executable: %s' %
@@ -64,7 +80,7 @@ class JteratorRunner(object):
             module = Module(
                 name=module_description['name'],
                 executable_path=executable_path,
-                handles_filepath=handles_filepath,
+                handles=open(handles_filepath),
             )
             self.modules.append(module)
         if not self.modules:

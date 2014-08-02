@@ -1,4 +1,4 @@
-{ 
+{
 	// Define a trivial Jterator pipeline description
 	"name": "Foo",
 	"version": "0.0.1",
@@ -10,20 +10,20 @@
 		{
 			"name": "Bar",
 			"module": "bar",
-			"handles": "input/some_bar",
+			"handles": "input/some_bar"
 		}, {
 			"name": "Baz",
 			"module": "baz",
-			"handles": "input/some_baz",
+			"handles": "input/some_baz"
 		}
-	]
+	],
 
 	"tests": [
 		{
 			"type": "hdf5_dependency",
-			"module_name": baz,
+			"module_name": "baz",
 			"input": ["bar"],
 			"output": ["baz"]
-		},
+		}
 	]
 }
