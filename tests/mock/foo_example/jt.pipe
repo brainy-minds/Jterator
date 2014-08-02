@@ -10,11 +10,11 @@
 		{
 			"name": "Bar",
 			"module": "bar",
-			"handles": "input/some_bar"
+			"handles": "handles/some_bar"
 		}, {
 			"name": "Baz",
 			"module": "baz",
-			"handles": "input/some_baz"
+			"handles": "handles/some_baz"
 		}
 	],
 
