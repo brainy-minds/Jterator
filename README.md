@@ -16,16 +16,32 @@ Modules
 Think of your pipeline as a sequence of connected modules (a linked list). Each module is a program that get and reads JSON from on STDIN file descriptor.
 Such JSON contains all the input settings required by the module.
 
----
+Getting started 
+---------------
 
-Pipeline.pipe: 
-JSON file that serves as descriptor of the pipeline, i.e. provides the details (e.g. input, output) for the modules (functions in different high-level languages) that will be executed one after another (may ultimately be replaced by YAML)
+Each pipeline has the following layout on the disk:
 
-Input.handles:
-JSON file that serves as input argument for each module. It provides the location of input and output data within the HDF5 file (see below) and additional information required for execution of the module. There will be n .handles files, where n is the number of modules. The "files" (can also be standard input) will be created by Jterator.py and passed to the call of the modules.
+* **input** folder contains all the JSON handles files, the are passed as STDIN into *modules*.
+* **modules** folder contains all the executable plus code for programs corresponding
+* **logs** folder contains all the output from STDOU and STERR streams, obtain for each executable that has been executed.
+* **output** folder contains all the heavy data output like HDF5, etc.
 
-Module.jt:
-an executable file (function) in any of the following languages: Python, Matlab, R. This function receives a string (filename of a the .handles JSON file) as input argument. It reads the content of the JSON file into the environment, loads the required input data from the HDF5 file, does whatever processing, and writes the output data into the HDF5 file.
 
-Data.h5
-serves as key-value storage file for input and output data of the modules.
+Developing new modules
+======================
+
+This is a small walk-through on how to develop a new module for *Jterator*. Each module as to follow a particular convention of processing input  parameters. It can be written in virtually any programming language as long as such language can provide tools for working with *JSON* and *HDF5* data formats.
+
+Developing Jterator
+===================
+
+Latest code is available at https://github.com/ewiger/Jterator
+
+Nose tests
+----------
+
+We use nose framework to achieve code coverage with unit tests. In order to run tests, do
+
+```bash
+cd tests && nosetests
+```
