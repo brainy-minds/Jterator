@@ -26,6 +26,42 @@ Each pipeline has the following layout on the disk:
 * **logs** folder contains all the output from STDOU and STERR streams, obtain for each executable that has been executed.
 * **data** folder contains all the heavy data output like HDF5, etc. These data are shared between modules. 
 
+Jterator allows only very simplistic type of workflow -  *pipeline* (somewhat similar to a UNIX-world pipeline). Description of such workflow must be put sibling to the folder structure described about, i.e. inside the Jterator pipeline (project) folder. Recognizable file name must be one of **['JteratorPipe.json', 'jt.pipe']**. Description is a JSON format. 
+
+```json
+{	
+	"name": "Foo",
+	"version": "0.0.1",	
+	"pipeline": [
+		{
+			"name": "Bar",
+			"module": "bar",
+			"handles": "handles/some_bar"
+		}, {
+			"name": "Baz",
+			"module": "baz",
+			"handles": "handles/some_baz"
+		}
+	],
+	"tests": [
+		{
+			"type": "hdf5_dependency",
+			"module_name": "baz",
+			"input": ["bar"],
+			"output": ["baz"]
+		}
+	]
+}
+
+```
+
+To *run* your first pipeline, do:
+
+```bash
+cd /my/first/jterator/pipeline/folder && jt run
+```
+
+
 
 Developing new modules
 ======================
