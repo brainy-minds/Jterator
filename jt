@@ -14,6 +14,7 @@ import sys
 import argparse
 import logging
 from functools import partial
+import jterator
 from jterator.runner import JteratorRunner
 from jterator.error import JteratorError
 
