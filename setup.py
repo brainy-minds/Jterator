@@ -28,10 +28,10 @@ def get_version():
 setup(
     name='Jterator',
     version=get_version(),
-    description='A minimalistic pipeline engine',
+    description='A minimalistic pipeline engine for scientific computing',
     long_description=readme(),
     author='Yauhen Yakimovich, Markus Herrmann',
-    author_email='eugeny.yakimovitch@gmail.com',
+    author_email='eugeny dot yakimovitch at gmail dot com',
     url='https://github.com/ewiger/Jterator',
     license='MIT',
     scripts=['jt'],
@@ -43,8 +43,10 @@ setup(
     # },
     include_package_data=True,
     download_url='https://github.com/ewiger/Jterator/tarball/master',
-    requires=[
-        'h5py (== 2.2.1)',
+    install_requires=[
+        'h5py == 2.2.1',
+        'numpy >= 1.5.0',
+        'Cython >= 0.16',
     ],
     # data_files=[
     #     ('/usr/local/bin', ['jt']),
@@ -62,6 +64,6 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: MacOS',
     ],
-    setup_requires=['nose>=1.0'],
+    test_require=['nose >= 1.0'],
     test_suite='nose.collector',
 )
