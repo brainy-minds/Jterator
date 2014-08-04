@@ -30,7 +30,7 @@ setup(
     version=get_version(),
     description='A minimalistic pipeline engine',
     long_description=readme(),
-    author=['Yauhen Yakimovich', 'Markus Herrmann'],
+    author='Yauhen Yakimovich, Markus Herrmann',
     author_email='eugeny.yakimovitch@gmail.com',
     url='https://github.com/ewiger/Jterator',
     license='MIT',
@@ -43,8 +43,8 @@ setup(
     # },
     include_package_data=True,
     download_url='https://github.com/ewiger/Jterator/tarball/master',
-    install_requires=[
-        'h5py >= 2.3.0',
+    requires=[
+        'h5py (== 2.2.1)',
     ],
     # data_files=[
     #     ('/usr/local/bin', ['jt']),

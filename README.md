@@ -1,6 +1,9 @@
 Jterator
 ========
 
+[![Build Status](https://travis-ci.org/ewiger/Jterator.svg?branch=master)](https://travis-ci.org/ewiger/Jterator)
+
+
 A minimalistic pipeline engine with motivation to be flexible, but uncomplicated enough, so that no GUI is required to work with it.
 
 * use simple format like JSON for basic parametrization whenever possible
