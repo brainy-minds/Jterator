@@ -15,6 +15,7 @@ def bar(handles):
     pp(handles)
     print 'Test if bar is happy about the input..'
     assert 'value' in handles['some_arg']
+    assert False
     print 'ok'
 
 

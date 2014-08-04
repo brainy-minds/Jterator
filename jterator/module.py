@@ -87,7 +87,6 @@ class Module(object):
 
     def set_standard_output(self, output_log_path):
         self.output_log_path = output_log_path
-        self.streams['error'] = open(output_log_path, 'w+')
 
     def bake_command(self):
         '''
@@ -113,6 +112,14 @@ class Module(object):
                 open(self.error_log_path).read()
         return message
 
+    def write_output_and_errors(self, stdoutdata, stderrdata):
+        if self.streams['output'] == PIPE and self.output_log_path:
+            with open(self.output_log_path, 'w+') as output_log:
+                output_log.write(stdoutdata)
+        if self.streams['error'] == PIPE and self.error_log_path:
+            with open(self.error_log_path, 'w+') as error_log:
+                error_log.write(stderrdata)
+
     def run(self):
         '''
         Execute a module as a bash command. Path handles as input. Log output
@@ -136,12 +143,7 @@ class Module(object):
             (stdoutdata, stderrdata) = process.communicate(
                 input=input_json_data)
             # Write output and errors.
-            if self.streams['output'] == PIPE and self.output_log_path:
-                with open(self.output_log_path, 'w+') as output_log:
-                    output_log.write(stdoutdata)
-            if self.streams['error'] == PIPE and self.error_log_path:
-                with open(self.error_log_path, 'w+') as error_log:
-                    error_log.write(stderrdata)
+            self.write_output_and_errors(stdoutdata, stderrdata)
             # Close STDIN file descriptor.
             process.stdin.close
             # Take care of any errors during the execution.
