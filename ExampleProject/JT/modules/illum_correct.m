@@ -33,14 +33,16 @@ function illum_correct(handles_filename)
     %
     % $$$
 
-    handles = module_m.get_handles(handles_filename);
+    import module_m.*
 
-    input_args = module_m.read_input_args(handles);
-    input_args = module_m.check_input_args(input_args);
+    handles = get_handles(handles_filename)
+
+    input_args = read_input_args(handles);
+    input_args = check_input_args(input_args);
 
     output_args = illum_correct_run(input_args)
 
-    module_m.write_output_args(handles, output_args)
+    write_output_args(handles, output_args)
 
 end
 
