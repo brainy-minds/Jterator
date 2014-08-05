@@ -155,14 +155,14 @@ return
 %-------------------------------------------------------------------------------
 function memtype_id = create_memtype_id(datatype_id)
 
-if ( H5T.get_class(datatype_id) == H5ML.get_constant_value('H5T_ENUM' ) )
-	% If the datatype class is ENUM, then we need to recreate the memory datatype.
+% if ( H5T.get_class(datatype_id) == H5ML.get_constant_value('H5T_ENUM' ) )
+	% % If the datatype class is ENUM, then we need to recreate the memory datatype.
 	memtype_id = H5T.copy(datatype_id);
-	%memtype_id = 'H5ML_DEFAULT';
-else
-	% Otherwise, the default setting should do.
-	memtype_id = 'H5ML_DEFAULT';
-end
+	% %memtype_id = 'H5ML_DEFAULT';
+% else
+	% % Otherwise, the default setting should do.
+	% memtype_id = 'H5ML_DEFAULT';
+% end
 
 return
 
