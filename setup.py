@@ -2,8 +2,6 @@
 
 import os.path
 import sys
-from glob import glob
-
 try:
     from setuptools import setup
 except ImportError:

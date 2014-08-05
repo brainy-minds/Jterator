@@ -8,9 +8,12 @@ A minimalistic pipeline engine for scientific computing. It is designed to be fl
 
 * use simple format like JSON for basic parametrization whenever possible
 ** don't be afraid to keep your input settings on the disk
-* for performance heavy IO use HDF5 
-* used scientific data analysis.
+** don't allow passthrough approach of one module to dynamically influence the next one, using JSON
+* for performance heavy IO use HDF5
+** all the shared data is syncronized via HDF5, not JSON
+** a good example are big RAW image data stored as n-dimensional HDF5 matrices
 * UNIX pipeline is a one great idea, but it is mostly restricted to text processing
+
 
 Modules
 -------
