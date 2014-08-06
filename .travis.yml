@@ -13,4 +13,4 @@ before_install:
 install: 
     - python setup.py build -f
 
-script:  "python setup.py test"
+script:  "python setup.py nosetests -s"

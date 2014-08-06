@@ -42,9 +42,10 @@ setup(
     include_package_data=True,
     download_url='https://github.com/ewiger/Jterator/tarball/master',
     install_requires=[
-        'h5py == 2.2.1',
-        'numpy >= 1.5.0',
-        'Cython >= 0.16',
+        'h5py==2.2.1',
+        'numpy>=1.5.0',
+        'Cython>=0.16',
+        'colorama>=0.3.1',
     ],
     # data_files=[
     #     ('/usr/local/bin', ['jt']),
@@ -62,6 +63,6 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: MacOS',
     ],
-    test_require=['nose >= 1.0'],
+    tests_require=['nose>=1.0'],
     test_suite='nose.collector',
 )
