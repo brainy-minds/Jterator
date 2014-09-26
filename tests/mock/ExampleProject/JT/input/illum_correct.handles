@@ -1,0 +1,24 @@
+{
+    "hdf5_filename": "/Users/Markus/Documents/Jterator/ExampleProject/ExampleProject.h5",
+
+    "input_keys": {
+        "OrigImage": {
+            "hdf5_location": "/Input/read_filenames/OrigImage",
+            "class": "double",
+            "attributes": [ "nonempty", "size", [1,10] ]
+        },
+        "Filename": {
+           "hdf5_location": "/Input/illum_correct/Filename",
+           "class": "char",
+           "attributes": [ "nrows", 1 ]
+       }
+    },
+
+    "output_keys": {
+        "CorrImage": {
+            "hdf5_location": "/Output/read_filenames/SegmImage",
+            "class": "double",
+            "attributes": [ "positive" ]
+        }
+    }
+}
