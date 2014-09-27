@@ -17,7 +17,8 @@ def readme():
 
 
 def get_version():
-    src_path = os.path.join(os.path.dirname(__file__), 'jterator')
+    src_path = os.path.join(os.path.dirname(__file__), 'src', 'python',
+                            'jterator')
     sys.path.append(src_path)
     import jterator
     return jterator.__version__
@@ -32,10 +33,11 @@ setup(
     author_email='eugeny dot yakimovitch at gmail dot com',
     url='https://github.com/ewiger/Jterator',
     license='MIT',
-    scripts=['jt'],
+    scripts=['src/python/jt'],
     packages=[
         'jterator', 'jterator.api',
     ],
+    package_dir={'': 'src/python'},
     # package_data={
     #     '': ['*.html', '*.svg', '*.js'],
     # },
@@ -45,7 +47,8 @@ setup(
         'h5py>=2.2.1',
         'numpy>=1.5.0',
         'Cython>=0.16',
-        'colorama>=0.3.1',
+        'tree_output>=0.1.2',
+        'sh>=1.09',
     ],
     # data_files=[
     #     ('/usr/local/bin', ['jt']),

@@ -2,8 +2,11 @@
 -- add logging with loggers everywhere
 -- move houtput outside of the project, use an external module.
 -- log steps with the nice output in console
+
 - Create a new mock pipeline called hdf5_example
+
 - Expand jterator.api.*, e.g. jterator.api.io to separate code called by users 
   in modules from the core code of jterator engine.
 -- separate python, matlab or any other code packaging from each other in
    terms of structures.
+- Use YAML for pipeline language
