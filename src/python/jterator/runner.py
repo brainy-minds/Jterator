@@ -1,5 +1,6 @@
 import os
 import json
+import yaml
 from jterator.error import JteratorError
 from jterator.module import Module
 from jterator.minify_json import json_minify as clean_json
@@ -20,18 +21,17 @@ class JteratorRunner(object):
     def logs_path(self):
         return os.path.join(self.pipeline_folder_path, 'logs')
 
-    def read_json(self, json_filepath):
-        json_data = open(json_filepath).read()
+    def read_yaml(self, yaml_filepath):
+        yaml_data = open(yaml_filepath).read()
         try:
-            json_data = clean_json(json_data, strip_space=False)
-            return json.loads(json_data)
-        except ValueError as json_error:
+            return yaml.load(yaml_data)
+        except yaml.YAMLError as yaml_error:
             linelabeled_json = '\n'.join(['%i: %s' % (index, line)
                                           for index, line
-                                          in enumerate(json_data.split('\n'))])
-            raise JteratorError('JSON description of the pipeline (%s) '
+                                          in enumerate(yaml_data.split('\n'))])
+            raise JteratorError('YAML description of the pipeline (%s) '
                                 'contains an error:\n%s\n%s\n%s' %
-                                (self.pipeline_filepath, str(json_error),
+                                (self.pipeline_filepath, str(yaml_error),
                                  '='*80, linelabeled_json))
 
     def locate_pipeline_filepath(self):
@@ -56,10 +56,9 @@ class JteratorRunner(object):
     def description(self):
         if self.__description is None:
             self.locate_pipeline_filepath()
-            # Read and parse JSON.
-            # TODO: perform expected JSON schema validation.
-            self.__description = self.read_json(self.pipeline_filepath)
-
+            # Read and parse YAML.
+            self.__description = self.read_yaml(self.pipeline_filepath)
+        # print self.__description
         return self.__description
 
     def build_pipeline(self):
