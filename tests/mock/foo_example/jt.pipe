@@ -1,29 +1,26 @@
-{
-	// Define a trivial Jterator pipeline description
-	"name": "Foo",
-	"version": "0.0.1",
-	// "more_optional_metadata": "some value",
-	// "path": "by default is the same directory where foo.jt is found",
+# Define a trivial Jterator pipeline description
+name: 'Foo'
+version: '0.0.1'
 
-	// Define modules as list of descriptions
-	"pipeline": [
-		{
-			"name": "Bar",
-			"module": "bar",
-			"handles": "handles/some_bar"
-		}, {
-			"name": "Baz",
-			"module": "baz",
-			"handles": "handles/some_baz"
-		}
-	],
+# "more_optional_metadata": "some value",
+# "path": "by default is the same directory where foo.jt is found",
 
-	"tests": [
-		{
-			"type": "hdf5_dependency",
-			"module_name": "baz",
-			"input": ["bar"],
-			"output": ["baz"]
-		}
-	]
-}
+# Define modules as list of descriptions
+"pipeline":
+    
+    - name: "Bar"
+      module: "bar"
+      handles: "handles/some_bar"
+    
+    - name: "Baz"
+      module: "baz"
+      handles: "handles/some_baz"
+
+# Apply this tests to check module dependencies on expected parameters like 
+# h5 files or keys in h5 files.
+tests: 
+    - type: "hdf5_dependency"
+      module_name: "baz"
+      input: ["bar"]
+      output: ["baz"]
+    
