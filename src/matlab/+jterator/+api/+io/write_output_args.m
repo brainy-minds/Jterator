@@ -1,4 +1,7 @@
 function write_output_args(handles, output_args)
+
+    import jterator.api.h5.*;
+    
     % Writing output arguments to HDF5 file
     % using the location specified in "handles".
     filename <- handles.hdf5_filename;

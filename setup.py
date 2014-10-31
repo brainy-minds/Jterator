@@ -17,8 +17,8 @@ def readme():
 
 
 def get_version():
-    src_path = os.path.join(os.path.dirname(__file__), 'src', 'python',
-                            'jterator')
+    src_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            'src', 'python')
     sys.path.append(src_path)
     import jterator
     return jterator.__version__
