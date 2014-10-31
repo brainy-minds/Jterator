@@ -1,61 +1,5 @@
-import sys
-import json
 from subprocess import (PIPE, Popen)
-import h5py as h5
 from jterator.error import JteratorError
-
-
-def get_handles(handles_filename):
-    '''
-    Reading "handles" from standard input as JSON.
-    '''
-    handles = json.load(open(sys.argv[1])) # json.loads(sys.stdin.read())
-
-    return handles
-
-
-def read_input_args(handles):
-    '''
-    Reading input arguments from HDF5 file
-    using the location specified in "handles".
-    '''
-
-    hdf5_root = h5.File(handles['hdf5_filename'], 'r')
-
-    input_args = dict()
-    for key in handles['input_keys']:
-        location = handles['input_keys'][key]['hdf5_location']
-        input_args[key] = dict()
-        input_args[key]['data'] = hdf5_root[location]
-        input_args[key]['class'] = handles['input_keys'][key]['class']
-        input_args[key]['attributes'] = handles['input_keys'][key]['attributes']
-
-    return input_args
-
-
-def check_input_args(input_args):
-    '''
-    Checks input arguments for class and attributes.
-    '''
-
-    # how do I check for "type" consistent over different languages?
-    # (e.g. Matlab -> Python: 'double' -> 'float64', 'string' -> '|S1')
-    for key in input_args:
-        print input_args[key]['data'].dtype
-
-
-
-def write_output_args(handles, output_args):
-    '''
-    Writing output arguments to HDF5 file
-    using the location specified in "handles".
-    '''
-
-    hdf5_root = h5.File(handles['hdf5_filename'], 'r')
-
-    for key in output_args:
-        location = handles['output_keys'][key]
-        hdf5_root.create_dataset(location, data=output_args[key])
 
 
 class Module(object):
@@ -102,7 +46,6 @@ class Module(object):
 
     def set_standard_output(self, output_log_path):
         self.output_log_path = output_log_path
-        self.streams['error'] = open(output_log_path, 'w+')
 
     def bake_command(self):
         '''
@@ -128,6 +71,14 @@ class Module(object):
                 open(self.error_log_path).read()
         return message
 
+    def write_output_and_errors(self, stdoutdata, stderrdata):
+        if self.streams['output'] == PIPE and self.output_log_path:
+            with open(self.output_log_path, 'w+') as output_log:
+                output_log.write(stdoutdata)
+        if self.streams['error'] == PIPE and self.error_log_path:
+            with open(self.error_log_path, 'w+') as error_log:
+                error_log.write(stderrdata)
+
     def run(self):
         '''
         Execute a module as a bash command. Path handles as input. Log output
@@ -151,12 +102,7 @@ class Module(object):
             (stdoutdata, stderrdata) = process.communicate(
                 input=input_json_data)
             # Write output and errors.
-            if self.streams['output'] == PIPE and self.output_log_path:
-                with open(self.output_log_path, 'w+') as output_log:
-                    output_log.write(stdoutdata)
-            if self.streams['error'] == PIPE and self.error_log_path:
-                with open(self.error_log_path, 'w+') as error_log:
-                    error_log.write(stderrdata)
+            self.write_output_and_errors(stdoutdata, stderrdata)
             # Close STDIN file descriptor.
             process.stdin.close
             # Take care of any errors during the execution.

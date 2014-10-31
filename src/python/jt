@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     # 'jt run' parser
     run_command_parser = subparsers.add_parser('run')
-    run_command_parser.add_argument('path', default=os.getcwd())
+    run_command_parser.add_argument('path', default=os.getcwd(), nargs='?')
     run_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=run_command_parser))
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         else:
             parser.print_help()
     except JteratorError as error:
-        print 'Failed.'
+        sys.stdout.write('Failed. ')
         if type(error) is MissingCliArgs:
             print 'Missing one of the required command-line arguments.'
         print 'Error message: "%s"' % str(error)
