@@ -6,6 +6,11 @@ version: 0.0.1
 # NOTE: 
 # The working directory is by default the directory where the .pipe file 
 # is located. So you can provide relative paths below.
+#
+# To run modules from the command line individually:
+# - matlab -nodisplay -r "addpath('[module_filename]');[module_filename]([handles_filename]);exit"
+# - ipython [module_filename] [handles_filename]
+# - Rscript [module_filename] [handles_filename]
 # -----------------------------------------------------------------------------
 
 # Define HDF5 filename for data storage

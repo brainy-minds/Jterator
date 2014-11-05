@@ -8,9 +8,9 @@ input_keys:
         hdf5_location: /Output/MeasurePrimary/Measurements
         class: array
 
-    DoPlot:
-        parameter: "Yes"
-        class: character
+    MakePlot:
+        parameter: Yes
+        class: logical
 
 # module output arguments
 output_keys:

@@ -3,27 +3,26 @@ library(rhdf5)
 
 
 #' Reading "handles" from YAML file.
-function get_handles(handles_filename) {
+get_handles <- function(handles_filename) {
 
-    mfilename = "get_handles"
-
-    handles = yaml.load_file(handles_filename)
-
-    return(handles)
+    mfilename <- "get_handles"
+    handles <- yaml.load_file(handles_filename)
 
     cat(sprintf("jt -- %s: loaded 'handles' from \"%s\"\n", 
                 mfilename, handles_filename))
+
+    return(handles)
 }
 
 
 #' @rdname Reading initial values from "handles".
-function read_input_values(handles) {
+read_input_values <- function(handles) {
 
-    mfilename = "read_input_values"
+    mfilename <- "read_input_values"
 
-    values = list()
+    values <- list()
     for (key in names(handles$input_keys)) {
-      values[key] = handles$input_keys[[key]]$value
+      values[key] <- handles$input_keys[[key]]$value
       cat(sprintf("jt -- %s: value '%s': \"%s\"\n",
                   mfilename, key, values[key]))
     }
@@ -33,24 +32,24 @@ function read_input_values(handles) {
 
 
 #' @rdname Reading input arguments from HDF5 file using the location specified in "handles".
-function read_input_args(handles) {
+read_input_args <- function(handles) {
 
-    mfilename = "read_input_args"
+    mfilename <- "read_input_args"
 
-    hdf5_filename = handles$hdf5_filename
+    hdf5_filename <- handles$hdf5_filename
 
-    input_args = list()
+    input_args <- list()
     for (key in names(handles$input_keys)) {
-      field = handles$input_keys[[key]]
-      input_args[[key]] = list()
+      field <- handles$input_keys[[key]]
+      input_args[[key]] <- list()
 
       if ("hdf5_location" %in% names(field)) {
-        input_args[[key]]$variable = h5read(hdf5_filename, field$hdf5_location)
+        input_args[[key]]$variable <- h5read(hdf5_filename, field$hdf5_location)
         cat(sprintf("jt -- %s: loaded dataset '%s' from HDF5 group: \"%s\"\n",
                 mfilename, key, field$hdf5_location))
       }
       else if ("parameter" %in% names(field)) {
-        input_args[[key]]$variable = field$parameter
+        input_args[[key]]$variable <- field$parameter
         cat(sprintf("jt -- %s: parameter '%s': \"%s\"\n",
                     mfilename, key, paste(field$parameter, collapse=",")))
       }
@@ -59,11 +58,11 @@ function read_input_args(handles) {
       }
 
       if ("class" %in% names(field)) {
-        input_args[[key]]$class = field$class
+        input_args[[key]]$class <- field$class
       }
       
       if ("attributes" %in% names(field)) {
-        input_args[[key]]$attributes = field$attributes
+        input_args[[key]]$attributes <- field$attributes
       }
     }
 
@@ -72,17 +71,17 @@ function read_input_args(handles) {
 
 
 #' @rdname Checks input arguments for correct class and attributes.
-function check_input_args(input_args) {
+check_input_args <- function(input_args) {
 
-    mfilename = "check_input_args"
+    mfilename <- "check_input_args"
 
-    checked_input_args = list()
+    checked_input_args <- list()
     for (key in names(input_args)) {
-      field = input_args[[key]]
+      field <- input_args[[key]]
       
       if ("class" %in% names(field)) {
-        expected_class = input_args[[key]]$class
-        loaded_class = class(input_args[[key]]$variable)
+        expected_class <- input_args[[key]]$class
+        loaded_class <- class(input_args[[key]]$variable)
         
         if (expected_class != loaded_class) {
           stop(sprintf("argument '%s' is of \"class\" '%s' instead of expected '%s'", 
@@ -95,7 +94,7 @@ function check_input_args(input_args) {
       }
       
       # return parameters in simplified form
-      checked_input_args[[key]] = input_args[[key]]$variable
+      checked_input_args[[key]] <- input_args[[key]]$variable
     }
 
     return(checked_input_args)
@@ -103,14 +102,14 @@ function check_input_args(input_args) {
 
 
 #' @rdname Writing output arguments to HDF5 file using the location specified in "handles".
-function write_output_args(handles, output_args) {
+write_output_args <- function(handles, output_args) {
 
-    mfilename = "write_output_args"
+    mfilename <- "write_output_args"
 
-    hdf5_filename = handles$hdf5_filename
+    hdf5_filename <- handles$hdf5_filename
 
     for (key in names(output_args)) {
-      hdf5_location = handles$output_keys[[key]]$hdf5_location
+      hdf5_location <- handles$output_keys[[key]]$hdf5_location
       h5createDataset(hdf5_filename, hdf5_location, 
                       dims = dim(output_args[[key]]),
                       storage.mode = storage.mode(output_args[[key]]))
@@ -118,5 +117,16 @@ function write_output_args(handles, output_args) {
       cat(sprintf("jt -- %s: wrote dataset '%s' to HDF5 group: \"%s\"\n",
                 mfilename, key, field$hdf5_location))
     }
+}
 
+
+#' @rdname Create HDF5 file.
+build_hdf5 <- function(handles) {
+
+    mfilename <- "build_hdf5"
+
+    hdf5_filename <- handles$hdf5_filename;
+    file_created <- h5createFile(hdf5_filename)
+    cat(sprintf("jt -- %s: created HDF5 file: \"%s\"\n",
+                mfilename, hdf5_filename))
 }

@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 import sys
-# import json
 import yaml
 import h5py as h5
 from jterator.error import JteratorError
@@ -14,9 +13,6 @@ def get_handles(handles_filename):
     Reading "handles" from YAML file.
     '''
     mfilename = sys._getframe().f_code.co_name
-
-    # handles = json.load(open(handles_filename))
-
     handles = yaml.load(open(handles_filename))
 
     print('jt -- %s: loaded \'handles\' from "%s"'
@@ -46,7 +42,8 @@ def read_input_args(handles):
     '''
     mfilename = sys._getframe().f_code.co_name
 
-    hdf5_root = h5.File(handles['hdf5_filename'], 'r+')
+    hdf5_filename = handles['hdf5_filename']
+    hdf5_root = h5.File(hdf5_filename, 'r+')
 
     input_args = dict()
     for key in handles['input_keys']:
@@ -117,10 +114,25 @@ def write_output_args(handles, output_args):
     '''
     mfilename = sys._getframe().f_code.co_name
 
-    hdf5_root = h5.File(handles['hdf5_filename'], 'r+')
+    hdf5_filename = handles['hdf5_filename']
+    hdf5_root = h5.File(hdf5_filename, 'r+')
 
     for key in output_args:
         hdf5_location = handles['output_keys'][key]['hdf5_location']
+        # del hdf5_root[hdf5_location]
         hdf5_root.create_dataset(hdf5_location, data=output_args[key])
         print('jt -- %s: wrote dataset \'%s\' to HDF5 group: "%s"'
               % (mfilename, key, hdf5_location))
+
+
+def build_hdf5(handles):
+    '''
+    Create HDF5 file.
+    '''
+    mfilename = sys._getframe().f_code.co_name
+
+    hdf5_filename = handles['hdf5_filename']
+    h5.File(hdf5_filename, 'w')
+    print('jt -- %s: created HDF5 file: \'%s\': "%s"'
+          % (mfilename, hdf5_filename))
+

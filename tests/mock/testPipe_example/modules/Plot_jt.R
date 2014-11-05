@@ -1,18 +1,14 @@
-#!/usr/bin/env python
-import os
-import sys
-import numpy as np
-from skimage import measure
-from jterator.api.io import *
+#!/usr/bin/Rscript
 
-from IPython.core.debugger import Tracer
+jt_path <- "/Users/Markus/Documents/Jterator"
+source(list.files(jt_path, pattern = "io\\.R$", full.names = TRUE, recursive = TRUE)[[1]])
 
+args <- commandArgs()
 
-print('jt - %s:' % os.path.basename(__file__))
+cat(sprintf('jt - %s:\n', basename(grep("--file=(.*)", args, value = TRUE))))
 
 ### read actual input argument
-handles_filename = sys.argv[1]
-
+handles_filename <- commandArgs(TRUE)
 
 ###############################################################################
 ## jterator input
@@ -36,37 +32,34 @@ input_args = check_input_args(input_args)
 ## input handling ##
 ####################
 
-### convert into numpy array
-nuclei_img = np.array(input_args['Nuclei'])
+nuclei_area <- input_args$Data2Plot
+makePlot <- input_args$MakePlot
 
 
 ################
 ## processing ##
 ################
 
-### get object ids and total number of objects
-nuclei_ids = np.unique(nuclei_img)
-nuclei_num = nuclei_ids.shape[0]
-
-### measure object properties
-nuclei_label_img = measure.label(nuclei_img)
-regions = measure.regionprops(nuclei_label_img)
-
-### extract "area" measurement
-nuclei_area = [regions[i].area for i in range(nuclei_num)]
+cat(sprintf("--> biggest nucleus (probably a clump of nuclei) is %d pixel\n",
+    max(nuclei_area)))
 
 
 #################
 ## make figure ##
 #################
 
+if (makePlot) {
+
+    cat(sprintf("--> Check this out: YAML works with logical input :)\n"))
+
+}
+
 
 ####################
 ## prepare output ##
 ####################
 
-output_args = dict()
-output_args['Measurements'] = nuclei_area
+output_args = list()
 
 # ------------------------------ module specific ------------------------------
 ## ----------------------------------------------------------------------------

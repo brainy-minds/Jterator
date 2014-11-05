@@ -1,11 +1,10 @@
+%% Create HDF5 file.
 function build_hdf5(handles)
 
     import jterator.api.h5.*;
 
-    filename = handles.hdf5_filename;
-
+    hdf5_filename = handles.hdf5_filename;
     h5filecreate(filename);
+    fprintf('jt -- %s: created HDF5 file: "%s"\n', mfilename, hdf5_filename)
 
-    % we could return the file indentifier
-    
 end
