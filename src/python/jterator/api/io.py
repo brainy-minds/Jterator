@@ -106,7 +106,6 @@ def check_input_args(input_args):
 
         # return parameters in simplified form
         checked_input_args[key] = input_args[key]['variable']
-        print('jt -- %s: argument \'%s\' passed check' % (mfilename, key))
 
     return checked_input_args
 
@@ -121,7 +120,7 @@ def write_output_args(handles, output_args):
     hdf5_root = h5.File(handles['hdf5_filename'], 'r+')
 
     for key in output_args:
-        location = handles['output_keys'][key]['hdf5_location']
-        hdf5_root.create_dataset(location, data=output_args[key])
+        hdf5_location = handles['output_keys'][key]['hdf5_location']
+        hdf5_root.create_dataset(hdf5_location, data=output_args[key])
         print('jt -- %s: wrote dataset \'%s\' to HDF5 group: "%s"'
-              % (mfilename, key, location))
+              % (mfilename, key, hdf5_location))
