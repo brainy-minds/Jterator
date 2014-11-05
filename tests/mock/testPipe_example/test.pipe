@@ -35,6 +35,10 @@ pipeline:
     module: modules/MeasurePrimary_jt.py
     handles: handles/MeasurePrimary.handles
 
+  - name: Plot
+    module: modules/Plot_jt.R
+    handles: handles/Plot.handles
+
 
 # # Apply this tests to check module dependencies on expected parameters like 
 # # h5 files or keys in h5 files.
