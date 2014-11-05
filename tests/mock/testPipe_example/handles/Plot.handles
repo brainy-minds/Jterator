@@ -1,0 +1,16 @@
+# full path to HDF5 file
+hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/data/test.h5
+
+# module input arguments
+input_keys:
+
+    Data2Plot: 
+        hdf5_location: /Output/MeasurePrimary/Measurements
+        class: array
+
+    DoPlot:
+        parameter: "Yes"
+        class: character
+
+# module output arguments
+output_keys:
