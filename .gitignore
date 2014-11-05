@@ -53,3 +53,5 @@ coverage.xml
 docs/_build/
 
 tests/mock/foo_example/logs/*
+
+*.h5

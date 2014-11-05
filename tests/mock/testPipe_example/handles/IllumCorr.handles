@@ -1,0 +1,28 @@
+# full path to HDF5 file
+hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/data/test.h5
+
+# module input arguments
+input_keys:
+
+    OrigImage: 
+        hdf5_location: /Output/PrimeRawData/OrigImage
+        class: double
+        attributes: positive
+
+    StatsMeanImage: 
+        hdf5_location: /Output/PrimeRawData/StatsMeanImage
+        class: double
+        attributes: positive
+
+    StatsStdImage: 
+        hdf5_location: /Output/PrimeRawData/StatsStdImage
+        class: double
+        attributes: positive
+
+# module output arguments
+output_keys:
+
+    CorrImage:
+        hdf5_location: /Output/IllumCorr/CorrImage
+        class: double
+        attributes: positive

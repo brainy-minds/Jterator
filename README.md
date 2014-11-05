@@ -87,3 +87,13 @@ We use nose framework to achieve code coverage with unit tests. In order to run 
 ```bash
 cd tests && nosetests
 ```
+
+Installation
+============
+
+MacOS X
+-------
+
+install HDF5 via homebrew:
+$ brew tap homebrew/science
+$ brew install hdf5

@@ -1,0 +1,39 @@
+# full path to HDF5 file
+hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/data/test.h5
+
+# module input arguments
+input_keys:
+
+    CorrImage: 
+        hdf5_location: /Output/IllumCorr/CorrImage
+        class: double
+        attributes: positive
+
+    ThresholdMethod:
+        parameter: Otsu Global
+        class: char
+
+    ThresholdCorrection:
+        parameter: 1
+        class: double
+
+    ThresholdRange:
+        parameter: [0, 1]
+        class: double
+
+    pObject:
+        parameter: 10%
+        class: char
+
+    saveFigure:
+        parameter: "Yes"
+        class: char
+
+# module output arguments
+output_keys:
+
+    Nuclei:
+        hdf5_location: /Output/IdentifyPrimary/Nuclei
+        class: double
+        attributes: positive
+
