@@ -1,16 +1,16 @@
-function PrimeRawData_jt(handles_filename)
-
 import jterator.api.io.*;
 
 
 fprintf('jt - %s:\n', mfilename) 
+
+handles_stream = input('','s'); %input('','s'); % works only with echo "handles_filename"
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
 %%% retrieve handles from .JSON files
-handles = get_handles(handles_filename);
+handles = get_handles(handles_stream);
 
 %%% retrieve initial values from handles
 values = read_input_values(handles);
@@ -68,5 +68,3 @@ build_hdf5(handles);
 write_output_args(handles, output_args);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-end

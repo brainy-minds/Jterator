@@ -3,13 +3,13 @@ library(rhdf5)
 
 
 #' Reading "handles" from YAML file.
-get_handles <- function(handles_filename) {
+get_handles <- function(handles_stream) {
 
     mfilename <- "get_handles"
-    handles <- yaml.load_file(handles_filename)
+    handles <- yaml.load_file(handles_stream)
 
-    cat(sprintf("jt -- %s: loaded 'handles' from \"%s\"\n", 
-                mfilename, handles_filename))
+    cat(sprintf("jt -- %s: loaded 'handles' from standard input\n", 
+                mfilename))
 
     return(handles)
 }

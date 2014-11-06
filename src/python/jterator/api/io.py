@@ -8,15 +8,14 @@ from jterator.error import JteratorError
 # from IPython.core.debugger import Tracer
 
 
-def get_handles(handles_filename):
+def get_handles(handles_stream):
     '''
     Reading "handles" from YAML file.
     '''
     mfilename = sys._getframe().f_code.co_name
-    handles = yaml.load(open(handles_filename))
+    handles = yaml.load(handles_stream)
 
-    print('jt -- %s: loaded \'handles\' from "%s"'
-          % (mfilename, handles_filename))
+    print('jt -- %s: loaded \'handles\' from standard input' % mfilename)
 
     return handles
 

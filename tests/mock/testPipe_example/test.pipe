@@ -1,17 +1,18 @@
+# =============================================================================
+# NOTE: 
+# The working directory is by default the directory where the .pipe file 
+# is located. So you can provide relative paths in your pipeline description.
+#
+# To run modules from the command line individually use the following commands:
+# - matlab -nodisplay -r "run('[module_filename]')" < echo [handles_filename]
+#   -> standard input in Matlab doesn't work with YAML file!
+# - ipython [module_filename] < [handles_filename]
+# - Rscript [module_filename] < [handles_filename]
+# =============================================================================
+
 # Define a trivial Jterator pipeline description
 name: test
 version: 0.0.1
-
-# -----------------------------------------------------------------------------
-# NOTE: 
-# The working directory is by default the directory where the .pipe file 
-# is located. So you can provide relative paths below.
-#
-# To run modules from the command line individually:
-# - matlab -nodisplay -r "addpath('[module_filename]');[module_filename]([handles_filename]);exit"
-# - ipython [module_filename] [handles_filename]
-# - Rscript [module_filename] [handles_filename]
-# -----------------------------------------------------------------------------
 
 # Define HDF5 filename for data storage
 data: data/test.h5
@@ -29,7 +30,7 @@ pipeline:
 
   - name: IndentifyPrimary
     module: modules/IdentifyPrimary_jt.m
-    handles: handles/IllumCorr.handles
+    handles: handles/IdentifyPrimary.handles
 
   - name: MeasurePrimary
     module: modules/MeasurePrimary_jt.py
@@ -44,6 +45,9 @@ pipeline:
 # # h5 files or keys in h5 files.
 # tests: 
 #     - type: hdf5_dependency
-#       module_name: baz
+#       module_name: PrimeRawData
 #       input: ["bar"]
 #       output: ["baz"]
+
+# -> testing should be done automatically based on the handles files!!!
+

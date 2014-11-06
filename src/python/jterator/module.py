@@ -1,6 +1,8 @@
 from subprocess import (PIPE, Popen)
 from jterator.error import JteratorError
 
+from IPython.core.debugger import Tracer
+
 
 class Module(object):
     '''
@@ -30,9 +32,9 @@ class Module(object):
             raise JteratorError('Passed argument \'handles\' is not a file '
                                 'object.')
         self.handles = handles
-        # Effectively, these are used as arguments fr Popen call. That's why it
-        # is actually legal to use PIPE as a default value here. Note: set
-        # values to None to avoid respective interaction with the program.
+        # Effectively, these are used as arguments for Popen call.
+        # That's why it is actually legal to use PIPE as a default value here.
+        # Note: Set values to None to avoid interaction with the program.
         self.streams = {
             'input': PIPE,
             'output': PIPE,
@@ -51,8 +53,13 @@ class Module(object):
         '''
         Use "executable" property to figure out what would be the location of
         the program. Return it without further arguments. Everything else is
-        parametrized using "handles" in form of JSON STDIN.
+        parametrized using "handles".
         '''
+        ### ===================================================================
+        ### Here we have to bake language specific commands using
+        ### "Rscript", "ipython" or "matlab -nodisplay -r"
+        ### ===================================================================
+        Tracer()()
         return self.executable_path
 
     def get_error_message(self, process, input_json_data):
@@ -81,8 +88,8 @@ class Module(object):
 
     def run(self):
         '''
-        Execute a module as a bash command. Path handles as input. Log output
-        and/or errors.
+        Execute a module as a bash command. Path to handles file as input.
+        Log output and/or errors.
         '''
         command = self.bake_command()
         try:

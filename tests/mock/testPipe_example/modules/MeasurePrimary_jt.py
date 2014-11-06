@@ -5,20 +5,20 @@ import numpy as np
 from skimage import measure
 from jterator.api.io import *
 
-from IPython.core.debugger import Tracer
+# from IPython.core.debugger import Tracer
 
 
 print('jt - %s:' % os.path.basename(__file__))
 
 ### read actual input argument
-handles_filename = sys.argv[1]
+handles_stream = sys.stdin  # sys.argv[1]
 
 
 ###############################################################################
 ## jterator input
 
 ### retrieve handles from .JSON files
-handles = get_handles(handles_filename)
+handles = get_handles(handles_stream)
 
 ### read input arguments from .HDF5 files
 input_args = read_input_args(handles)

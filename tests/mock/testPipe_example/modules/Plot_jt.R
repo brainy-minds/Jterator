@@ -8,13 +8,13 @@ args <- commandArgs()
 cat(sprintf('jt - %s:\n', basename(grep("--file=(.*)", args, value = TRUE))))
 
 ### read actual input argument
-handles_filename <- commandArgs(TRUE)
+handles_stream <- file("stdin")
 
 ###############################################################################
 ## jterator input
 
 ### retrieve handles from .JSON files
-handles = get_handles(handles_filename)
+handles = get_handles(handles_stream)
 
 ### read input arguments from .HDF5 files
 input_args = read_input_args(handles)

@@ -1,12 +1,12 @@
 import os
-import json
 import yaml
 from jterator.error import JteratorError
 from jterator.module import Module
-from jterator.minify_json import json_minify as clean_json
+# import json
+# from jterator.minify_json import json_minify as clean_json
 
 
-PIPE_FILENAMES = ['JteratorPipe.json', 'jt.pipe']
+PIPE_FILENAMES = ['test.pipe', 'jt.pipe']
 
 
 class JteratorRunner(object):
@@ -19,9 +19,12 @@ class JteratorRunner(object):
 
     @property
     def logs_path(self):
+        '''Define logs path.'''
         return os.path.join(self.pipeline_folder_path, 'logs')
 
     def read_yaml(self, yaml_filepath):
+        '''Read YAML file.'''
+        print(yaml_filepath)
         yaml_data = open(yaml_filepath).read()
         try:
             return yaml.load(yaml_data)
@@ -35,10 +38,11 @@ class JteratorRunner(object):
                                  '='*80, linelabeled_json))
 
     def locate_pipeline_filepath(self):
-        '''Detect filepath to pipeline description if found.'''
-        # Where is the pipeline description file?
+        '''Detect filepath to pipeline descriptor file.'''
+        # Already found.
         if not self.pipeline_filepath is None:
             return
+        # Where is the pipeline description file?
         for pipe_filename in PIPE_FILENAMES:
             pipeline_filepath = os.path.join(self.pipeline_folder_path,
                                              pipe_filename)
@@ -54,36 +58,43 @@ class JteratorRunner(object):
 
     @property
     def description(self):
+        '''Obtain pipeline description from YAML file.'''
         if self.__description is None:
+            # Detect filepath to pipeline descriptor file.
             self.locate_pipeline_filepath()
-            # Read and parse YAML.
+            # Read and parse pipeline descriptor file.
             self.__description = self.read_yaml(self.pipeline_filepath)
         # print self.__description
         return self.__description
 
     def build_pipeline(self):
-        '''Build pipeline from JSON description.'''
+        '''Build pipeline in modular form.'''
+        # Interpret module description.
         for module_description in self.description['pipeline']:
-            executable_path = os.path.join(
-                self.pipeline_folder_path,
-                'modules',
-                module_description['module'],
-            )
-            handles_filepath = os.path.join(
-                self.pipeline_folder_path,
-                module_description['handles'],
-            )
+            # Get path to module (executable file containing actual code)
+            executable_path = os.path.join(self.pipeline_folder_path,
+                                           module_description['module'])
+            # Does module exist and is executable?
             if not os.path.exists(executable_path):
-                raise JteratorError('Missing module executable: %s' %
+                raise JteratorError('Missing module file: %s' %
                                     executable_path)
-            module = Module(
-                name=module_description['name'],
-                executable_path=executable_path,
-                handles=open(handles_filepath),
-            )
+            if not os.access(executable_path, os.R_OK):
+                raise JteratorError('Module file not executable: %s' %
+                                    executable_path)
+            # Get path to handles (YAML file describing model input/output)
+            handles_filepath = os.path.join(self.pipeline_folder_path,
+                                            module_description['handles'])
+            # Does handles file exist?
+            if not os.path.exists(handles_filepath):
+                raise JteratorError('Missing handles file: %s' %
+                                    handles_filepath)
+            # Extract module information from pipeline description.
+            module = Module(name=module_description['name'],
+                            executable_path=executable_path,
+                            handles=open(handles_filepath))
             self.modules.append(module)
         if not self.modules:
-            raise JteratorError('Not a single module description was found in:'
+            raise JteratorError('No module description was found in:'
                                 ' %s' % self.pipeline_filepath)
 
     def run_pipeline(self):
