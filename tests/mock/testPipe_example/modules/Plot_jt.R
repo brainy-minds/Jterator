@@ -48,8 +48,10 @@ if (makePlot) {
 
     library(ggplot2)
 
-    ### make figure with ggplot2 and save it as PDF file
+    ### make figure with ggplot2
     fig <- qplot(nuclei_area, geom="histogram", binwidth=500)
+
+    ### save figure as PDF file
     pdf(sprintf("figures/%s.pdf", mfilename))
     print(fig)
     dev.off()

@@ -52,10 +52,12 @@ CorrImage = 10 .^ CorrImage;
 %% make figure %%
 %%%%%%%%%%%%%%%%%
 
-%%% make figure and save it as pdf
+%%% make figure
 fig = figure, imagesc(CorrImage);
+
+%%% save figure as PDF file
 set(fig, 'PaperPosition', [0 0 7 7], 'PaperSize', [7 7]);
-saveas(fig, sprintf('figures/%s', mfilename), 'pdf')
+saveas(fig, sprintf('figures/%s', mfilename), 'pdf');
 
 %%% send figure to plotly
 % fig2plotly() 

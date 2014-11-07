@@ -64,11 +64,13 @@ nuclei_area = [regions[i].area for i in range(nuclei_num)]
 ## make figure ##
 #################
 
-### make figure with matplotlib and save it as PDF
+### make figure with matplotlib
 plt.hist(nuclei_area)
 plt.title("Nuclear area")
 plt.xlabel("Area in pixel")
 plt.ylabel("Number of cells")
+
+### save figure as PDF file
 plt.savefig('figures/%s.pdf' % mfilename, format='pdf')
 plt.close()
 
