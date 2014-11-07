@@ -1,13 +1,10 @@
 #!/usr/bin/Rscript
 
-jt_path <- "/Users/Markus/Documents/Jterator"
-source(list.files(jt_path, pattern = "io\\.R$", full.names = TRUE, recursive = TRUE)[[1]])
+library(jterator, lib="/Users/Markus/Documents/Jterator/src/r/jterator")
 
-args <- commandArgs()
+cat(sprintf('jt - %s:\n', basename(grep("--file=(.*)", commandArgs(), value = TRUE))))
 
-cat(sprintf('jt - %s:\n', basename(grep("--file=(.*)", args, value = TRUE))))
-
-### read actual input argument
+### read standard input
 handles_stream <- file("stdin")
 
 ###############################################################################
@@ -39,9 +36,6 @@ makePlot <- input_args$MakePlot
 ################
 ## processing ##
 ################
-
-cat(sprintf("--> biggest nucleus (probably a clump of nuclei) is %d pixel\n",
-    max(nuclei_area)))
 
 
 #################

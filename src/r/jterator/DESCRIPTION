@@ -1,0 +1,10 @@
+Package: jterator
+Type: Package
+Title: jterator input/output
+Version: 1.0
+Date: 2014-11-07
+Author: Markus Herrmann
+Maintainer: Markus Herrmann <markus.herrmann@imls.uzh.ch>
+Description: Functions for reading module description from YAML file and reading and writing data from HDF5 file.
+Depends: rhdf5, yaml
+License: MIT

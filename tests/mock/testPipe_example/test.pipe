@@ -4,10 +4,12 @@
 # is located. So you can provide relative paths in your pipeline description.
 #
 # To run modules from the command line individually use the following commands:
-# - matlab -nodisplay -r "run('[module_filename]')" < echo [handles_filename]
-#   -> standard input in Matlab doesn't work with YAML file!
-# - ipython [module_filename] < [handles_filename]
-# - Rscript [module_filename] < [handles_filename]
+# - echo [handles_filename] | matlab -nodisplay -r "run('[module_filename]')"
+#   -> did get Matlab accept YAML file as standard input
+#   -> pull path to handles file has be provided
+#   => stupid Matlab!!!
+# - cat [handles_filename] | ipython [module_filename]
+# - cat [handles_filename] | Rscript [module_filename]
 # =============================================================================
 
 # Define a trivial Jterator pipeline description
