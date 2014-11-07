@@ -5,12 +5,12 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 # import mpld3
-import plotly.plotly as py
+# import plotly.plotly as py
 from plotly.graph_objs import *
 from skimage import measure
 from jterator.api.io import *
 
-from IPython.core.debugger import Tracer
+# from IPython.core.debugger import Tracer
 
 mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
 print('jt - %s:' % mfilename)
@@ -64,11 +64,13 @@ nuclei_area = [regions[i].area for i in range(nuclei_num)]
 ## make figure ##
 #################
 
-### make a histogram
+### make figure with matplotlib and save it as PDF
 plt.hist(nuclei_area)
 plt.title("Nuclear area")
 plt.xlabel("Area in pixel")
 plt.ylabel("Number of cells")
+plt.savefig('figures/%s.pdf' % mfilename, format='pdf')
+plt.close()
 
 ### send figure to plotly
 # fig = plt.gcf()

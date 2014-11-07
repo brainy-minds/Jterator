@@ -46,16 +46,16 @@ makePlot <- input_args$MakePlot
 
 if (makePlot) {
 
-    cat(sprintf("--> Check this out: YAML works with logical input :)\n"))
+    library(ggplot2)
 
-    cat(sprintf("--> Shabam: now we plot in the brower :)\n"))
-
-    library(plotly)
-
-    ### make ggplot figure
-    qplot(nuclei_area, geom="histogram", binwidth=500)
+    ### make figure with ggplot2 and save it as PDF file
+    fig <- qplot(nuclei_area, geom="histogram", binwidth=500)
+    pdf(sprintf("figures/%s.pdf", mfilename))
+    print(fig)
+    dev.off()
 
     #### send ggplot figure to plotly
+    # library(plotly)
     # py <- plotly()
     # py$ggplotly()
 
