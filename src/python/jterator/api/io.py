@@ -15,7 +15,7 @@ def get_handles(handles_stream):
     mfilename = sys._getframe().f_code.co_name
     handles = yaml.load(handles_stream)
 
-    print('jt -- %s: loaded \'handles\' from standard input' % mfilename)
+    print('jt -- %s: loaded \'handles\'' % mfilename)
 
     return handles
 

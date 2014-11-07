@@ -1,25 +1,27 @@
 #!/usr/bin/env python
 import os
 import sys
+import re
 import numpy as np
 import matplotlib.pyplot as plt
-import mpld3 as d3
+# import mpld3
+import plotly.plotly as py
+from plotly.graph_objs import *
 from skimage import measure
 from jterator.api.io import *
 
-# from IPython.core.debugger import Tracer
+from IPython.core.debugger import Tracer
 
+mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
+print('jt - %s:' % mfilename)
 
-print('jt - %s:' % os.path.basename(__file__))
-
-### read actual input argument
-handles_stream = sys.stdin  # sys.argv[1]
-
+### standard input
+handles_stream = sys.stdin
 
 ###############################################################################
 ## jterator input
 
-### retrieve handles from .JSON files
+### retrieve handles from .YAML files
 handles = get_handles(handles_stream)
 
 ### read input arguments from .HDF5 files
@@ -62,10 +64,19 @@ nuclei_area = [regions[i].area for i in range(nuclei_num)]
 ## make figure ##
 #################
 
-plt.plot(nuclei_area)
+### make a histogram
+plt.hist(nuclei_area)
+plt.title("Nuclear area")
+plt.xlabel("Area in pixel")
+plt.ylabel("Number of cells")
 
-### show figure in the browser: yeah!
-# d3.show_d3()
+### send figure to plotly
+# fig = plt.gcf()
+# plot_url = py.plot_mpl(fig, filename='mpl-basic-histogram')
+
+### alternatively, one can use mpld3
+# mpld3.show_d3()
+
 
 ####################
 ## prepare output ##

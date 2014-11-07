@@ -3,14 +3,13 @@ import jterator.api.io.*;
 
 fprintf('jt - %s:\n', mfilename) 
 
-handles_stream = input('','s');
-
+handles_filename = input('','s');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
-%%% retrieve handles from .JSON files
-handles = get_handles(handles_stream);
+%%% retrieve handles from .YAML files
+handles = get_handles(handles_filename);
 
 %%% read input arguments from .HDF5 files
 input_args = read_input_args(handles);

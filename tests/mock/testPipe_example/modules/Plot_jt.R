@@ -1,17 +1,19 @@
-#!/usr/bin/Rscript
+#!/opt/local/bin/Rscript
 
 library(jterator, lib="/Users/Markus/Documents/Jterator/src/r/jterator")
 
-cat(sprintf('jt - %s:\n', basename(grep("--file=(.*)", commandArgs(), value = TRUE))))
+mfilename <- basename(sub("--file=(.*).R", "\\1",
+                      grep("--file=.*R", commandArgs(), value=TRUE)))
+cat(sprintf('jt - %s:\n', mfilename))
 
-### read standard input
-handles_stream <- file("stdin")
+# ### standard input
+handles_filename <- file("stdin")
 
 ###############################################################################
 ## jterator input
 
-### retrieve handles from .JSON files
-handles = get_handles(handles_stream)
+### retrieve handles from .YAML files
+handles = get_handles(handles_filename)
 
 ### read input arguments from .HDF5 files
 input_args = read_input_args(handles)
@@ -54,8 +56,8 @@ if (makePlot) {
     qplot(nuclei_area, geom="histogram", binwidth=500)
 
     #### send ggplot figure to plotly
-    py <- plotly()
-    py$ggplotly()
+    # py <- plotly()
+    # py$ggplotly()
 
 }
 

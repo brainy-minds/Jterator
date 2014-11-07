@@ -1,16 +1,14 @@
 import jterator.api.io.*;
 
-
 fprintf('jt - %s:\n', mfilename) 
 
-handles_stream = input('','s'); %input('','s'); % works only with echo "handles_filename"
-
+handles_filename = input('','s');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
-%%% retrieve handles from .JSON files
-handles = get_handles(handles_stream);
+%%% retrieve handles from .YAML files
+handles = get_handles(handles_filename);
 
 %%% retrieve initial values from handles
 values = read_input_values(handles);
