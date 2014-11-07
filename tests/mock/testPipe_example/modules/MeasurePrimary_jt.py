@@ -2,6 +2,8 @@
 import os
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
+import mpld3 as d3
 from skimage import measure
 from jterator.api.io import *
 
@@ -60,6 +62,10 @@ nuclei_area = [regions[i].area for i in range(nuclei_num)]
 ## make figure ##
 #################
 
+plt.plot(nuclei_area)
+
+### show figure in the browser: yeah!
+# d3.show_d3()
 
 ####################
 ## prepare output ##

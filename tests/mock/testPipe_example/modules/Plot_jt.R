@@ -52,6 +52,17 @@ if (makePlot) {
 
     cat(sprintf("--> Check this out: YAML works with logical input :)\n"))
 
+    cat(sprintf("--> Shabam: now we plot in the brower :)\n"))
+
+    library(plotly)
+
+    ### make ggplot figure
+    qplot(nuclei_area, geom="histogram", binwidth=500)
+
+    #### send ggplot figure to plotly
+    py <- plotly()
+    py$ggplotly()
+
 }
 
 

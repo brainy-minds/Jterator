@@ -1,16 +1,16 @@
-function IdentifyPrimary_jt(handles_filename)
-
 import jterator.api.io.*;
 
 
 fprintf('jt - %s:\n', mfilename) 
+
+handles_stream = input('','s');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
 %%% retrieve handles from .JSON files
-handles = get_handles(handles_filename);
+handles = get_handles(handles_stream);
 
 %%% read input arguments from .HDF5 files
 input_args = read_input_args(handles);
@@ -94,5 +94,3 @@ output_args.Nuclei = PrimaryObjects;
 write_output_args(handles, output_args);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-end
