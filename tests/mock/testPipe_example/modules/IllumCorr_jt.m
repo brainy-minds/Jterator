@@ -53,8 +53,9 @@ CorrImage = 10 .^ CorrImage;
 %%%%%%%%%%%%%%%%%
 
 %%% make figure and save it as pdf
-imagesc(CorrImage);
-saveas(gcf, sprintf('figures/%s', mfilename), 'pdf')
+fig = figure, imagesc(CorrImage);
+set(fig, 'PaperPosition', [0 0 7 7], 'PaperSize', [7 7]);
+saveas(fig, sprintf('figures/%s', mfilename), 'pdf')
 
 %%% send figure to plotly
 % fig2plotly() 
