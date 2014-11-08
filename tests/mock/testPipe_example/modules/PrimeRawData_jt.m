@@ -1,19 +1,22 @@
 import jterator.api.io.*;
+import json.*;
 
-fprintf('jt - %s:\n', mfilename) 
-
+%%% redirect standard output to log file
+fid = fopen(sprintf('../logs/%s.output', mfilename), 'w');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
-%%% "standard" input
+fprintf(fid, sprintf('jt - %s:\n', mfilename));
+
+%%% read "standard" input
 handles_filename = input('','s');
 
 %%% retrieve handles from .YAML files
-handles = get_handles(handles_filename);
+handles = get_handles(handles_filename, fid);
 
 %%% retrieve initial values from handles
-values = read_input_values(handles);
+values = read_input_values(handles, fid);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -62,9 +65,14 @@ output_args.StatsStdImage = StdImage;
 %% jterator output
 
 %%% create .HDF5 file
-build_hdf5(handles);
+build_hdf5(handles, fid);
 
 %%% save loaded data in .HDF5 file
-write_output_args(handles, output_args);
+write_output_args(handles, output_args, fid);
+
+fclose(fid);
+
+%%% write "temporary" pipeline data to standard output as JSON
+fprintf(savejson('', structStats))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

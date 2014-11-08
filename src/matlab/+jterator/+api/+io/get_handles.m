@@ -1,6 +1,6 @@
 %% Reading "handles" from YAML file.
 
-function handles = get_handles(handles_stream)
+function handles = get_handles(handles_stream, fid)
 
     % import jterator.api.json.*;
     import yaml.*;
@@ -8,7 +8,7 @@ function handles = get_handles(handles_stream)
     % Reading handles from YAML.
     handles = ReadYaml(handles_stream);
 
-    fprintf('jt -- %s: loaded ''handles''\n', ...
-            mfilename)
+    fprintf(fid, sprintf('jt -- %s: loaded ''handles''\n', ...
+            mfilename));
 
 end

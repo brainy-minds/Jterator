@@ -1,22 +1,25 @@
 import jterator.api.io.*;
 
 
-fprintf('jt - %s:\n', mfilename) 
+%%% redirect standard output to log file
+fid = fopen(sprintf('../logs/%s.output', mfilename), 'w');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
-%%% "standard" input
+fprintf(fid, sprintf('jt - %s:\n', mfilename));
+
+%%% read "standard" input
 handles_filename = input('','s');
 
 %%% retrieve handles from .YAML files
-handles = get_handles(handles_filename);
+handles = get_handles(handles_filename, fid);
 
 %%% read input arguments from .HDF5 files
-input_args = read_input_args(handles);
+input_args = read_input_args(handles, fid);
 
 %%% check whether input arguments are valid
-input_args = check_input_args(input_args);
+input_args = check_input_args(input_args, fid);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -91,6 +94,8 @@ output_args.Nuclei = PrimaryObjects;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator output
 
-write_output_args(handles, output_args);
+write_output_args(handles, output_args, fid);
+
+fclose(fid);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
