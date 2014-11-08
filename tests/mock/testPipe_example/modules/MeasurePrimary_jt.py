@@ -2,6 +2,7 @@
 import os
 import sys
 import re
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 # import mpld3
@@ -10,16 +11,20 @@ from plotly.graph_objs import *
 from skimage import measure
 from jterator.api.io import *
 
-# from IPython.core.debugger import Tracer
 
 mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
+
+### redirect standard output to log file
+saveout = sys.stdout  # store standard output for later use
+sys.stdout = open('logs/%s.output' % mfilename, 'w')
+
+###############################################################################
+## jterator input
+
 print('jt - %s:' % mfilename)
 
 ### standard input
 handles_stream = sys.stdin
-
-###############################################################################
-## jterator input
 
 ### retrieve handles from .YAML files
 handles = get_handles(handles_stream)
@@ -34,7 +39,7 @@ input_args = check_input_args(input_args)
 
 
 ## ----------------------------------------------------------------------------
-# ------------------------------ module specific ------------------------------
+## ------------------------------ module specific -----------------------------
 
 ####################
 ## input handling ##
@@ -89,13 +94,21 @@ plt.close()
 output_args = dict()
 output_args['Measurements'] = nuclei_area
 
-# ------------------------------ module specific ------------------------------
+output_tmp = dict()
+output_tmp['LabeledSegmentationImage'] = nuclei_label_img.tolist()
+
+## ------------------------------ module specific -----------------------------
 ## ----------------------------------------------------------------------------
 
 
 ###############################################################################
 ## jterator output
 
-write_output_args(handles, output_args)
+### write measurement data to HDF5
+# write_output_args(handles, output_args)
+
+### write "temporary" pipeline data to standard output as JSON
+sys.stdout = saveout
+print json.dumps(output_tmp)
 
 ###############################################################################

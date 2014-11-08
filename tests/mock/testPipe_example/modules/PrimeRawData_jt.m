@@ -2,10 +2,12 @@ import jterator.api.io.*;
 
 fprintf('jt - %s:\n', mfilename) 
 
-handles_filename = input('','s');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
+
+%%% "standard" input
+handles_filename = input('','s');
 
 %%% retrieve handles from .YAML files
 handles = get_handles(handles_filename);
@@ -17,7 +19,7 @@ values = read_input_values(handles);
 
 
 %% ------------------------------------------------------------------------
-% ---------------------------- module specific ----------------------------
+%% ---------------------------- module specific ---------------------------
 
 %%%%%%%%%%%%%%%%%%%%
 %% input handling %%
@@ -52,7 +54,7 @@ output_args.OrigImage = OrigImage;
 output_args.StatsMeanImage = MeanImage;
 output_args.StatsStdImage = StdImage;
 
-% ---------------------------- module specific ----------------------------
+%% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------
 
 

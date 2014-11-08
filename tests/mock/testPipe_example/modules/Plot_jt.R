@@ -1,31 +1,34 @@
 #!/opt/local/bin/Rscript
-
 library(jterator, lib="/Users/Markus/Documents/Jterator/src/r/jterator")
 
 mfilename <- basename(sub("--file=(.*).R", "\\1",
                       grep("--file=.*R", commandArgs(), value=TRUE)))
-cat(sprintf('jt - %s:\n', mfilename))
 
-# ### standard input
-handles_filename <- file("stdin")
+# redirect output to log file
+sink(sprintf('logs/%s.output', mfilename))
 
 ###############################################################################
 ## jterator input
 
+cat(sprintf('jt - %s:\n', mfilename))
+
+### standard input
+handles_filename <- file("stdin")
+
 ### retrieve handles from .YAML files
-handles = get_handles(handles_filename)
+handles <- get_handles(handles_filename)
 
 ### read input arguments from .HDF5 files
-input_args = read_input_args(handles)
+input_args <- read_input_args(handles)
 
 ### check whether input arguments are valid
-input_args = check_input_args(input_args)
+input_args <- check_input_args(input_args)
 
 ###############################################################################
 
 
 ## ----------------------------------------------------------------------------
-# ------------------------------ module specific ------------------------------
+## ------------------------------ module specific -----------------------------
 
 ####################
 ## input handling ##
@@ -70,7 +73,7 @@ if (makePlot) {
 
 output_args = list()
 
-# ------------------------------ module specific ------------------------------
+## ------------------------------ module specific -----------------------------
 ## ----------------------------------------------------------------------------
 
 
@@ -78,5 +81,11 @@ output_args = list()
 ## jterator output
 
 write_output_args(handles, output_args)
+
+### stop writing standard output to file
+sink()
+
+### now we could send data to standard output
+cat('--> writing to standard output again')
 
 ###############################################################################

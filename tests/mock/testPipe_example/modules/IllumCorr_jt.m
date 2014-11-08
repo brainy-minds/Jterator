@@ -3,10 +3,11 @@ import jterator.api.io.*;
 
 fprintf('jt - %s:\n', mfilename) 
 
-handles_filename = input('','s');
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
+
+%%% "standard" input
+handles_filename = input('','s');
 
 %%% retrieve handles from .YAML files
 handles = get_handles(handles_filename);
@@ -21,7 +22,7 @@ input_args = check_input_args(input_args);
 
 
 %% ------------------------------------------------------------------------
-% ---------------------------- module specific ----------------------------
+%% ---------------------------- module specific ---------------------------
 
 %%%%%%%%%%%%%%%%%%%%
 %% input handling %%
@@ -71,7 +72,7 @@ saveas(fig, sprintf('figures/%s', mfilename), 'pdf');
 output_args = struct();
 output_args.CorrImage = CorrImage;
 
-% ---------------------------- module specific ----------------------------
+%% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------
 
 
