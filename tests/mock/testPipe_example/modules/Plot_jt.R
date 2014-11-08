@@ -1,4 +1,5 @@
 #!/opt/local/bin/Rscript
+library(jsonlite)
 library(jterator, lib="/Users/Markus/Documents/Jterator/src/r/jterator")
 
 mfilename <- basename(sub("--file=(.*).R", "\\1",
@@ -73,6 +74,9 @@ if (makePlot) {
 
 output_args = list()
 
+output_tmp <- list()
+output_tmp[['NuclearArea']] <- nuclei_area
+
 ## ------------------------------ module specific -----------------------------
 ## ----------------------------------------------------------------------------
 
@@ -86,6 +90,6 @@ write_output_args(handles, output_args)
 sink()
 
 ### now we could send data to standard output
-cat('--> writing to standard output again')
+toJSON(output_tmp)
 
 ###############################################################################
