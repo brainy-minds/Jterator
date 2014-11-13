@@ -5,9 +5,6 @@ library(jterator, lib="/Users/Markus/Documents/Jterator/src/r/jterator")
 mfilename <- basename(sub("--file=(.*).R", "\\1",
                       grep("--file=.*R", commandArgs(), value=TRUE)))
 
-# redirect output to log file
-sink(sprintf('logs/%s.output', mfilename))
-
 ###############################################################################
 ## jterator input
 
@@ -72,7 +69,7 @@ if (makePlot) {
 ## prepare output ##
 ####################
 
-output_args = list()
+output_args <- list()
 
 output_tmp <- list()
 output_tmp[['NuclearArea']] <- nuclei_area
@@ -86,10 +83,6 @@ output_tmp[['NuclearArea']] <- nuclei_area
 
 write_output_args(handles, output_args)
 
-### stop writing standard output to file
-sink()
-
-### now we could send data to standard output
-toJSON(output_tmp)
+write_output_tmp(handles, output_tmp)
 
 ###############################################################################

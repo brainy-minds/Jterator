@@ -1,5 +1,5 @@
 # full path to HDF5 file
-hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/test.h5
+hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/data/test.data
 
 # module input arguments
 input_keys:
@@ -26,8 +26,8 @@ input_keys:
         class: char
 
     saveFigure:
-        parameter: "Yes"
-        class: char
+        parameter: Yes
+        class: logical
 
 # module output arguments
 output_keys:

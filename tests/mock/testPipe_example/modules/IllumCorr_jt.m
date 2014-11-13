@@ -1,25 +1,22 @@
 import jterator.api.io.*;
 
 
-%%% redirect standard output to log file
-fid = fopen(sprintf('../logs/%s.output', mfilename), 'w');
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
-fprintf(fid, sprintf('jt - %s:\n', mfilename));
+fprintf(sprintf('jt - %s:\n', mfilename));
 
 %%% read "standard" input
 handles_filename = input('','s');
 
 %%% retrieve handles from .YAML files
-handles = get_handles(handles_filename, fid);
+handles = get_handles(handles_filename);
 
 %%% read input arguments from .HDF5 files
-input_args = read_input_args(handles, fid);
+input_args = read_input_args(handles);
 
 %%% check whether input arguments are valid
-input_args = check_input_args(input_args, fid);
+input_args = check_input_args(input_args);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -61,7 +58,7 @@ fig = figure, imagesc(CorrImage);
 
 %%% save figure as PDF file
 set(fig, 'PaperPosition', [0 0 7 7], 'PaperSize', [7 7]);
-saveas(fig, sprintf('figures/%s', mfilename), 'pdf');
+saveas(fig, sprintf('../figures/%s', mfilename), 'pdf');
 
 %%% send figure to plotly
 % fig2plotly() 
@@ -71,9 +68,10 @@ saveas(fig, sprintf('figures/%s', mfilename), 'pdf');
 %% prepare output %%
 %%%%%%%%%%%%%%%%%%%%
 
-%%% structure output arguments for later storage in the .HDF5 file
 output_args = struct();
-output_args.CorrImage = CorrImage;
+
+output_tmp = struct();
+output_tmp.CorrImage = CorrImage;
 
 %% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------
@@ -82,8 +80,7 @@ output_args.CorrImage = CorrImage;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator output
 
-write_output_args(handles, output_args, fid);
-
-fclose(fid);
+write_output_args(handles, output_args);
+write_output_tmp(handles, output_tmp);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

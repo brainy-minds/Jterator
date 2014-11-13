@@ -1,0 +1,8 @@
+For plotting consider the following tools:
+- in R: 
+    - plotly (https://github.com/ropensci/plotly)
+- in Python: 
+    - mpld3 (http://mpld3.github.io/quickstart.html)
+
+D3 seems to be a great general tool and could also be used in R:
+see example http://vis.supstat.com/2012/11/contour-plots-with-d3-and-r/

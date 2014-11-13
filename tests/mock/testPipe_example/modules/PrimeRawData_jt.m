@@ -1,22 +1,21 @@
+#!/usr/bin/Mscript
+
 import jterator.api.io.*;
 import json.*;
-
-%%% redirect standard output to log file
-fid = fopen(sprintf('../logs/%s.output', mfilename), 'w');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
-fprintf(fid, sprintf('jt - %s:\n', mfilename));
+fprintf(sprintf('jt - %s:\n', mfilename));
 
 %%% read "standard" input
-handles_filename = input('','s');
+handles_stream = fopen(0, 'r');
 
 %%% retrieve handles from .YAML files
-handles = get_handles(handles_filename, fid);
+handles = get_handles(handles_stream);
 
 %%% retrieve initial values from handles
-values = read_input_values(handles, fid);
+values = read_input_values(handles);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -51,11 +50,12 @@ StdImage = double(structStats.stat_values.std);
 %% prepare output %%
 %%%%%%%%%%%%%%%%%%%%
 
-%%% structure output arguments for later storage in the .HDF5 file
 output_args = struct();
-output_args.OrigImage = OrigImage;
-output_args.StatsMeanImage = MeanImage;
-output_args.StatsStdImage = StdImage;
+
+output_tmp = struct();
+output_tmp.OrigImage = OrigImage;
+output_tmp.StatsMeanImage = MeanImage;
+output_tmp.StatsStdImage = StdImage;
 
 %% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------
@@ -65,14 +65,10 @@ output_args.StatsStdImage = StdImage;
 %% jterator output
 
 %%% create .HDF5 file
-build_hdf5(handles, fid);
+build_hdf5(handles);
 
 %%% save loaded data in .HDF5 file
-write_output_args(handles, output_args, fid);
-
-fclose(fid);
-
-%%% write "temporary" pipeline data to standard output as JSON
-fprintf(savejson('', structStats))
+write_output_args(handles, output_args);
+write_output_tmp(handles, output_tmp);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

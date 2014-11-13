@@ -1,7 +1,7 @@
 %% Reading input arguments from HDF5 file
 %% using the location specified in "handles".
 
-function input_args = read_input_args(handles, fid)
+function input_args = read_input_args(handles)
 
     import jterator.api.h5.*;
     import jterator.api.etc.*;
@@ -17,7 +17,7 @@ function input_args = read_input_args(handles, fid)
 
         if isfield(field, 'hdf5_location')
             input_args.(key).variable = h5varget(hdf5_filename, field.hdf5_location);
-            fprintf(fid, sprintf('jt -- %s: loaded dataset ''%s'' from HDF5 group: "%s"\n', ...
+            fprintf(sprintf('jt -- %s: loaded dataset ''%s'' from HDF5 group: "%s"\n', ...
                     mfilename, key, field.hdf5_location))
         elseif isfield(field, 'parameter')
             input_args.(key).variable = field.parameter;
@@ -31,10 +31,10 @@ function input_args = read_input_args(handles, fid)
             end
 
             if ischar(field.parameter)
-                fprintf(fid, sprintf('jt -- %s: parameter ''%s'': "%s"\n', ...
+                fprintf(sprintf('jt -- %s: parameter ''%s'': "%s"\n', ...
                         mfilename, key, input_args.(key).variable))
             else
-                fprintf(fid, sprintf('jt -- %s: parameter ''%s'': %s\n', ...
+                fprintf(sprintf('jt -- %s: parameter ''%s'': %s\n', ...
                         mfilename, key, vec2str(input_args.(key).variable)))
             end
         else

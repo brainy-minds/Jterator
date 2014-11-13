@@ -1,25 +1,22 @@
 import jterator.api.io.*;
 
 
-%%% redirect standard output to log file
-fid = fopen(sprintf('../logs/%s.output', mfilename), 'w');
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
-fprintf(fid, sprintf('jt - %s:\n', mfilename));
+fprintf(sprintf('jt - %s:\n', mfilename));
 
 %%% read "standard" input
 handles_filename = input('','s');
 
 %%% retrieve handles from .YAML files
-handles = get_handles(handles_filename, fid);
+handles = get_handles(handles_filename);
 
 %%% read input arguments from .HDF5 files
-input_args = read_input_args(handles, fid);
+input_args = read_input_args(handles);
 
 %%% check whether input arguments are valid
-input_args = check_input_args(input_args, fid);
+input_args = check_input_args(input_args);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -69,13 +66,11 @@ PrimaryObjects = bwlabel(FillImage);
 %% make figure %%
 %%%%%%%%%%%%%%%%%
 
-figure, imagesc(PrimaryObjects)
-
 %%% save figure als PDF
-if strcmpi(saveFigure, 'Yes')
-    strFigureName = sprintf('Figure_Module_%s',mfilename);
-    strPDFPath = strrep(os.path.dirname(which(mfilename)), 'modules', 'figures');
-    gcf2pdf(strPDFPath, strFigureName);
+if saveFigure
+    fig = figure, imagesc(PrimaryObjects);
+    set(fig, 'PaperPosition', [0 0 7 7], 'PaperSize', [7 7]);
+    saveas(fig, sprintf('../figures/%s', mfilename), 'pdf');
 end
 
 
@@ -85,7 +80,9 @@ end
 
 %%% structure output arguments for later storage in the .HDF5 file
 output_args = struct();
-output_args.Nuclei = PrimaryObjects;
+
+output_tmp = struct();
+output_tmp.Nuclei = PrimaryObjects;
 
 %% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------
@@ -94,8 +91,7 @@ output_args.Nuclei = PrimaryObjects;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator output
 
-write_output_args(handles, output_args, fid);
-
-fclose(fid);
+write_output_args(handles, output_args);
+write_output_tmp(handles, output_tmp;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

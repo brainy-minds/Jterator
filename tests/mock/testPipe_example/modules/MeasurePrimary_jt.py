@@ -14,10 +14,6 @@ from jterator.api.io import *
 
 mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
 
-### redirect standard output to log file
-saveout = sys.stdout  # store standard output for later use
-sys.stdout = open('logs/%s.output' % mfilename, 'w')
-
 ###############################################################################
 ## jterator input
 
@@ -95,7 +91,7 @@ output_args = dict()
 output_args['Measurements'] = nuclei_area
 
 output_tmp = dict()
-output_tmp['LabeledSegmentationImage'] = nuclei_label_img.tolist()
+output_tmp['LabeledSegmentationImage'] = nuclei_label_img
 
 ## ------------------------------ module specific -----------------------------
 ## ----------------------------------------------------------------------------
@@ -105,10 +101,9 @@ output_tmp['LabeledSegmentationImage'] = nuclei_label_img.tolist()
 ## jterator output
 
 ### write measurement data to HDF5
-# write_output_args(handles, output_args)
+write_output_args(handles, output_args)
 
-### write "temporary" pipeline data to standard output as JSON
-sys.stdout = saveout
-print json.dumps(output_tmp)
+### write temporary pipeline data to HDF5
+write_output_tmp(handles, output_tmp)
 
 ###############################################################################

@@ -119,6 +119,24 @@ write_output_args <- function(handles, output_args) {
     }
 }
 
+#' @rdname Writing output arguments to HDF5 file using the location specified in "handles".
+write_output_tmp <- function(handles, output_tmp) {
+
+    mfilename <- "write_output_tmp"
+
+    hdf5_filename <- sub('/data/(.*)\\.data', '/tmp/\\1.tmp', handles$hdf5_filename)
+
+    for (key in names(output_tmp)) {
+      hdf5_location <- handles$output_keys[[key]]$hdf5_location
+      h5createDataset(hdf5_filename, hdf5_location, 
+                      dims = dim(output_tmp[[key]]),
+                      storage.mode = storage.mode(output_tmp[[key]]))
+      h5write(output_tmp[[key]], hdf5_filename, hdf5_location)
+      cat(sprintf("jt -- %s: wrote tmp dataset '%s' to HDF5 group: \"%s\"\n",
+                mfilename, key, field$hdf5_location))
+    }
+}
+
 
 #' @rdname Create HDF5 file.
 build_hdf5 <- function(handles) {
@@ -127,6 +145,11 @@ build_hdf5 <- function(handles) {
 
     hdf5_filename <- handles$hdf5_filename;
     file_created <- h5createFile(hdf5_filename)
-    cat(sprintf("jt -- %s: created HDF5 file: \"%s\"\n",
+    cat(sprintf("jt -- %s: created HDF5 file for measurement data: \"%s\"\n",
+                mfilename, hdf5_filename))
+
+    hdf5_filename <- sub('/data/(.*)\\.data', '/tmp/\\1.tmp', handles$hdf5_filename)
+    file_created <- h5createFile(hdf5_filename)
+    cat(sprintf("jt -- %s: created HDF5 file for temporary pipe data: \"%s\"\n",
                 mfilename, hdf5_filename))
 }

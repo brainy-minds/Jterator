@@ -1,6 +1,6 @@
 %% Checks input arguments for correct class and attributes.
 
-function checked_input_args = check_input_args(input_args, fid)
+function checked_input_args = check_input_args(input_args)
 
     names = fieldnames(input_args); 
     for i = 1:length(names)
@@ -9,7 +9,7 @@ function checked_input_args = check_input_args(input_args, fid)
                            arg.class, ...
                            arg.attributes, ...
                            names{i});
-        fprintf(fid, sprintf('jt -- %s: argument ''%s'' passed check\n', ...
+        fprintf(sprintf('jt -- %s: argument ''%s'' passed check\n', ...
                     mfilename, names{i}));
     end
 

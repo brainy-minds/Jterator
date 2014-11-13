@@ -56,3 +56,5 @@ tests/mock/foo_example/logs/*
 tests/mock/testPipe_example/logs/*
 
 *.h5
+*.data
+*.tmp
