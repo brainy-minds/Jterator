@@ -10,11 +10,11 @@ mfilename <- basename(sub("--file=(.*).R", "\\1",
 
 cat(sprintf('jt - %s:\n', mfilename))
 
-### standard input
-handles_filename <- file("stdin")
+### read YAML from standard input
+handles_stream <- file("stdin")
 
 ### retrieve handles from .YAML files
-handles <- get_handles(handles_filename)
+handles <- get_handles(handles_stream)
 
 ### read input arguments from .HDF5 files
 input_args <- read_input_args(handles)
@@ -82,7 +82,6 @@ output_tmp[['NuclearArea']] <- nuclei_area
 ## jterator output
 
 write_output_args(handles, output_args)
-
 write_output_tmp(handles, output_tmp)
 
 ###############################################################################

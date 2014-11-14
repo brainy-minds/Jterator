@@ -4,7 +4,7 @@ import jterator.api.io.*;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
-fprintf(sprintf('jt - %s:\n', mfilename));
+fprintf('jt - %s:\n', mfilename);
 
 %%% read "standard" input
 handles_filename = input('','s');

@@ -6,23 +6,27 @@ input_keys:
 
     OrigImage: 
         hdf5_location: /Output/PrimeRawData/OrigImage
-        class: double
-        attributes: positive
+        class: "Array{Float64,2}"
 
     StatsMeanImage: 
         hdf5_location: /Output/PrimeRawData/StatsMeanImage
-        class: double
-        attributes: positive
+        class: "Array{Float64,2}"
 
     StatsStdImage: 
         hdf5_location: /Output/PrimeRawData/StatsStdImage
-        class: double
-        attributes: positive
+        class: "Array{Float64,2}"
+
+    MakePlot:
+        parameter: Yes
+        class: Bool
+
+    TestKey:
+        parameter: "/just/an/example/directory"
+        class: ASCIIString
 
 # module output arguments
 output_keys:
 
     CorrImage:
         hdf5_location: /Output/IllumCorr/CorrImage
-        class: double
-        attributes: positive
+        class: "Array{Float64,2}"

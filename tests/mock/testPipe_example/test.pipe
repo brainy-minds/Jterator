@@ -3,13 +3,8 @@
 # The working directory is by default the directory where the .pipe file 
 # is located. So you can provide relative paths in your pipeline description.
 #
-# To run modules from the command line individually use the following commands:
-# - echo [handles_filename] | matlab -nodisplay -r "run('[module_filename]')"
-#   -> did get Matlab accept YAML file as standard input
-#   -> pull path to handles file has be provided
-#   => stupid Matlab!!!
-# - cat [handles_filename] | ipython [module_filename]
-# - cat [handles_filename] | Rscript [module_filename]
+# To run modules from the command line individually use the following command:
+# - cat [handles_filename] | [module_filename]
 # =============================================================================
 
 # Define a trivial Jterator pipeline description
@@ -17,7 +12,7 @@ name: test
 version: 0.0.1
 
 # Define HDF5 filename for data storage
-data: data/test.h5
+data: data/test.data
 
 # Define modules (actual code) and handles (YAML files)
 pipeline:
@@ -41,6 +36,10 @@ pipeline:
   - name: Plot
     module: modules/Plot_jt.R
     handles: handles/Plot.handles
+
+  - name: Whatever
+    module: modules/Whatever_jt.jl
+    handles: handles/Whatever.handles
 
 
 # # Apply this tests to check module dependencies on expected parameters like 
