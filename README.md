@@ -25,15 +25,15 @@ External libraries
 OSX:
 install via homebrew (https://github.com/Homebrew/homebrew-science)
 
-'''bash
+```bash
 brew tap homebrew/science; brew install hdf5
-'''
+```
 
 Linux:
 
-'''bash
+```bash
 apt-get -u install hdf5-tools
-'''
+```
 
 Pipeline
 ========
