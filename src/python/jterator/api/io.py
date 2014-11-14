@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-
 import sys
 import re
 import yaml
@@ -51,7 +50,9 @@ def read_input_args(handles):
         input_args[key] = dict()
 
         if 'hdf5_location' in field:
-            input_args[key]['variable'] = hdf5_root[field['hdf5_location']]
+            # note: we index into the dataset to retrieve its content,
+            # otherwise it would be loaded as hdf5 object
+            input_args[key]['variable'] = hdf5_root[field['hdf5_location']][()]
             print('jt -- %s: loaded dataset \'%s\' from HDF5 group: "%s"'
                   % (mfilename, key, field['hdf5_location']))
         elif 'parameter' in field:
@@ -67,6 +68,8 @@ def read_input_args(handles):
 
         if 'attributes' in field:
             input_args[key]['attributes'] = field['attributes']
+
+    h5.File.close(hdf5_root)
 
     return input_args
 
@@ -119,10 +122,11 @@ def write_output_args(handles, output_args):
 
     for key in output_args:
         hdf5_location = handles['output_keys'][key]['hdf5_location']
-        # del hdf5_root[hdf5_location]
         hdf5_root.create_dataset(hdf5_location, data=output_args[key])
         print('jt -- %s: wrote dataset \'%s\' to HDF5 group: "%s"'
               % (mfilename, key, hdf5_location))
+
+    h5.File.close(hdf5_root)
 
 
 def write_output_tmp(handles, output_tmp):
@@ -138,10 +142,11 @@ def write_output_tmp(handles, output_tmp):
 
     for key in output_tmp:
         hdf5_location = handles['output_keys'][key]['hdf5_location']
-        # del hdf5_root[hdf5_location]
         hdf5_root.create_dataset(hdf5_location, data=output_tmp[key])
         print('jt -- %s: wrote tmp dataset \'%s\' to HDF5 group: "%s"'
               % (mfilename, key, hdf5_location))
+
+    h5.File.close(hdf5_root)
 
 
 def build_hdf5(handles):
