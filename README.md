@@ -4,80 +4,100 @@ Jterator
 [![Build Status](https://travis-ci.org/ewiger/Jterator.svg?branch=master)](https://travis-ci.org/ewiger/Jterator)
 
 
-A minimalistic pipeline engine for scientific computing. It is designed to be flexible, but uncomplicated enough, so that no GUI is required to work with it.
+A minimalistic pipeline engine for scientific computing. It is designed to be flexible, but at the same time handy to work with. Jterator is a command-line tool for Unix systems. It comes without a GUI, but rather makes use of easily readable and modifiable YAML files. Figures can either be saved as PDF files or plotted in the browser using d3 technology.
 
-* use simple format like JSON for basic parametrization whenever possible
-** don't be afraid to keep your input settings on the disk
-** don't allow passthrough approach of one module to dynamically influence the next one, using JSON
-* for performance heavy IO use HDF5
-** all the shared data is syncronized via HDF5, not JSON
-** a good example are big RAW image data stored as n-dimensional HDF5 matrices
-* UNIX pipeline is a one great idea, but it is mostly restricted to text processing
 
+Languages
+---------
+
+Jterator can pipe custom code in different languages. APIs for input/output handling are currently implemented in the following languages: 
+* Matlab
+* R
+* Python
+* Julia
+
+
+External libraries
+------------------
+
+* HDF5
+
+OSX:
+install via homebrew (https://github.com/Homebrew/homebrew-science)
+
+'''bash
+brew tap homebrew/science; brew install hdf5
+'''
+
+Linux:
+
+'''bash
+apt-get -u install hdf5-tools
+'''
+
+Pipeline
+========
 
 Modules
 -------
 
+Think of your pipeline as a sequence of connected modules (a linked list). 
+The sequence and structure of your pipeline is defined in a YAML pipeline descriptor file. The input/output settings for each module are provided by additional YAML handles descriptor files. Each module represents a program that reads YAML from an STDIN file descriptor. Outputs are stored in two separate HDF5 files: measurement data, which will be kept, and temporary pipeline data, which will be ultimately discarded.
 
-Think of your pipeline as a sequence of connected modules (a linked list). Each module is a program that get and reads JSON from on STDIN file descriptor.
-Such JSON contains all the input settings required by the module.
 
-Getting started 
----------------
+Project layout 
+--------------
 
 Each pipeline has the following layout on the disk:
 
-* **handles** folder contains all the JSON handles files, the are passed as STDIN to *modules*.
-* **modules** folder contains all the executable plus code for programs corresponding
-* **logs** folder contains all the output from STDOU and STERR streams, obtain for each executable that has been executed.
-* **data** folder contains all the heavy data output like HDF5, etc. These data are shared between modules. 
+* **handles** folder contains all the YAML handles files, they are passed as STDIN to *modules*.
+* **modules** folder contains all the executable plus code for programs.
+* **logs** folder contains all the output from STDOU and STERR streams, obtained for each executable that has been executed.
+* **data** folder contains all the data output in form of HDF5 files. These data are shared between modules. 
+* **tmp** folder contains the temporary pipeline data that is shared between modules. These files are killed after successful completion of the pipeline.
+* **figures** folder contains the PDFs of the plots (optional).
 
-Jterator allows only very simplistic type of workflow -  *pipeline* (somewhat similar to a UNIX-world pipeline). Description of such workflow must be put sibling to the folder structure described about, i.e. inside the Jterator pipeline (project) folder. Recognizable file name must be one of **['JteratorPipe.json', 'jt.pipe']**. Description is a JSON format. 
+Jterator allows only very simplistic type of workflow -  *pipeline* (somewhat similar to a UNIX-world pipeline). Description of such workflow must be put sibling to the folder structure described about, i.e. inside the Jterator pipeline (project) folder. Recognizable file name must be one of **'[ProjectName].pipe'**. Description is a YAML format. 
 
-```json
-{	
-	"name": "Foo",
-	"version": "0.0.1",	
-	"pipeline": [
-		{
-			"name": "Bar",
-			"module": "bar",
-			"handles": "handles/some_bar"
-		}, {
-			"name": "Baz",
-			"module": "baz",
-			"handles": "handles/some_baz"
-		}
-	],
-	"tests": [
-		{
-			"type": "hdf5_dependency",
-			"module_name": "baz",
-			"input": ["bar"],
-			"output": ["baz"]
-		}
-	]
-}
 
-```
+Getting started
+---------------
 
-To *run* your first pipeline, do:
+To *download* Jterator clone this repository:
 
 ```bash
-cd /my/first/jterator/pipeline/folder && jt run
+git clone git@github.com:HackerMD/Jterator.git
+```
+
+To *compile* Mscript - a custom tool for transforming Matlab scripts into real executables -, do (not yet implemented):
+
+```bash
+cd your/copy/of/Jterator/repo/Mscript make
+```
+
+To *initialize* a project, do (not yet implemented):
+
+```bash
+jt init /my/jterator/pipeline/folder
+```
+
+This will create your project folder, which will then already have the correct folder layout and will contain skeletons for YAML descriptor files and modules. It will also provide you with the required APIs.
+Now you will have to place your custom code into the module skeletons and define the pipeline in the .pipe file as well as input/output arguments in the corresponding .handles files. Shabam! You are ready to go...
+
+To *run* your pipeline, do:
+
+```bash
+cd /my/jterator/pipeline/folder && jt run
 ```
 
 
-
-Developing new modules
-======================
-
-This is a small walk-through on how to develop a new module for *Jterator*. Each module as to follow a particular convention of processing input  parameters. It can be written in virtually any programming language as long as such language can provide tools for working with *JSON* and *HDF5* data formats.
 
 Developing Jterator
 ===================
 
-Latest code is available at https://github.com/ewiger/Jterator
+Modules can be written in virtually any programming language as long as such language can provide tools for working with *YAML* and *HDF5* data formats.
+You are welcome to further extent the list of languages by writing additional APIs.
+
 
 Nose tests
 ----------
@@ -88,12 +108,7 @@ We use nose framework to achieve code coverage with unit tests. In order to run 
 cd tests && nosetests
 ```
 
-Installation
-============
+To do
+=====
 
-MacOS X
--------
-
-install HDF5 via homebrew:
-$ brew tap homebrew/science
-$ brew install hdf5
+Package management for APIs in different languages.

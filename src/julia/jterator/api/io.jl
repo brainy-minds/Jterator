@@ -1,3 +1,8 @@
+## This could also be a module, which could be made available to Julia by
+## adding the commands to the ~/.juliarc.jl file:
+## The variable LOAD_PATH should do the job, 
+## but I haven't yet figured out how...
+
 import YAML
 import HDF5
 
@@ -13,22 +18,6 @@ function get_handles(handles_stream)
     @printf("jt -- %s: loaded handles\n", mfilename)
 
     return handles
-
-end
-
-
-function read_input_values(handles)
-    ## Reading initial values from "handles".
-
-    mfilename = "read_input_values"
-
-    values = Dict()
-    for key in keys(handles["input_keys"])
-        values[key] = handles["input_keys"][key]["value"]
-        @printf("jt -- %s: value '%s': \"%s\"\n", mfilename, key, values[key])
-    end
-
-    return values
 
 end
 
@@ -136,8 +125,9 @@ function write_output_tmp(handles, output_tmp)
 
     mfilename = "write_output_tmp"
 
-    hdf5_filename = re.sub("/data/(.*)\.data$", "/tmp/\\1.tmp",
-                           handles["hdf5_filename"])
+    orig_substr = match(r"/data/(.*)\.data", hdf5_filename).captures[1]
+    hdf5_filename = replace(hdf5_filename, r"/data/(.*)\.data$", 
+                            @sprintf("/tmp/%s.tmp", orig_substr))
     hdf5_root = HDF5.h5open(hdf5_filename, "r+")
 
     for key in keys(output_tmp)
@@ -159,17 +149,14 @@ function build_hdf5(handles)
 
     hdf5_filename = handles["hdf5_filename"]
     HDF5.h5open(hdf5_filename, "w")
-    @printf("jt -- %s: created HDF5 file for measurement data: '%s': \"%s\"\n",
+    @printf("jt -- %s: created HDF5 file for measurement data: \"%s\"\n",
           mfilename, hdf5_filename)
 
     orig_substr = match(r"/data/(.*)\.data", hdf5_filename).captures[1]
     hdf5_filename = replace(hdf5_filename, r"/data/(.*)\.data$", 
                             @sprintf("/tmp/%s.tmp", orig_substr))
     HDF5.h5open(hdf5_filename, "w")
-    @printf("jt -- %s: created HDF5 file for temporary pipe data: '%s': \"%s\"\n",
+    @printf("jt -- %s: created HDF5 file for temporary pipe data: \"%s\"\n",
             mfilename, hdf5_filename)
 
 end
-
-
-

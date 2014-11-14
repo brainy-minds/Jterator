@@ -1,0 +1,16 @@
+# full path to HDF5 file
+hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/data/test.data
+
+# module input arguments
+input_keys:
+
+    InputVar1: 
+        hdf5_location: /Output/myPreviousModule/OutputVar
+        class: array
+
+    InputVar2:
+        parameter: Yes
+        class: logical
+
+# module output arguments
+output_keys:

@@ -1,0 +1,24 @@
+# full path to HDF5 file
+hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/data/test.data
+
+# module input arguments
+input_keys:
+
+    InputVar1: 
+        hdf5_location: /Output/myPreviousModule/OutputVar1
+        class: "Array{Float64,2}"
+
+    InputVar2:
+        parameter: Yes
+        class: Bool
+
+    InputVar3:
+        parameter: /just/an/example/directory
+        class: ASCIIString
+
+# module output arguments
+output_keys:
+
+    CorrImage:
+        hdf5_location: /Output/myCurrentModule/OutputVar
+        class: "Array{Float64,2}"

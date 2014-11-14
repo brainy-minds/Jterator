@@ -5,16 +5,16 @@ hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/data
 input_keys:
 
     ImageDirectory: 
-        value: /Users/Markus/shares/ethz-share4/Data/Users/Markus/Multiplexing/140730MPcycle/140730MPcycle2/TIFF
+        Parameter: /Users/Markus/shares/ethz-share4/Data/Users/Markus/Multiplexing/140730MPcycle/140730MPcycle2/TIFF
 
     ImageFilename:
-        value: 140730MPcycle2_B02_T0001F001L01A01Z01C01.png
+        Parameter: 140730MPcycle2_B02_T0001F001L01A01Z01C01.png
 
     StatsDirectory:
-        value: /Users/Markus/shares/ethz-share4/Data/Users/Markus/Multiplexing/140730MPcycle/140730MPcycle2/BATCH
+        Parameter: /Users/Markus/shares/ethz-share4/Data/Users/Markus/Multiplexing/140730MPcycle/140730MPcycle2/BATCH
 
     StatsFilename:
-        value: Measurements_batch_illcor_channel001_zstack000.mat
+        Parameter: Measurements_batch_illcor_channel001_zstack000.mat
 
 # module output arguments
 output_keys:

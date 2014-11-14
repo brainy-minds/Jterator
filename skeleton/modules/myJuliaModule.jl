@@ -1,6 +1,6 @@
 #!/usr/bin/julia
 
-importall jterator
+include("/Users/Markus/Documents/Jterator/src/julia/jterator/src/io.jl")
 
 mfilename = match(r"([^/]+)\.jl$", @__FILE__()).captures[1]
 
@@ -49,7 +49,6 @@ input_args = check_input_args(input_args)
 output_args = Dict()
 output_tmp = Dict()
 
-
 ## ------------------------------ module specific -----------------------------
 ## ----------------------------------------------------------------------------
 
@@ -57,6 +56,7 @@ output_tmp = Dict()
 ###############################################################################
 ## jterator output
 
+### write output data to HDF5
 write_output_args(handles, output_args)
 write_output_tmp(handles, output_tmp)
 

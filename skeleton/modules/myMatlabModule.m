@@ -1,7 +1,7 @@
 #!/usr/bin/Mscript
 
 import jterator.api.io.*;
-import json.*;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
@@ -9,10 +9,10 @@ import json.*;
 fprintf(sprintf('jt - %s:\n', mfilename));
 
 %%% read "standard" input
-handles_stream = fopen(0, 'r');
+handles_filename = input('','s');
 
 %%% retrieve handles from .YAML files
-handles = get_handles(handles_stream);
+handles = get_handles(handles_filename);
 
 %%% read input arguments from .HDF5 files
 input_args = read_input_args(handles);
@@ -26,27 +26,20 @@ input_args = check_input_args(input_args);
 %% ------------------------------------------------------------------------
 %% ---------------------------- module specific ---------------------------
 
+
 %%%%%%%%%%%%%%%%%%%%
 %% input handling %%
 %%%%%%%%%%%%%%%%%%%%
-
-ImagePath = values.ImageDirectory;
-ImageFilename = values.ImageFilename;
-StatsPath = values.StatsDirectory;
-StatsFilename = values.StatsFilename;
 
 
 %%%%%%%%%%%%%%%%
 %% processing %%
 %%%%%%%%%%%%%%%%
 
-%%% load primary raw data from disk (in this test scenario this is an image)
-% for original intensity images
-OrigImage = double(imread(fullfile(ImagePath, ImageFilename)));
-% for illumination correction statistics
-structStats = load(fullfile(StatsPath, StatsFilename));
-MeanImage = double(structStats.stat_values.mean);
-StdImage = double(structStats.stat_values.std);
+
+%%%%%%%%%%%%%%%%%
+%% make figure %%
+%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%
@@ -54,11 +47,7 @@ StdImage = double(structStats.stat_values.std);
 %%%%%%%%%%%%%%%%%%%%
 
 output_args = struct();
-
 output_tmp = struct();
-output_tmp.OrigImage = OrigImage;
-output_tmp.StatsMeanImage = MeanImage;
-output_tmp.StatsStdImage = StdImage;
 
 %% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------
@@ -67,11 +56,8 @@ output_tmp.StatsStdImage = StdImage;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator output
 
-%%% create .HDF5 file
-build_hdf5(handles);
-
-%%% save loaded data in .HDF5 file
+%%% write output data to HDF5
 write_output_args(handles, output_args);
-write_output_tmp(handles, output_tmp);
+write_output_tmp(handles, output_tmp;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
