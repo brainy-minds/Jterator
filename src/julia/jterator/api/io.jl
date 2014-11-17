@@ -1,7 +1,9 @@
-## This could also be a module, which could be made available to Julia by
-## adding the commands to the ~/.juliarc.jl file:
-## The variable LOAD_PATH should do the job, 
+## What's the best way of making this module available to Julia?
+## Currently, I'm including it in the ~/.juliarc.jl.
+## There has to be a better way, though. The variable LOAD_PATH should do the job, 
 ## but I haven't yet figured out how...
+
+module jterator
 
 import YAML
 import HDF5
@@ -158,5 +160,10 @@ function build_hdf5(handles)
     HDF5.h5open(hdf5_filename, "w")
     @printf("jt -- %s: created HDF5 file for temporary pipe data: \"%s\"\n",
             mfilename, hdf5_filename)
+
+end
+
+export get_handles, read_input_args, check_input_args, write_output_args, 
+write_output_tmp, build_hdf5
 
 end

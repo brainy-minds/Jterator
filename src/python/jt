@@ -102,4 +102,3 @@ if __name__ == '__main__':
         if type(error) is MissingCliArgs:
             print 'Missing one of the required command-line arguments.'
         print 'Error message: "%s"' % str(error)
-

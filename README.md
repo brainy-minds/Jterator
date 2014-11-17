@@ -52,7 +52,7 @@ Each pipeline has the following layout on the disk:
 
 * **handles** folder contains all the YAML handles files, they are passed as STDIN to *modules*.
 * **modules** folder contains all the executable plus code for programs.
-* **logs** folder contains all the output from STDOU and STERR streams, obtained for each executable that has been executed.
+* **logs** folder contains all the output from STDOUT and STERR streams, obtained for each executable that has been executed.
 * **data** folder contains all the data output in form of HDF5 files. These data are shared between modules. 
 * **tmp** folder contains the temporary pipeline data that is shared between modules. These files are killed after successful completion of the pipeline.
 * **figures** folder contains the PDFs of the plots (optional).

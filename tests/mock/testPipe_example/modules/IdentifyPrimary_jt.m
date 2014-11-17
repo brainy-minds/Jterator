@@ -1,5 +1,6 @@
-import jterator.api.io.*;
+#!/usr/local/bin/mscript
 
+import jterator.api.io.*;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input

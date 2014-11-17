@@ -1,7 +1,6 @@
-#!/usr/bin/Mscript
+#!/usr/local/bin/mscript
 
 import jterator.api.io.*;
-import json.*;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
@@ -9,7 +8,7 @@ import json.*;
 fprintf(sprintf('jt - %s:\n', mfilename));
 
 %%% read "standard" input
-handles_stream = fopen(0, 'r');
+handles_stream = input('', 's')
 
 %%% retrieve handles from .YAML files
 handles = get_handles(handles_stream);
@@ -30,10 +29,10 @@ input_args = check_input_args(input_args);
 %% input handling %%
 %%%%%%%%%%%%%%%%%%%%
 
-ImagePath = values.ImageDirectory;
-ImageFilename = values.ImageFilename;
-StatsPath = values.StatsDirectory;
-StatsFilename = values.StatsFilename;
+ImagePath = input_args.ImageDirectory;
+ImageFilename = input_args.ImageFilename;
+StatsPath = input_args.StatsDirectory;
+StatsFilename = input_args.StatsFilename;
 
 
 %%%%%%%%%%%%%%%%
