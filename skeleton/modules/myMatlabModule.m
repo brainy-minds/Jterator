@@ -1,5 +1,3 @@
-#!/usr/local/bin/mscript
-
 import jterator.api.io.*;
 
 
@@ -9,16 +7,16 @@ import jterator.api.io.*;
 fprintf(sprintf('jt - %s:\n', mfilename));
 
 %%% read "standard" input
-handles_filename = input('','s');
+handles_stream = input('','s'); % use pipe_yaml_json.py!!!
 
 %%% retrieve handles from .YAML files
-handles = get_handles(handles_filename);
+handles = gethandles(handles_stream);
 
 %%% read input arguments from .HDF5 files
-input_args = read_input_args(handles);
+input_args = readinputargs(handles);
 
 %%% check whether input arguments are valid
-input_args = check_input_args(input_args);
+input_args = checkinputargs(input_args);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -57,7 +55,7 @@ output_tmp = struct();
 %% jterator output
 
 %%% write output data to HDF5
-write_output_args(handles, output_args);
-write_output_tmp(handles, output_tmp;
+writeoutputargs(handles, output_args);
+writeoutputtmp(handles, output_tmp;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

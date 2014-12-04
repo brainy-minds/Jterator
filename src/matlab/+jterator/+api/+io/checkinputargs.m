@@ -1,6 +1,6 @@
 %% Checks input arguments for correct class and attributes.
 
-function checked_input_args = check_input_args(input_args)
+function checked_input_args = checkinputargs(input_args)
 
     names = fieldnames(input_args); 
     for i = 1:length(names)

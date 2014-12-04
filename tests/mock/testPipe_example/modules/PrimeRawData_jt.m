@@ -1,5 +1,3 @@
-#!/usr/local/bin/mscript
-
 import jterator.api.io.*;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -11,13 +9,13 @@ fprintf(sprintf('jt - %s:\n', mfilename));
 handles_stream = input('', 's')
 
 %%% retrieve handles from .YAML files
-handles = get_handles(handles_stream);
+handles = gethandles(handles_stream);
 
 %%% read input arguments from .HDF5 files
-input_args = read_input_args(handles);
+input_args = readinputargs(handles);
 
 %%% check whether input arguments are valid
-input_args = check_input_args(input_args);
+input_args = checkinputargs(input_args);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -67,10 +65,10 @@ output_tmp.StatsStdImage = StdImage;
 %% jterator output
 
 %%% create .HDF5 file
-build_hdf5(handles);
+buildhdf5(handles);
 
 %%% save loaded data in .HDF5 file
-write_output_args(handles, output_args);
-write_output_tmp(handles, output_tmp);
+writeoutputargs(handles, output_args);
+writeoutputtmp(handles, output_tmp);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

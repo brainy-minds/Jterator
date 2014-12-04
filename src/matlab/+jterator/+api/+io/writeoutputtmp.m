@@ -1,7 +1,7 @@
 %% Writing output arguments to HDF5 file
 %% using the location specified in "handles".
 
-function write_output_tmp(handles, output_args)
+function writeoutputtmp(handles, output_args)
 
     import jterator.api.h5.*;
     

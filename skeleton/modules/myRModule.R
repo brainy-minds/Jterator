@@ -1,6 +1,6 @@
 #!/opt/local/bin/Rscript
 
-library(jterator, lib="/Users/Markus/Documents/Jterator/src/r/jterator")
+include("/Users/Markus/Documents/Jterator/src/r/jterator/api/io.R")
 
 mfilename <- basename(sub("--file=(.*).R", "\\1",
                       grep("--file=.*R", commandArgs(), value=TRUE)))
@@ -14,13 +14,13 @@ cat(sprintf('jt - %s:\n', mfilename))
 handles_stream <- file("stdin")
 
 ### retrieve handles from .YAML files
-handles <- get_handles(handles_stream)
+handles <- gethandles(handles_stream)
 
 ### read input arguments from .HDF5 files
-input_args <- read_input_args(handles)
+input_args <- readinputargs(handles)
 
 ### check whether input arguments are valid
-input_args <- check_input_args(input_args)
+input_args <- checkinputargs(input_args)
 
 ###############################################################################
 
@@ -58,7 +58,7 @@ output_tmp <- list()
 ## jterator output
 
 ### write output data to HDF5
-write_output_args(handles, output_args)
-write_output_tmp(handles, output_tmp)
+writeoutputargs(handles, output_args)
+writeoutputtmp(handles, output_tmp)
 
 ###############################################################################

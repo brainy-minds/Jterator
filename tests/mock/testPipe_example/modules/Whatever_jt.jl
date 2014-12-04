@@ -13,13 +13,13 @@ mfilename = match(r"([^/]+)\.jl$", @__FILE__()).captures[1]
 handles_stream = readall(STDIN)
 
 ### retrieve handles from .YAML files
-handles = get_handles(handles_stream)
+handles = gethandles(handles_stream)
 
 ### read input arguments from .HDF5 files
-input_args = read_input_args(handles)
+input_args = readinputargs(handles)
 
 ### check whether input arguments are valid
-input_args = check_input_args(input_args)
+input_args = checkinputargs(input_args)
 
 ###############################################################################
 
@@ -57,7 +57,7 @@ output_tmp = Dict()
 ###############################################################################
 ## jterator output
 
-write_output_args(handles, output_args)
-write_output_tmp(handles, output_tmp)
+writeoutputargs(handles, output_args)
+writeoutputtmp(handles, output_tmp)
 
 ###############################################################################

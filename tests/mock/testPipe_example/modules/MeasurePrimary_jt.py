@@ -2,7 +2,6 @@
 import os
 import sys
 import re
-import json
 import numpy as np
 import matplotlib.pyplot as plt
 # import mpld3
@@ -23,13 +22,13 @@ print('jt - %s:' % mfilename)
 handles_stream = sys.stdin
 
 ### retrieve handles from .YAML files
-handles = get_handles(handles_stream)
+handles = gethandles(handles_stream)
 
 ### read input arguments from .HDF5 files
-input_args = read_input_args(handles)
+input_args = readinputargs(handles)
 
 ### check whether input arguments are valid
-input_args = check_input_args(input_args)
+input_args = checkinputargs(input_args)
 
 ###############################################################################
 
@@ -101,9 +100,9 @@ output_tmp['LabeledSegmentationImage'] = nuclei_label_img
 ## jterator output
 
 ### write measurement data to HDF5
-write_output_args(handles, output_args)
+writeoutputargs(handles, output_args)
 
 ### write temporary pipeline data to HDF5
-write_output_tmp(handles, output_tmp)
+writeoutputtmp(handles, output_tmp)
 
 ###############################################################################

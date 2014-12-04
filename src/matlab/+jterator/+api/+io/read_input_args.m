@@ -1,7 +1,7 @@
 %% Reading input arguments from HDF5 file
 %% using the location specified in "handles".
 
-function input_args = read_input_args(handles)
+function input_args = readinputargs(handles)
 
     import jterator.api.h5.*;
     import jterator.api.etc.*;

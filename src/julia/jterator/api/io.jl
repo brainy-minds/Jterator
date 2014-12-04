@@ -9,10 +9,10 @@ import YAML
 import HDF5
 
 
-function get_handles(handles_stream)
+function gethandles(handles_stream)
     ## Reading "handles" from YAML file.
 
-    mfilename = "get_handles" # can we get this automatically?
+    mfilename = "gethandles" # can we get this automatically?
 
     # Reading handles from YAML.
     handles = YAML.load(handles_stream)
@@ -24,11 +24,11 @@ function get_handles(handles_stream)
 end
 
 
-function read_input_args(handles)
+function readinputargs(handles)
     ## Reading input arguments from HDF5 file
     ## using the location specified in "handles".
 
-    mfilename = "read_input_args"
+    mfilename = "readinputargs"
     
     hdf5_filename = handles["hdf5_filename"]
 
@@ -66,10 +66,10 @@ function read_input_args(handles)
 end
 
 
-function check_input_args(input_args)
+function checkinputargs(input_args)
     ##Checks input arguments for correct class and attributes.
     
-    mfilename = "check_input_args"
+    mfilename = "checkinputargs"
 
     checked_input_args = Dict()
     for key in keys(input_args)
@@ -100,11 +100,11 @@ function check_input_args(input_args)
 end
 
 
-function write_output_args(handles, output_args)
+function writeoutputargs(handles, output_args)
     ##Writing output arguments to HDF5 file
     ## using the location specified in "handles".
 
-    mfilename = "write_output_args"
+    mfilename = "writeoutputargs"
 
     hdf5_filename = handles["hdf5_filename"]
     hdf5_root = HDF5.h5open(hdf5_filename, "r+")
@@ -121,11 +121,11 @@ function write_output_args(handles, output_args)
 end
 
 
-function write_output_tmp(handles, output_tmp)
+function writeoutputtmp(handles, output_tmp)
     ## Writing output arguments to HDF5 file
     ## using the location specified in "handles".
 
-    mfilename = "write_output_tmp"
+    mfilename = "writeoutputtmp"
 
     orig_substr = match(r"/data/(.*)\.data", hdf5_filename).captures[1]
     hdf5_filename = replace(hdf5_filename, r"/data/(.*)\.data$", 
@@ -144,10 +144,10 @@ function write_output_tmp(handles, output_tmp)
 end
 
 
-function build_hdf5(handles)
+function buildhdf5(handles)
     ## Create HDF5 file.
 
-    mfilename = "build_hdf5"
+    mfilename = "buildhdf5"
 
     hdf5_filename = handles["hdf5_filename"]
     HDF5.h5open(hdf5_filename, "w")

@@ -1,5 +1,5 @@
 %% Create HDF5 file.
-function build_hdf5(handles)
+function buildhdf5(handles)
 
     import jterator.api.h5.*;
 
