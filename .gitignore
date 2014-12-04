@@ -54,6 +54,7 @@ docs/_build/
 
 tests/mock/foo_example/logs/*
 tests/mock/testPipe_example/logs/*
+tests/mock/testPipe_example/figures/*
 
 *.h5
 *.data
