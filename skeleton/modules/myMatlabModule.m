@@ -1,3 +1,5 @@
+#! /usr/local/bin/mscript
+
 import jterator.api.io.*;
 
 

@@ -6,7 +6,7 @@ import jterator.api.io.*;
 fprintf(sprintf('jt - %s:\n', mfilename));
 
 %%% read "standard" input
-handles_stream = input('', 's')
+handles_stream = input('', 's');
 
 %%% retrieve handles from .YAML files
 handles = gethandles(handles_stream);

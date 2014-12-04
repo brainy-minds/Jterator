@@ -91,6 +91,6 @@ output_tmp.Nuclei = PrimaryObjects;
 %% jterator output
 
 writeoutputargs(handles, output_args);
-writeoutputtmp(handles, output_tmp;
+writeoutputtmp(handles, output_tmp);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

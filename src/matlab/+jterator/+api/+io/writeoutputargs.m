@@ -6,7 +6,8 @@ function writeoutputargs(handles, output_args)
     import jterator.api.h5.*;
     
 
-    hdf5_filename = handles.hdf5_filename;
+    hdf5_filename = regexprep(handles.hdf5_filename, ...
+                              '/tmp/(.*)\.tmp$', '/data/$1\.data');
     
     % Works for strings, numbers, matrices and cell array of strings.
     % One could also implement structure arrays -> "Compound"

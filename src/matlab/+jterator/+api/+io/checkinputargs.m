@@ -5,10 +5,12 @@ function checked_input_args = checkinputargs(input_args)
     names = fieldnames(input_args); 
     for i = 1:length(names)
         arg = input_args.(names{i});
-        validateattributes(arg.variable, ...
-                           arg.class, ...
-                           arg.attributes, ...
-                           names{i});
+        if isfield(arg, 'class')
+            if ~strcmp(arg.class, class(arg.variable))
+                error('argument "%s" is of class "%s" instead of expected "%s"', ...
+                      names{i}, class(arg.variable), arg.class)
+            end
+        end
         fprintf(sprintf('jt -- %s: argument ''%s'' passed check\n', ...
                     mfilename, names{i}));
     end

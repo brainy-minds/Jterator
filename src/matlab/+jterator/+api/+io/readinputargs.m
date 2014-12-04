@@ -42,16 +42,14 @@ function input_args = readinputargs(handles)
         end 
 
         if isfield(field, 'class')
-            input_args.(key).class = {field.class};
-        else
-            input_args.(key).class = {};
+            input_args.(key).class = field.class;
         end
 
-        if isfield(field, 'attributes')
-            input_args.(key).attributes = {field.attributes};
-        else
-            input_args.(key).attributes = {};
-        end   
+        % if isfield(field, 'attributes')
+        %     input_args.(key).attributes = {field.attributes};
+        % else
+        %     input_args.(key).attributes = {};
+        % end   
 
     end
     

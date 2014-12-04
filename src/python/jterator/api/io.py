@@ -8,7 +8,7 @@ from jterator.error import JteratorError
 # from IPython.core.debugger import Tracer
 
 
-def get_handles(handles_stream):
+def gethandles(handles_stream):
     '''
     Reading "handles" from YAML file.
     '''
@@ -20,7 +20,7 @@ def get_handles(handles_stream):
     return handles
 
 
-def read_input_args(handles):
+def readinputargs(handles):
     '''
     Reading input arguments from HDF5 file
     using the location specified in "handles".
@@ -60,7 +60,7 @@ def read_input_args(handles):
     return input_args
 
 
-def check_input_args(input_args):
+def checkinputargs(input_args):
     '''
     Checks input arguments for correct class (i.e. type) and attributes
     (attributes are not yet implemented).
@@ -96,14 +96,15 @@ def check_input_args(input_args):
     return checked_input_args
 
 
-def write_output_args(handles, output_args):
+def writeoutputargs(handles, output_args):
     '''
     Writing output arguments to HDF5 file
     using the location specified in "handles".
     '''
     mfilename = sys._getframe().f_code.co_name
 
-    hdf5_filename = handles['hdf5_filename']
+    hdf5_filename = hdf5_filename = re.sub('/tmp/(.*)\.tmp$', '/data/\\1.data',
+                           handles['hdf5_filename'])
     hdf5_root = h5py.File(hdf5_filename, 'r+')
 
     for key in output_args:
@@ -115,15 +116,14 @@ def write_output_args(handles, output_args):
     h5py.File.close(hdf5_root)
 
 
-def write_output_tmp(handles, output_tmp):
+def writeoutputtmp(handles, output_tmp):
     '''
     Writing output arguments to HDF5 file
     using the location specified in "handles".
     '''
     mfilename = sys._getframe().f_code.co_name
 
-    hdf5_filename = re.sub('/data/(.*)\.data$', '/tmp/\\1.tmp',
-                           handles['hdf5_filename'])
+    hdf5_filename = handles['hdf5_filename']
     hdf5_root = h5py.File(hdf5_filename, 'r+')
 
     for key in output_tmp:
@@ -135,7 +135,7 @@ def write_output_tmp(handles, output_tmp):
     h5py.File.close(hdf5_root)
 
 
-def build_hdf5(handles):
+def buildhdf5(handles):
     '''
     Create HDF5 file.
     '''
@@ -143,11 +143,11 @@ def build_hdf5(handles):
 
     hdf5_filename = handles['hdf5_filename']
     h5py.File(hdf5_filename, 'w')
-    print('jt -- %s: created HDF5 file for measurement data: "%s"'
+    print('jt -- %s: created HDF5 file for temporary data: "%s"'
           % (mfilename, hdf5_filename))
 
-    hdf5_filename = re.sub('/data/(.*)\.data$', '/tmp/\\1.tmp',
+    hdf5_filename = re.sub('/tmp/(.*)\.tmp$', '/data/\\1.data',
                            handles['hdf5_filename'])
     h5py.File(hdf5_filename, 'w')
-    print('jt -- %s: created HDF5 file for temporary pipe data: "%s"'
+    print('jt -- %s: created HDF5 file for measurement pipe data: "%s"'
           % (mfilename, hdf5_filename))

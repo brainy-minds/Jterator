@@ -1,11 +1,11 @@
 # full path to HDF5 file
-hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/data/test.data
+hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/tmp/test.tmp
 
 # module input arguments
 input_keys:
 
     Data2Plot: 
-        hdf5_location: /Output/MeasurePrimary/Measurements
+        hdf5_location: /MeasurePrimary/Measurements
         class: array
 
     MakePlot:
@@ -14,3 +14,6 @@ input_keys:
 
 # module output arguments
 output_keys:
+
+    NuclearArea:
+        hdf5_location: /Plot/NuclearArea

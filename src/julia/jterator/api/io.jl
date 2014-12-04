@@ -106,7 +106,9 @@ function writeoutputargs(handles, output_args)
 
     mfilename = "writeoutputargs"
 
-    hdf5_filename = handles["hdf5_filename"]
+    orig_substr = match(r"/tmp/(.*)\.tmp", hdf5_filename).captures[1]
+    hdf5_filename = replace(hdf5_filename, r"/tmp/(.*)\.tmp$", 
+                            @sprintf("/data/%s.data", orig_substr))
     hdf5_root = HDF5.h5open(hdf5_filename, "r+")
 
     for key in keys(output_args)
@@ -127,9 +129,7 @@ function writeoutputtmp(handles, output_tmp)
 
     mfilename = "writeoutputtmp"
 
-    orig_substr = match(r"/data/(.*)\.data", hdf5_filename).captures[1]
-    hdf5_filename = replace(hdf5_filename, r"/data/(.*)\.data$", 
-                            @sprintf("/tmp/%s.tmp", orig_substr))
+    hdf5_filename = handles["hdf5_filename"]
     hdf5_root = HDF5.h5open(hdf5_filename, "r+")
 
     for key in keys(output_tmp)
@@ -151,14 +151,14 @@ function buildhdf5(handles)
 
     hdf5_filename = handles["hdf5_filename"]
     HDF5.h5open(hdf5_filename, "w")
-    @printf("jt -- %s: created HDF5 file for measurement data: \"%s\"\n",
+    @printf("jt -- %s: created HDF5 file for temporary data: \"%s\"\n",
           mfilename, hdf5_filename)
 
-    orig_substr = match(r"/data/(.*)\.data", hdf5_filename).captures[1]
-    hdf5_filename = replace(hdf5_filename, r"/data/(.*)\.data$", 
-                            @sprintf("/tmp/%s.tmp", orig_substr))
+    orig_substr = match(r"/tmp/(.*)\.tmp", hdf5_filename).captures[1]
+    hdf5_filename = replace(hdf5_filename, r"/tmp/(.*)\.tmp$", 
+                            @sprintf("/data/%s.data", orig_substr))
     HDF5.h5open(hdf5_filename, "w")
-    @printf("jt -- %s: created HDF5 file for temporary pipe data: \"%s\"\n",
+    @printf("jt -- %s: created HDF5 file for measurement pipe data: \"%s\"\n",
             mfilename, hdf5_filename)
 
 end

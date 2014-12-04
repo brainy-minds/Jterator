@@ -1,6 +1,6 @@
 #!/opt/local/bin/Rscript
 library(jsonlite)
-include("/Users/Markus/Documents/Jterator/src/r/jterator/api/io.R")
+source("/Users/Markus/Documents/Jterator/src/r/jterator/api/io.R")
 
 mfilename <- basename(sub("--file=(.*).R", "\\1",
                       grep("--file=.*R", commandArgs(), value=TRUE)))
@@ -57,7 +57,7 @@ if (makePlot) {
     print(fig)
     dev.off()
 
-    #### send ggplot figure to plotly
+    # ### send ggplot figure to plotly
     # library(plotly)
     # py <- plotly()
     # py$ggplotly()

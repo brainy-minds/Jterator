@@ -1,6 +1,6 @@
 #!/opt/local/bin/Rscript
 
-include("/Users/Markus/Documents/Jterator/src/r/jterator/api/io.R")
+source("/Users/Markus/Documents/Jterator/src/r/jterator/api/io.R")
 
 mfilename <- basename(sub("--file=(.*).R", "\\1",
                       grep("--file=.*R", commandArgs(), value=TRUE)))
