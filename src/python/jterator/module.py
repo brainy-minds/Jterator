@@ -55,21 +55,17 @@ class Module(object):
         the program. Return it without further arguments. Everything else is
         parametrized using "handles".
         '''
-        ### ===================================================================
-        ### Here we have to bake language specific commands using
-        ### "Rscript", "ipython" or "matlab -nodisplay -r"
-        ### ===================================================================
-        Tracer()()
+        # Tracer()()
         return self.executable_path
 
-    def get_error_message(self, process, input_json_data):
+    def get_error_message(self, process, input_data):
         message = ('Execution of module %s failed with error ' +
                    '(Return code: %s).') % \
                   (str(self), process.returncode)
         if self.error_log_path:
-            if input_json_data is not None:
+            if input_data is not None:
                 message += '\n' + '---[ Handles input ]---' \
-                    .ljust(80, '-') + '\n' + input_json_data
+                    .ljust(80, '-') + '\n' + input_data
             message += '\n' + '---[ Standard output ]---' \
                 .ljust(80, '-') + '\n' + \
                 open(self.output_log_path).read()
@@ -92,22 +88,27 @@ class Module(object):
         Log output and/or errors.
         '''
         command = self.bake_command()
+        command = '''/bin/bash <<EOF
+%s
+EOF
+        ''' % command
+        print command
         try:
-            process = Popen(
-                self.bake_command(),
-                stdin=self.streams['input'],
-                stdout=self.streams['output'],
-                stderr=self.streams['error'],
+            process = Popen(command,
+                            stdin=self.streams['input'],
+                            stdout=self.streams['output'],
+                            stderr=self.streams['error'],
+                            #shell=True,
+            )
                 # TODO: review this for cases where that might not be needed.
-                shell=True,
-                executable='/bin/bash')
+                # executable='bin/bash'
             # Prepare handles input.
-            input_json_data = None
+            input_data = None
             if self.streams['input'] == PIPE:
-                input_json_data = self.handles.read()
+                input_data = self.handles.read()
             # Execute sub-process.
-            (stdoutdata, stderrdata) = process.communicate(
-                input=input_json_data)
+            (stdoutdata, stderrdata) = process.communicate(input=input_data)
+            print stdoutdata
             # Write output and errors.
             self.write_output_and_errors(stdoutdata, stderrdata)
             # Close STDIN file descriptor.
@@ -115,8 +116,7 @@ class Module(object):
             # Take care of any errors during the execution.
             if process.returncode > 0:
                 raise JteratorError(self.get_error_message(process,
-                                    input_json_data))
-
+                                    input_data))
         except ValueError as error:
             raise JteratorError('Failed running \'%s\'. Reason: \'%s\'' %
                                 (command, str(error)))

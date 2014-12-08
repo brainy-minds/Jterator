@@ -23,8 +23,8 @@ readinputargs <- function(handles) {
     hdf5_filename <- handles$hdf5_filename
 
     input_args <- list()
-    for (key in names(handles$input_keys)) {
-      field <- handles$input_keys[[key]]
+    for (key in names(handles$input)) {
+      field <- handles$input[[key]]
       input_args[[key]] <- list()
 
       if ("hdf5_location" %in% names(field)) {
@@ -93,7 +93,7 @@ writeoutputargs <- function(handles, output_args) {
     hdf5_filename <- sub('/tmp/(.*)\\.tmp', '/data/\\1.data', handles$hdf5_filename)
 
     for (key in names(output_args)) {
-      hdf5_location <- handles$output_keys[[key]]$hdf5_location
+      hdf5_location <- handles$output[[key]]$hdf5_location
       h5createGroup(hdf5_filename, dirname(hdf5_location))
       h5createDataset(hdf5_filename, hdf5_location, 
                       dims = dim(output_args[[key]]),
@@ -112,7 +112,7 @@ writeoutputtmp <- function(handles, output_tmp) {
     hdf5_filename <- handles$hdf5_filename
 
     for (key in names(output_tmp)) {
-      hdf5_location <- handles$output_keys[[key]]$hdf5_location
+      hdf5_location <- handles$output[[key]]$hdf5_location
       h5createGroup(hdf5_filename, dirname(hdf5_location))
       h5createDataset(hdf5_filename, hdf5_location, 
                       dims = dim(output_tmp[[key]]),
@@ -121,21 +121,4 @@ writeoutputtmp <- function(handles, output_tmp) {
       cat(sprintf("jt -- %s: wrote tmp dataset '%s' to HDF5 group: \"%s\"\n",
                 mfilename, key, hdf5_location))
     }
-}
-
-
-#' @rdname Create HDF5 file.
-buildhdf5 <- function(handles) {
-
-    mfilename <- "buildhdf5"
-
-    hdf5_filename <- handles$hdf5_filename
-    file_created <- h5createFile(hdf5_filename)
-    cat(sprintf("jt -- %s: created HDF5 file for temporary data: \"%s\"\n",
-                mfilename, hdf5_filename))
-
-    hdf5_filename <- sub('/tmp/(.*)\\.tmp', '/data/\\1.data', handles$hdf5_filename)
-    file_created <- h5createFile(hdf5_filename)
-    cat(sprintf("jt -- %s: created HDF5 file for measurement pipe data: \"%s\"\n",
-                mfilename, hdf5_filename))
 }

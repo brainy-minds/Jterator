@@ -17,7 +17,7 @@ function writeoutputtmp(handles, output_args)
 
     keys = fieldnames(output_args);
     for key = 1:length(keys)
-        hdf5_location = handles.output_keys.(keys{key}).hdf5_location;
+        hdf5_location = handles.output.(keys{key}).hdf5_location;
         value = output_args.(keys{key});
         h5datacreate(hdf5_filename, hdf5_location, ...
                      'type', class(value), 'size', size(value));

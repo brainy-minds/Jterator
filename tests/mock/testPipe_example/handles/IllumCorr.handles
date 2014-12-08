@@ -1,8 +1,8 @@
 # full path to HDF5 file
-hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/tmp/test.tmp
+hdf5_filename: tmp/test.tmp
 
 # module input arguments
-input_keys:
+input:
 
     OrigImage: 
         hdf5_location: /PrimeRawData/OrigImage
@@ -20,7 +20,7 @@ input_keys:
         attributes: positive
 
 # module output arguments
-output_keys:
+output:
 
     CorrImage:
         hdf5_location: /IllumCorr/CorrImage

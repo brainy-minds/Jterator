@@ -1,3 +1,5 @@
+#!/opt/local/bin/Mscript
+
 import jterator.api.io.*;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -5,8 +7,19 @@ import jterator.api.io.*;
 
 fprintf(sprintf('jt - %s:\n', mfilename));
 
-%%% read "standard" input
-handles_stream = input('','s');
+%%% read standard input
+if exist('input_stream', 'var')
+    handles_stream = input_stream;
+else
+    error('This jterator script has to be interpreted by Mscript. Check shebang!')
+end
+
+%%% change current working directory
+if exist('currentDirectory', 'var')
+    cd(currentDirectory)
+else
+    error('This jterator script has to be interpreted by Mscript. Check shebang!')
+end
 
 %%% retrieve handles from .YAML files
 handles = gethandles(handles_stream);

@@ -1,35 +1,26 @@
 # full path to HDF5 file
-hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/tmp/test.tmp
+hdf5_filename: tmp/test.tmp
 
 # module input arguments
-input_keys:
+input:
 
-    ImageDirectory: 
-        parameter: /Users/Markus/shares/ethz-share4/Data/Users/Markus/Multiplexing/140730MPcycle/140730MPcycle2/TIFF
-
-    ImageFilename:
-        parameter: 140730MPcycle2_B02_T0001F001L01A01Z01C01.png
+    CurrentItem:
+        hdf5_location: /CurrentItem
+        class: double
 
     StatsDirectory:
-        parameter: /Users/Markus/shares/ethz-share4/Data/Users/Markus/Multiplexing/140730MPcycle/140730MPcycle2/BATCH
+        parameter: rawdata/BATCH
 
-    StatsFilename:
-        parameter: Measurements_batch_illcor_channel001_zstack000.mat
+    StatsPattern:
+        parameter: "Measurements_batch_illcor_channel001_zstack000.mat"
 
 # module output arguments
-output_keys:
-
-    OrigImage:
-        hdf5_location: /PrimeRawData/OrigImage
-        class: double
-        attributes: positive
+output:
 
     StatsMeanImage: 
         hdf5_location: /PrimeRawData/StatsMeanImage
         class: double
-        attributes: positive
 
     StatsStdImage: 
         hdf5_location: /PrimeRawData/StatsStdImage
         class: double
-        attributes: positive

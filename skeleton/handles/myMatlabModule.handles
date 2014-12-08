@@ -1,5 +1,5 @@
 # full path to HDF5 file
-hdf5_filename: /Users/Markus/Documents/Jterator/tests/mock/testPipe_example/data/test.data
+hdf5_filename: tmp/myProject.tmp
 
 # module input arguments
 input_keys:

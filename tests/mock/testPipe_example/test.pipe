@@ -1,54 +1,51 @@
-# =============================================================================
-# NOTE: 
+# JTERATOR PIPELINE DESCRIPTOR FILE
+# =================================
+# 
 # The working directory is by default the directory where the .pipe file 
 # is located. So you can provide relative paths in your pipeline description.
 #
-# To run modules from the command line individually use the following command:
-# - cat [handles_filename] | [module_filename]
-# =============================================================================
+# To run modules individually use the following command:
+#   $ cat [handles_filename] | [module_filename]
 
-# Define a trivial Jterator pipeline description
-name: test
-version: 0.0.1
 
-# Define HDF5 filename for data storage
-data: data/test.data
+# Define your project:
+project:
 
-# Define modules (actual code) and handles (YAML files)
+  name: test
+  description: example pipeline for testing purposes
+  version: 0.0.1
+
+
+# Define iteration procedure:
+jteration:
+
+    folder: rawdata/TIFF
+    pattern: .*C01\.(png|tiff?)
+
+
+# Define modules (.jt executable files) and handles (.handles YAML files):
 pipeline:
 
   - name: PrimeRawData
-    module: modules/PrimeRawData_jt.m
+    module: modules/PrimeRawData.jt
     handles: handles/PrimeRawData.handles
 
-  - name: IlluminationCorrection
-    module: modules/IllumCorr_jt.m
+  - name: IllumCorr
+    module: modules/IllumCorr.jt
     handles: handles/IllumCorr.handles
 
   - name: IndentifyPrimary
-    module: modules/IdentifyPrimary_jt.m
+    module: modules/IdentifyPrimary.jt
     handles: handles/IdentifyPrimary.handles
 
   - name: MeasurePrimary
-    module: modules/MeasurePrimary_jt.py
+    module: modules/MeasurePrimary.jt
     handles: handles/MeasurePrimary.handles
 
   - name: Plot
-    module: modules/Plot_jt.R
+    module: modules/Plot.jt
     handles: handles/Plot.handles
 
   - name: Whatever
-    module: modules/Whatever_jt.jl
+    module: modules/Whatever.jt
     handles: handles/Whatever.handles
-
-
-# # Apply this tests to check module dependencies on expected parameters like 
-# # h5 files or keys in h5 files.
-# tests: 
-#     - type: hdf5_dependency
-#       module_name: PrimeRawData
-#       input: ["bar"]
-#       output: ["baz"]
-
-# -> testing should be done automatically based on the handles files!!!
-

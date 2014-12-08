@@ -10,10 +10,10 @@ function input_args = readinputargs(handles)
     hdf5_filename = handles.hdf5_filename;
 
     input_args = struct();
-    keys = fieldnames(handles.input_keys);
+    keys = fieldnames(handles.input);
     for i = 1:length(keys)
         key = keys{i};
-        field = handles.input_keys.(key);
+        field = handles.input.(key);
 
         if isfield(field, 'hdf5_location')
             input_args.(key).variable = h5varget(hdf5_filename, field.hdf5_location);

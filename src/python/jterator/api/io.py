@@ -31,8 +31,8 @@ def readinputargs(handles):
     hdf5_root = h5py.File(hdf5_filename, 'r+')
 
     input_args = dict()
-    for key in handles['input_keys']:
-        field = handles['input_keys'][key]
+    for key in handles['input']:
+        field = handles['input'][key]
         input_args[key] = dict()
 
         if 'hdf5_location' in field:
@@ -108,7 +108,7 @@ def writeoutputargs(handles, output_args):
     hdf5_root = h5py.File(hdf5_filename, 'r+')
 
     for key in output_args:
-        hdf5_location = handles['output_keys'][key]['hdf5_location']
+        hdf5_location = handles['output'][key]['hdf5_location']
         hdf5_root.create_dataset(hdf5_location, data=output_args[key])
         print('jt -- %s: wrote dataset \'%s\' to HDF5 group: "%s"'
               % (mfilename, key, hdf5_location))
@@ -127,27 +127,9 @@ def writeoutputtmp(handles, output_tmp):
     hdf5_root = h5py.File(hdf5_filename, 'r+')
 
     for key in output_tmp:
-        hdf5_location = handles['output_keys'][key]['hdf5_location']
+        hdf5_location = handles['output'][key]['hdf5_location']
         hdf5_root.create_dataset(hdf5_location, data=output_tmp[key])
         print('jt -- %s: wrote tmp dataset \'%s\' to HDF5 group: "%s"'
               % (mfilename, key, hdf5_location))
 
     h5py.File.close(hdf5_root)
-
-
-def buildhdf5(handles):
-    '''
-    Create HDF5 file.
-    '''
-    mfilename = sys._getframe().f_code.co_name
-
-    hdf5_filename = handles['hdf5_filename']
-    h5py.File(hdf5_filename, 'w')
-    print('jt -- %s: created HDF5 file for temporary data: "%s"'
-          % (mfilename, hdf5_filename))
-
-    hdf5_filename = re.sub('/tmp/(.*)\.tmp$', '/data/\\1.data',
-                           handles['hdf5_filename'])
-    h5py.File(hdf5_filename, 'w')
-    print('jt -- %s: created HDF5 file for measurement pipe data: "%s"'
-          % (mfilename, hdf5_filename))

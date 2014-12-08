@@ -1,0 +1,93 @@
+import yaml
+from jterator.error import JteratorError
+
+
+class JteratorCheck(object):
+
+    def __init__(self, pipe_description, modules, tmp_filename):
+        '''
+        Initiate checks of pipeline and handles structure.
+        '''
+        self.description = pipe_description
+        self.modules = modules
+        self.tmp_filename = tmp_filename
+
+    def check_pipeline(self):
+        '''
+        Check structure of pipeline description.
+        '''
+        # Check required 'project' section
+        if not 'project' in self.description:
+            raise JteratorError('Pipeline file must contain the key "%s".' %
+                                'project')
+        if not 'name' in self.description['project']:
+            raise JteratorError('pipeline file must contain the key "%s" '
+                                'as a subkey of "%s"' %
+                                ('name', 'project'))
+        # Check required 'jteration' section
+        if not 'jteration' in self.description:
+            raise JteratorError('Pipeline file must contain the key "%s".' %
+                                'jteration')
+        if not 'type' in self.description['jteration']:
+            raise JteratorError('Pipeline file must contain the key "%s" '
+                                'as a subkey of "%s"' %
+                                ('type', 'jteration'))
+        if not 'folder' in self.description['jteration']:
+            raise JteratorError('Pipeline file must contain the key "%s" '
+                                'as a subkey of "%s"' %
+                                ('folder', 'jteration'))
+        if not 'pattern' in self.description['jteration']:
+            raise JteratorError('Pipeline file must contain the key "%s" '
+                                'as a subkey of "%s"' %
+                                ('pattern', 'jteration'))
+        # Check required 'pipeline' section
+        if not 'pipeline' in self.description:
+            raise JteratorError('Pipeline file must contain the key "%s".' %
+                                'pipeline')
+        if not type(self.description['pipeline']) is dict:
+            raise JteratorError('The key "pipeline" in the pipeline file '
+                                'must contain a list.')
+        for module_description in self.description['pipeline']:
+            if not 'name' in module_description:
+                raise JteratorError('Each element of the list in "pipeline" '
+                                    'in the pipeline file must contain '
+                                    'the key "%s"' % 'name')
+            if not 'handles' in module_description:
+                raise JteratorError('Each element of the list in "pipeline" '
+                                    'in the pipeline file must contain '
+                                    'the key "%s"' % 'handles')
+            if not 'module' in module_description:
+                raise JteratorError('Each element of the list in "pipeline" '
+                                    'in the pipeline file must contain '
+                                    'the key "%s"' % 'module')
+
+    def check_handles(self):
+        '''
+        Check structure of handles.
+        '''
+        for module in self.modules:
+            handles = yaml.load(module.Module['handles'])
+            # Check required 'hdf5_filename' section
+            if not 'hdf5_filename' in handles:
+                raise JteratorError('Handles file must contain the key "%s".' %
+                                    'hdf5_filename')
+            if handles['hdf5_filename'] != self.tmp_filename:
+                raise JteratorError('The key "hdf5_filename" is not specified '
+                                    'correctly in handles of module "%s".\n'
+                                    'It should be "%s" according to the '
+                                    'pipeline descriptor file.' %
+                                    (module.Module['name'], self.tmp_filename))
+            # Check required 'input' section
+            if not 'input' in handles:
+                raise JteratorError('Handles file must contain the key "%s".' %
+                                    'input')
+            # Check required 'output' section
+            if not 'output' in handles:
+                raise JteratorError('Handles file must contain the key "%s".' %
+                                    'output')
+
+    def check_pipeline_io(self):
+        '''
+        Make sure that the input for one module is actually produced
+        by another module upstream in the pipeline.
+        '''

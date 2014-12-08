@@ -33,8 +33,8 @@ function readinputargs(handles)
     hdf5_filename = handles["hdf5_filename"]
 
     input_args = Dict()
-    for key in keys(handles["input_keys"])
-        field = handles["input_keys"][key]
+    for key in keys(handles["input"])
+        field = handles["input"][key]
         input_args[key] = Dict()
 
         if haskey(field, "hdf5_location")
@@ -112,7 +112,7 @@ function writeoutputargs(handles, output_args)
     hdf5_root = HDF5.h5open(hdf5_filename, "r+")
 
     for key in keys(output_args)
-        hdf5_location = handles["output_keys"][key]["hdf5_location"]
+        hdf5_location = handles["output"][key]["hdf5_location"]
         hdf5_root[hdf5_location] = output_args[key]
         @printf("jt -- %s: wrote dataset '%s' to HDF5 group: \"%s\"\n",
                 mfilename, key, hdf5_location)
@@ -133,7 +133,7 @@ function writeoutputtmp(handles, output_tmp)
     hdf5_root = HDF5.h5open(hdf5_filename, "r+")
 
     for key in keys(output_tmp)
-        hdf5_location = handles["output_keys"][key]["hdf5_location"]
+        hdf5_location = handles["output"][key]["hdf5_location"]
         hdf5_root[hdf5_location] = output_tmp[key]
         @printf("jt -- %s: wrote tmp dataset '%s' to HDF5 group: \"%s\"\n",
                 mfilename, key, hdf5_location)
@@ -143,25 +143,6 @@ function writeoutputtmp(handles, output_tmp)
 
 end
 
-
-function buildhdf5(handles)
-    ## Create HDF5 file.
-
-    mfilename = "buildhdf5"
-
-    hdf5_filename = handles["hdf5_filename"]
-    HDF5.h5open(hdf5_filename, "w")
-    @printf("jt -- %s: created HDF5 file for temporary data: \"%s\"\n",
-          mfilename, hdf5_filename)
-
-    orig_substr = match(r"/tmp/(.*)\.tmp", hdf5_filename).captures[1]
-    hdf5_filename = replace(hdf5_filename, r"/tmp/(.*)\.tmp$", 
-                            @sprintf("/data/%s.data", orig_substr))
-    HDF5.h5open(hdf5_filename, "w")
-    @printf("jt -- %s: created HDF5 file for measurement pipe data: \"%s\"\n",
-            mfilename, hdf5_filename)
-
-end
 
 export get_handles, read_input_args, check_input_args, write_output_args, 
 write_output_tmp, build_hdf5
