@@ -7,6 +7,8 @@ from jterator.error import JteratorError
 from jterator.checker import JteratorCheck
 from jterator.module import Module
 
+# from IPython.core.debugger import Tracer
+
 
 class JteratorRunner(object):
 
@@ -117,7 +119,7 @@ class JteratorRunner(object):
             # Extract module information from pipeline description.
             module = Module(name=module_description['name'],
                             executable_path=executable_path,
-                            handles=open(handles_filepath))  # read here???
+                            handles=open(handles_filepath))
             self.modules.append(module)
         if not self.modules:
             raise JteratorError('No module description was found in:'
@@ -167,7 +169,10 @@ class JteratorRunner(object):
         self.init_hdf5_files()
         self.build_iteration()
         # Check structure of pipeline and handles description.
-        JteratorCheck(self.description, self.modules, self.tmp_filename)
+        checker = JteratorCheck(self.description, self.tmp_filename)
+        checker.check_pipeline()
+        checker.check_handles()
+        checker.check_pipeline_io()
         # Iterate over items that should be processed in the pipeline.
         for item in self.collection:  # parallelization???
             # Initialize the pipeline.

@@ -1,7 +1,7 @@
 from subprocess import (PIPE, Popen)
 from jterator.error import JteratorError
 
-from IPython.core.debugger import Tracer
+# from IPython.core.debugger import Tracer
 
 
 class Module(object):
@@ -55,7 +55,6 @@ class Module(object):
         the program. Return it without further arguments. Everything else is
         parametrized using "handles".
         '''
-        # Tracer()()
         return self.executable_path
 
     def get_error_message(self, process, input_data):
@@ -88,20 +87,14 @@ class Module(object):
         Log output and/or errors.
         '''
         command = self.bake_command()
-        command = '''/bin/bash <<EOF
-%s
-EOF
-        ''' % command
-        print command
         try:
-            process = Popen(command,
+            process = Popen([".", command],
                             stdin=self.streams['input'],
                             stdout=self.streams['output'],
                             stderr=self.streams['error'],
-                            #shell=True,
+                            # shell=True,
+                            executable='/bin/bash',
             )
-                # TODO: review this for cases where that might not be needed.
-                # executable='bin/bash'
             # Prepare handles input.
             input_data = None
             if self.streams['input'] == PIPE:
