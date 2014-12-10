@@ -4,20 +4,15 @@ hdf5_filename: tmp/test.tmp
 # module input arguments
 input:
 
-    OrigImage: 
+    OrigImage:
         hdf5_location: /PrimeRawData/OrigImage
         class: double
-        attributes: positive
 
-    StatsMeanImage: 
-        hdf5_location: /PrimeRawData/StatsMeanImage
-        class: double
-        attributes: positive
+    StatsDirectory:
+        parameter: rawdata/BATCH
 
-    StatsStdImage: 
-        hdf5_location: /PrimeRawData/StatsStdImage
-        class: double
-        attributes: positive
+    StatsFilename:
+        parameter: Measurements_batch_illcor_channel001_zstack000.mat
 
 # module output arguments
 output:

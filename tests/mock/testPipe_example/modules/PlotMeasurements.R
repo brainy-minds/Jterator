@@ -1,4 +1,3 @@
-#!/opt/local/bin/Rscript
 library(jsonlite)
 source("/Users/Markus/Documents/Jterator/src/r/jterator/api/io.R")
 

@@ -1,0 +1,87 @@
+# full path to HDF5 file
+hdf5_filename: tmp/test.tmp
+
+# module input arguments
+input:
+
+    # smoothing
+
+    doSmooth:
+        parameter: Yes
+        class: logical
+
+    SmoothingMethod:
+        parameter: Median
+
+    SmoothingFilterSize:
+        parameter: 3
+
+    # intensity thresholding: first segmentation mask
+
+    ThresholdMethod:
+        parameter: Otsu Global
+
+    ThresholdCorrection:
+        parameter: 1
+
+    ThresholdRange:
+        parameter: [0, 1]
+        class: double
+
+    pObject:
+        parameter: 10%
+        class: char
+
+    # separation of clumped objects: final segmentation mask
+
+    CuttingPasses:
+        parameter: 2
+
+    MaxSolidity:
+        parameter: 0.9
+
+    MinFormFactor:
+        parameter: 0.45
+
+    MaxArea:
+        parameter: 50000
+
+    MinArea:
+        parameter: 5000
+
+    MinCutArea:
+        parameter: 1000
+
+    doTestModeShape:
+        parameter: No
+        class: logical
+
+    SlidingWindow:
+        parameter: 8
+
+    FilterSize:
+        parameter: 1
+
+    MaxConcaveRadius:
+        parameter: 30
+
+    CircularSegment:
+        parameter: 6
+
+    doTestModePerimeter:
+        parameter: No
+        class: logical
+
+    # image intensity thresholding
+
+    doSaveFigures:
+        parameter: Yes
+        class: logical
+
+# module output arguments
+output:
+
+    Nuclei:
+        hdf5_location: /IdentifyPrimary/Nuclei
+        class: double
+

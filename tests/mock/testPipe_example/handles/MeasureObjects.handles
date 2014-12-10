@@ -1,0 +1,28 @@
+# full path to HDF5 file
+hdf5_filename: tmp/test.tmp
+
+# module input arguments
+input:
+
+    Image:
+        parameter: /PrimeRawData/OrigImage
+        class: ndarray
+
+    Objects: 
+        hdf5_location: /IdentifyPrimary/Nuclei
+        class: ndarray
+
+    Features:
+        parameter: ["Area", "Shape", "Intensity"]
+        class: list
+
+    doSaveFigures:
+        parameter: No
+        class: bool
+
+# module output arguments
+output:
+
+    Measurements:
+        hdf5_location: /MeasurePrimary/Measurements
+        class: float64

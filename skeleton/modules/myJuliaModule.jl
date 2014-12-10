@@ -1,5 +1,3 @@
-#!/usr/bin/julia
-
 include("/Users/Markus/Documents/Jterator/src/julia/jterator/src/io.jl")
 
 mfilename = match(r"([^/]+)\.jl$", @__FILE__()).captures[1]

@@ -1,5 +1,3 @@
-#! /usr/local/bin/mscript
-
 import jterator.api.io.*;
 
 
@@ -8,8 +6,11 @@ import jterator.api.io.*;
 
 fprintf(sprintf('jt - %s:\n', mfilename));
 
-%%% read "standard" input
-handles_stream = input('','s'); % use pipe_yaml_json.py!!!
+%%% read standard input
+handles_stream = input_stream; % input_stream is provided by Mscript!
+
+%%% change current working directory
+cd(currentDirectory)
 
 %%% retrieve handles from .YAML files
 handles = gethandles(handles_stream);

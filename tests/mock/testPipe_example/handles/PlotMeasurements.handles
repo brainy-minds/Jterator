@@ -5,15 +5,12 @@ hdf5_filename: tmp/test.tmp
 input:
 
     Data2Plot: 
-        hdf5_location: /MeasurePrimary/Measurements
+        hdf5_location: /MeasureObjects/Measurements
         class: array
 
-    MakePlot:
+    doSaveFigures:
         parameter: Yes
         class: logical
 
 # module output arguments
 output:
-
-    NuclearArea:
-        hdf5_location: /Plot/NuclearArea

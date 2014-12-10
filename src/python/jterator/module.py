@@ -1,7 +1,8 @@
-from subprocess import (PIPE, Popen)
+import os
+from subprocess32 import (PIPE, Popen)
 from jterator.error import JteratorError
 
-# from IPython.core.debugger import Tracer
+from IPython.core.debugger import Tracer
 
 
 class Module(object):
@@ -12,26 +13,29 @@ class Module(object):
     Note: a lot of logic is re-thought and borrowed from github:ewiger/pipette.
     '''
 
-    def __init__(self, name, executable_path, handles):
+    def __init__(self, name, module, handles, interpreter):
         '''
         Initiate a new Jterator module.
 
         :name:            Name or description of the module, it may differ
-                          from the corresponding executable. Cannot have white
+                          from the corresponding interpreter. Cannot have white
                           spaces.
 
-        :executable_path: a path to a program file that can be executed.
+        :module:          Path to a program file that can be executed.
 
-        :handles:         is FileObj instance, i.e. it can behave like an
+        :handles:         FileObj instance, i.e. it can behave like an
                           opened file.
+
+        :interpreter:     Path to program that should execute the program file.
         '''
         self.name = name
-        self.executable_path = executable_path
+        self.module = module
         # Require 'handles' to be a file object.
         if not hasattr(handles, 'read'):
             raise JteratorError('Passed argument \'handles\' is not a file '
                                 'object.')
         self.handles = handles
+        self.interpreter = interpreter
         # Effectively, these are used as arguments for Popen call.
         # That's why it is actually legal to use PIPE as a default value here.
         # Note: Set values to None to avoid interaction with the program.
@@ -51,11 +55,14 @@ class Module(object):
 
     def bake_command(self):
         '''
-        Use "executable" property to figure out what would be the location of
+        Use "interpreter" property to figure out what would be the location of
         the program. Return it without further arguments. Everything else is
         parametrized using "handles".
         '''
-        return self.executable_path
+        if os.path.isabs(self.interpreter):
+            return [self.interpreter, self.module]
+        else:
+            return ['/usr/bin/env', self.interpreter, self.module]
 
     def get_error_message(self, process, input_data):
         message = ('Execution of module %s failed with error ' +
@@ -83,18 +90,15 @@ class Module(object):
 
     def run(self):
         '''
-        Execute a module as a bash command. Path to handles file as input.
+        Execute a module as a bash command. Open handles file object as input.
         Log output and/or errors.
         '''
         command = self.bake_command()
         try:
-            process = Popen([".", command],
+            process = Popen(command,
                             stdin=self.streams['input'],
                             stdout=self.streams['output'],
-                            stderr=self.streams['error'],
-                            # shell=True,
-                            executable='/bin/bash',
-            )
+                            stderr=self.streams['error'])
             # Prepare handles input.
             input_data = None
             if self.streams['input'] == PIPE:
@@ -102,12 +106,13 @@ class Module(object):
             # Execute sub-process.
             (stdoutdata, stderrdata) = process.communicate(input=input_data)
             print stdoutdata
+            print stderrdata
             # Write output and errors.
             self.write_output_and_errors(stdoutdata, stderrdata)
             # Close STDIN file descriptor.
             process.stdin.close
             # Take care of any errors during the execution.
-            if process.returncode > 0:
+            if process.returncode > 0 or stderrdata:
                 raise JteratorError(self.get_error_message(process,
                                     input_data))
         except ValueError as error:
@@ -115,4 +120,4 @@ class Module(object):
                                 (command, str(error)))
 
     def __str__(self):
-        return ':%s: @ <%s>' % (self.name, self.executable_path)
+        return ':%s: @ <%s>' % (self.name, self.module)

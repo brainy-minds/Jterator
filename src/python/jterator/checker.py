@@ -26,18 +26,22 @@ class JteratorCheck(object):
             raise JteratorError('Pipeline file must contain the key "%s" '
                                 'as a subkey of "%s"' %
                                 ('name', 'project'))
-        # Check required 'jteration' section
-        if not 'jteration' in self.description:
+        # Check required 'jobs' section
+        if not 'jobs' in self.description:
             raise JteratorError('Pipeline file must contain the key "%s".' %
-                                'jteration')
-        if not 'folder' in self.description['jteration']:
+                                'jobs')
+        if not 'folder' in self.description['jobs']:
             raise JteratorError('Pipeline file must contain the key "%s" '
                                 'as a subkey of "%s"' %
-                                ('folder', 'jteration'))
-        if not 'pattern' in self.description['jteration']:
+                                ('folder', 'jobs'))
+        if not 'pattern' in self.description['jobs']:
             raise JteratorError('Pipeline file must contain the key "%s" '
                                 'as a subkey of "%s"' %
-                                ('pattern', 'jteration'))
+                                ('pattern', 'jobs'))
+        if not 'mode' in self.description['jobs']:
+            raise JteratorError('Pipeline file must contain the key "%s" '
+                                'as a subkey of "%s"' %
+                                ('mode', 'jobs'))
         # Check required 'pipeline' section
         if not 'pipeline' in self.description:
             raise JteratorError('Pipeline file must contain the key "%s".' %
@@ -48,16 +52,24 @@ class JteratorCheck(object):
         for module_description in self.description['pipeline']:
             if not 'name' in module_description:
                 raise JteratorError('Each element of the list in "pipeline" '
-                                    'in the pipeline file must contain '
-                                    'the key "%s"' % 'name')
+                                    'in the pipeline descriptor file '
+                                    'needs to contain the key "%s"' %
+                                    'name')
             if not 'handles' in module_description:
                 raise JteratorError('Each element of the list in "pipeline" '
-                                    'in the pipeline file must contain '
-                                    'the key "%s"' % 'handles')
+                                    'in the pipeline descriptor file '
+                                    'needs to contain the key "%s"' %
+                                    'handles')
             if not 'module' in module_description:
                 raise JteratorError('Each element of the list in "pipeline" '
-                                    'in the pipeline file must contain '
-                                    'the key "%s"' % 'module')
+                                    'in the pipeline descriptor file '
+                                    'needs to contain the key "%s"' %
+                                    'module')
+            if not 'interpreter' in module_description:
+                raise JteratorError('Each element of the list in "pipeline" '
+                                    'in the pipeline descriptor file '
+                                    'needs to contain the key "%s"' %
+                                    'interpreter')
 
     def check_handles(self):
         '''

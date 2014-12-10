@@ -1,9 +1,8 @@
-#!/usr/bin/env python
 import os
 import sys
 import re
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # import mpld3
 # import plotly.plotly as py
 from plotly.graph_objs import *

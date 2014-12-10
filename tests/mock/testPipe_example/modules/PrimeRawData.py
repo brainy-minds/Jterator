@@ -1,16 +1,19 @@
-#!/usr/bin/julia
+import os
+import sys
+import re
+import numpy as np
+from jterator.api.io import *
 
-importall jterator
 
-mfilename = match(r"([^/]+)\.jl$", @__FILE__()).captures[1]
+mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
 
 ###############################################################################
 ## jterator input
 
-@printf("jt - %s\n", mfilename)
+print('jt - %s:' % mfilename)
 
-### read YAML from standard input
-handles_stream = readall(STDIN)
+### standard input
+handles_stream = sys.stdin
 
 ### retrieve handles from .YAML files
 handles = gethandles(handles_stream)
@@ -46,9 +49,8 @@ input_args = checkinputargs(input_args)
 ## prepare output ##
 ####################
 
-output_args = Dict()
-output_tmp = Dict()
-
+output_args = dict()
+output_tmp = dict()
 
 ## ------------------------------ module specific -----------------------------
 ## ----------------------------------------------------------------------------
@@ -57,7 +59,10 @@ output_tmp = Dict()
 ###############################################################################
 ## jterator output
 
+### write measurement data to HDF5
 writeoutputargs(handles, output_args)
+
+### write temporary pipeline data to HDF5
 writeoutputtmp(handles, output_tmp)
 
 ###############################################################################

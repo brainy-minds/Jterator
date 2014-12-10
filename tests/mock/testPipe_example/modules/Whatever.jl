@@ -1,18 +1,14 @@
-import os
-import sys
-import re
-from jterator.api.io import *
+importall jterator
 
-
-mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
+mfilename = match(r"([^/]+)\.jl$", @__FILE__()).captures[1]
 
 ###############################################################################
 ## jterator input
 
-print('jt - %s:' % mfilename)
+@printf("jt - %s\n", mfilename)
 
-### standard input
-handles_stream = sys.stdin
+### read YAML from standard input
+handles_stream = readall(STDIN)
 
 ### retrieve handles from .YAML files
 handles = gethandles(handles_stream)
@@ -48,8 +44,9 @@ input_args = checkinputargs(input_args)
 ## prepare output ##
 ####################
 
-output_args = dict()
-output_tmp = dict()
+output_args = Dict()
+output_tmp = Dict()
+
 
 ## ------------------------------ module specific -----------------------------
 ## ----------------------------------------------------------------------------
@@ -58,7 +55,6 @@ output_tmp = dict()
 ###############################################################################
 ## jterator output
 
-### write output data to HDF5
 writeoutputargs(handles, output_args)
 writeoutputtmp(handles, output_tmp)
 

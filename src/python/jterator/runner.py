@@ -7,7 +7,7 @@ from jterator.error import JteratorError
 from jterator.checker import JteratorCheck
 from jterator.module import Module
 
-# from IPython.core.debugger import Tracer
+from IPython.core.debugger import Tracer
 
 
 class JteratorRunner(object):
@@ -99,27 +99,40 @@ class JteratorRunner(object):
         # Interpret module description.
         for module_description in self.description['pipeline']:
             # Get path to module (executable file containing actual code)
-            executable_path = os.path.join(self.pipeline_folder_path,
-                                           module_description['module'])
+            module_path = os.path.join(self.pipeline_folder_path,
+                                       module_description['module'])
             # Does module file exist?
-            if not os.path.exists(executable_path):
-                raise JteratorError('Missing module file: %s' %
-                                    executable_path)
+            if not os.path.exists(module_path):
+                raise JteratorError('Missing module: %s' %
+                                    module_path)
             # Is module file executable?
-            if not os.access(executable_path, os.R_OK):
-                raise JteratorError('Module file not executable: %s' %
-                                    executable_path)
+            if not os.access(module_path, os.R_OK):
+                raise JteratorError('Module is not executable: %s' %
+                                    module_path)
             # Get path to handles (YAML file describing model input/output)
-            handles_filepath = os.path.join(self.pipeline_folder_path,
-                                            module_description['handles'])
+            handles_path = os.path.join(self.pipeline_folder_path,
+                                        module_description['handles'])
             # Does handles file exist?
-            if not os.path.exists(handles_filepath):
-                raise JteratorError('Missing handles file: %s' %
-                                    handles_filepath)
+            if not os.path.exists(handles_path):
+                raise JteratorError('Missing handles: %s' %
+                                    handles_path)
+            # Get path to executable.
+            interpreter_path = module_description['interpreter']
+            # Does executable exist?
+            if os.path.isabs(interpreter_path):
+                if not os.path.exists(interpreter_path):
+                    raise JteratorError('Missing interpreter: %s' %
+                                        interpreter_path)
+                if not os.access(interpreter_path, os.R_OK):
+                    raise JteratorError('Interpreter is not executable: %s' %
+                                        interpreter_path)
+            # else:
+            #     try:
             # Extract module information from pipeline description.
             module = Module(name=module_description['name'],
-                            executable_path=executable_path,
-                            handles=open(handles_filepath))
+                            module=module_path,
+                            handles=open(handles_path),
+                            interpreter=interpreter_path)
             self.modules.append(module)
         if not self.modules:
             raise JteratorError('No module description was found in:'
@@ -144,17 +157,21 @@ class JteratorRunner(object):
         '''
         Create HDF5 files for temporary pipeline data and module output.
         '''
-        # Create HDF5 file for temporary data (pipeline data; temporary).
+        # Create HDF5 file for temporary data
+        # (for pipeline data; temporary file).
         item_name = os.path.splitext(os.path.basename(item_path))[0]
         h5py.File(self.tmp_filename, 'w')
-        # Provide the full path of the processed item.
+        # Write the full path of the processed item into default location.
         tmp_root = h5py.File(self.tmp_filename, 'r+')
-        tmp_root.create_dataset('/item', data=item_path)
-        # Create HDF5 file for measurement data (pipeline output; persistent).
-        output_path = os.path.join(self.pipeline_folder_path, 'output')
+        dt = h5py.special_dtype(vlen=str)
+        tmp_root.create_dataset('/item', data=item_path, dtype=dt)
+        tmp_root.close()
+        # Create HDF5 file for measurement data
+        # (for pipeline output; persistent file).
+        output_path = os.path.join(self.pipeline_folder_path, 'data')
         if not os.path.isdir(output_path):
             os.mkdir(output_path)
-        output_filename = os.path.join(output_path, '%s_%s.output' %
+        output_filename = os.path.join(output_path, '%s_%s.data' %
                                        (self.description['project']['name'],
                                         item_name))
         h5py.File(output_filename, 'w')
@@ -174,17 +191,31 @@ class JteratorRunner(object):
         checker.check_handles()
         checker.check_pipeline_io()
         # Iterate over items that should be processed in the pipeline.
-        for item in self.collection:  # parallelization???
+        if self.description['jobs']['mode'] is 'jterate':
+            for item in self.collection:  # parallelization???
+                # Initialize the pipeline.
+                item_path = os.path.join(self.description['jobs']['folder'],
+                                         item)
+                self.create_hdf5_files(item_path)
+                # Run the pipeline.
+                for module in self.modules:
+                    module.set_error_output(os.path.join(self.logs_path,
+                                            '%s.error' % module.name))
+                    module.set_standard_output(os.path.join(self.logs_path,
+                                               '%s.output' % module.name))
+                    module.run()
+                # Kill the temporary file containing the pipeline data.
+                os.remove(self.tmp_filename)
+        elif self.description['jobs']['mode'] is 'parallel':
             # Initialize the pipeline.
-            item_path = os.path.join(self.description['jteration']['folder'],
-                                     item)
-            self.create_hdf5_files(item_path)
-            # Run the pipeline.
-            for module in self.modules:
-                module.set_error_output(os.path.join(self.logs_path,
-                                        '%s.error' % module.name))
-                module.set_standard_output(os.path.join(self.logs_path,
-                                           '%s.output' % module.name))
-                module.run()
-            # Kill the temporary file containing the pipeline data.
-            os.remove(self.tmp_filename)
+                item_path = 'bla'  # this should come via input
+                self.create_hdf5_files(item_path)
+                # Run the pipeline.
+                for module in self.modules:
+                    module.set_error_output(os.path.join(self.logs_path,
+                                            '%s.error' % module.name))
+                    module.set_standard_output(os.path.join(self.logs_path,
+                                               '%s.output' % module.name))
+                    module.run()
+                # Kill the temporary file containing the pipeline data.
+                os.remove(self.tmp_filename)

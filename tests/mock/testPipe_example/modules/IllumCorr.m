@@ -1,25 +1,15 @@
-#!/opt/local/bin/Mscript
-
 import jterator.api.io.*;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
 
-fprintf(sprintf('jt - %s:\n', mfilename));
+fprintf('jt - %s:\n', mfilename);
 
 %%% read standard input
-if exist('input_stream', 'var')
-    handles_stream = input_stream;
-else
-    error('This jterator script has to be interpreted by Mscript. Check shebang!')
-end
+handles_stream = input_stream;
 
 %%% change current working directory
-if exist('currentDirectory', 'var')
-    cd(currentDirectory)
-else
-    error('This jterator script has to be interpreted by Mscript. Check shebang!')
-end
+cd(currentDirectory)
 
 %%% retrieve handles from .YAML files
 handles = gethandles(handles_stream);
@@ -40,23 +30,40 @@ input_args = checkinputargs(input_args);
 %% input handling %%
 %%%%%%%%%%%%%%%%%%%%
 
-ImagePath = input_args.ImageDirectory;
-ImageFilename = input_args.ImageFilename;
-StatsPath = input_args.StatsDirectory;
-StatsFilename = input_args.StatsFilename;
+OrigImage = input_args.OrigImage;
+MeanImage = input_args.StatsMeanImage;
+StdImage = input_args.StatsStdImage;
 
 
 %%%%%%%%%%%%%%%%
 %% processing %%
 %%%%%%%%%%%%%%%%
 
-%%% load primary raw data from disk (in this test scenario this is an image)
-% for original intensity images
-OrigImage = double(imread(fullfile(ImagePath, ImageFilename)));
-% for illumination correction statistics
-structStats = load(fullfile(StatsPath, StatsFilename));
-MeanImage = double(structStats.stat_values.mean);
-StdImage = double(structStats.stat_values.std);
+%%% correct intensity image for illumination artefact
+% Avoid -Inf values after log10 transform.
+OrigImage(OrigImage == 0) = 1;
+% Apply z-score normalization for each single pixel.
+CorrImage = (log10(OrigImage) - MeanImage) ./ StdImage;
+% Reverse z-score.
+CorrImage = (CorrImage .* mean(StdImage(:))) + mean(MeanImage(:));
+% Reverse log10 transform that was applied to images when learning 
+% mean/std statistics as well the corrected image.
+CorrImage = 10 .^ CorrImage;
+
+
+%%%%%%%%%%%%%%%%%
+%% make figure %%
+%%%%%%%%%%%%%%%%%
+
+%%% make figure
+fig = figure, imagesc(CorrImage);
+
+%%% save figure as PDF file
+set(fig, 'PaperPosition', [0 0 7 7], 'PaperSize', [7 7]);
+saveas(fig, sprintf('figures/%s', mfilename), 'pdf');
+
+%%% send figure to plotly
+% fig2plotly() 
 
 
 %%%%%%%%%%%%%%%%%%%%
@@ -66,9 +73,7 @@ StdImage = double(structStats.stat_values.std);
 output_args = struct();
 
 output_tmp = struct();
-output_tmp.OrigImage = OrigImage;
-output_tmp.StatsMeanImage = MeanImage;
-output_tmp.StatsStdImage = StdImage;
+output_tmp.CorrImage = CorrImage;
 
 %% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------
@@ -77,10 +82,6 @@ output_tmp.StatsStdImage = StdImage;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator output
 
-%%% create .HDF5 file
-buildhdf5(handles);
-
-%%% save loaded data in .HDF5 file
 writeoutputargs(handles, output_args);
 writeoutputtmp(handles, output_tmp);
 
