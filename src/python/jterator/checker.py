@@ -2,7 +2,7 @@ import os
 import yaml
 from jterator.error import JteratorError
 
-# from IPython.core.debugger import Tracer
+from IPython.core.debugger import Tracer
 
 
 class JteratorCheck(object):
@@ -38,10 +38,6 @@ class JteratorCheck(object):
             raise JteratorError('Pipeline file must contain the key "%s" '
                                 'as a subkey of "%s"' %
                                 ('pattern', 'jobs'))
-        if not 'mode' in self.description['jobs']:
-            raise JteratorError('Pipeline file must contain the key "%s" '
-                                'as a subkey of "%s"' %
-                                ('mode', 'jobs'))
         # Check required 'pipeline' section
         if not 'pipeline' in self.description:
             raise JteratorError('Pipeline file must contain the key "%s".' %
@@ -103,9 +99,10 @@ class JteratorCheck(object):
         outputs = list()
         for module in self.description['pipeline']:
             handles = yaml.load(open(module['handles']).read())
-            for output_arg in handles['output']:
-                output = handles['output'][output_arg]['hdf5_location']
-                outputs.append(output)
+            if not handles['output'] is None:
+                for output_arg in handles['output']:
+                    output = handles['output'][output_arg]['hdf5_location']
+                    outputs.append(output)
             for input_arg in handles['input']:
                 if not 'hdf5_location' in handles['input'][input_arg]:
                     # We only check for pipeline data passed via the HDF5 file.

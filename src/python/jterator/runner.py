@@ -17,6 +17,8 @@ class JteratorRunner(object):
         self.modules = list()
         self.__description = None
         self.pipeline_filename = None
+        self.tmp_filename = None
+        self.collection = None
 
     @property
     def logs_path(self):
@@ -78,19 +80,19 @@ class JteratorRunner(object):
             self.locate_pipe_file()
             # Read and parse pipeline descriptor file.
             self.__description = self.read_pipe_file(self.pipeline_filename)
-        # print self.__description
         return self.__description
 
     def init_hdf5_files(self):
         '''
         Determine name of HDF5 files for temporary pipeline data.
         '''
-        tmp_path = os.path.join(self.pipeline_folder_path, 'tmp')
-        if not os.path.isdir(tmp_path):
-            os.mkdir(tmp_path)
-        tmp_filename = os.path.join(tmp_path, '%s.tmp' %
-                                    self.description['project']['name'])
-        self.tmp_filename = tmp_filename
+        if self.tmp_filename is None:
+            tmp_path = os.path.join(self.pipeline_folder_path, 'tmp')
+            if not os.path.isdir(tmp_path):
+                os.mkdir(tmp_path)
+            tmp_filename = os.path.join(tmp_path, '%s.tmp' %
+                                        self.description['project']['name'])
+            self.tmp_filename = tmp_filename
 
     def build_pipeline(self):
         '''
@@ -138,20 +140,37 @@ class JteratorRunner(object):
             raise JteratorError('No module description was found in:'
                                 ' %s' % self.pipeline_filename)
 
-    def build_iteration(self):
+    def create_job_list(self):
         '''
-        Build a collection of items over which the program can iterate.
+        Create a list of jobs over which the program should iterate,
+        i.e. process one after another or process in parallel.
         '''
-        folder_path = self.description['jteration']['folder']
-        iteration_pattern = self.description['jteration']['pattern']
-        if not os.path.isabs(folder_path):
-            folder_path = os.path.join(self.pipeline_folder_path, folder_path)
-        files_matching = [f for f in os.listdir(folder_path) if re.match(iteration_pattern, f)]
-        if len(files_matching) == 0:
-            raise JteratorError('No files found in folder "%s" that match '
-                                'pattern "%s".' %
-                                (folder_path, iteration_pattern))
-        self.collection = files_matching
+        if self.collection is None:
+            # Check pipeline description.
+            self.init_hdf5_files()
+            checker = JteratorCheck(self.description, self.tmp_filename)
+            checker.check_pipeline()
+            # Create joblist based on pipeline description.
+            folder_path = self.description['jobs']['folder']
+            iteration_pattern = self.description['jobs']['pattern']
+            if not os.path.isabs(folder_path):
+                folder_path = os.path.join(self.pipeline_folder_path,
+                                           folder_path)
+            # currently, this gives a simple list, but it could be extended to
+            # a dictionary with additional keys, such as job id, run time, etc.
+            files_matching = [f for f in os.listdir(folder_path) if re.match(iteration_pattern, f)]
+            if len(files_matching) == 0:
+                raise JteratorError('No files found in folder "%s" that match '
+                                    'pattern "%s".' %
+                                    (folder_path, iteration_pattern))
+            self.collection = files_matching
+            # also save job list to file (as YAML)
+            jobs_file_path = os.path.join(self.pipeline_folder_path,
+                                          '%s.jobs' %
+                                          self.description['project']['name'])
+            self.jobs_file_path = jobs_file_path
+            stream = file(jobs_file_path, 'w+')
+            yaml.dump(files_matching, stream, default_flow_style=False)
 
     def create_hdf5_files(self, item_path):
         '''
@@ -176,7 +195,7 @@ class JteratorRunner(object):
                                         item_name))
         h5py.File(output_filename, 'w')
 
-    def run_pipeline(self):
+    def run_pipeline(self, mode, job_id):
         '''
         For each iteration, run one module after another and
         pass their corresponding handles to them.
@@ -184,15 +203,14 @@ class JteratorRunner(object):
         # Build the pipeline and iteration procedure.
         self.build_pipeline()
         self.init_hdf5_files()
-        self.build_iteration()
+        self.create_job_list()
         # Check structure of pipeline and handles description.
         checker = JteratorCheck(self.description, self.tmp_filename)
-        checker.check_pipeline()
         checker.check_handles()
         checker.check_pipeline_io()
         # Iterate over items that should be processed in the pipeline.
-        if self.description['jobs']['mode'] is 'jterate':
-            for item in self.collection:  # parallelization???
+        if mode == 'jterate':
+            for item in self.collection:
                 # Initialize the pipeline.
                 item_path = os.path.join(self.description['jobs']['folder'],
                                          item)
@@ -206,16 +224,23 @@ class JteratorRunner(object):
                     module.run()
                 # Kill the temporary file containing the pipeline data.
                 os.remove(self.tmp_filename)
-        elif self.description['jobs']['mode'] is 'parallel':
+        elif mode == 'parallel':
+            # Make sure file with list of jobs was created.
+            if not os.path.exists(self.jobs_file_path):
+                raise JteratorError('No "joblist" file! Call "jt jobs" first.')
             # Initialize the pipeline.
-                item_path = 'bla'  # this should come via input
-                self.create_hdf5_files(item_path)
-                # Run the pipeline.
-                for module in self.modules:
-                    module.set_error_output(os.path.join(self.logs_path,
-                                            '%s.error' % module.name))
-                    module.set_standard_output(os.path.join(self.logs_path,
-                                               '%s.output' % module.name))
-                    module.run()
-                # Kill the temporary file containing the pipeline data.
-                os.remove(self.tmp_filename)
+            items = yaml.load(open(self.jobs_file_path).read())
+            item = items[job_id-1]  # let user index job from 1 to n
+            item_path = os.path.join(self.description['jobs']['folder'],
+                                     item)
+            item_path = self.jobs_file_path
+            self.create_hdf5_files(item_path)
+            # Run the pipeline.
+            for module in self.modules:
+                module.set_error_output(os.path.join(self.logs_path,
+                                        '%s.error' % module.name))
+                module.set_standard_output(os.path.join(self.logs_path,
+                                           '%s.output' % module.name))
+                module.run()
+            # Kill the temporary file containing the pipeline data.
+            os.remove(self.tmp_filename)

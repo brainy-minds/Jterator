@@ -4,29 +4,13 @@ hdf5_filename: tmp/test.tmp
 # module input arguments
 input:
 
-    OrigImage: 
-        hdf5_location: /PrimeRawData/OrigImage
+    Data2DoFancyStuff: 
+        hdf5_location: /MeasureObjects/Measurements
         class: "Array{Float64,2}"
-
-    StatsMeanImage: 
-        hdf5_location: /PrimeRawData/StatsMeanImage
-        class: "Array{Float64,2}"
-
-    StatsStdImage: 
-        hdf5_location: /PrimeRawData/StatsStdImage
-        class: "Array{Float64,2}"
-
-    MakePlot:
-        parameter: Yes
-        class: Bool
-
-    TestKey:
-        parameter: "/just/an/example/directory"
-        class: ASCIIString
 
 # module output arguments
 output:
 
     CorrImage:
-        hdf5_location: /IllumCorr/CorrImage
+        hdf5_location: /Whatever/FancyOutput
         class: "Array{Float64,2}"

@@ -5,7 +5,7 @@
 # is located. So you can provide relative paths in your pipeline description.
 #
 # To run modules individually use the following command:
-#   $ cat [handles_filename] | [module_filename]
+#   $ cat [handles_filename] | [executable] [module_filename]
 
 
 # Define your project:
@@ -16,36 +16,43 @@ project:
   version: 0.0.1
 
 
-# Define iteration procedure:
-jteration:
+# Define how jobs are created and processed:
+jobs:
 
     folder: rawdata/TIFF
     pattern: .*C01\.(png|tiff?)
 
 
-# Define modules (.jt executable files) and handles (.handles YAML files):
+# Define path to modules (executable files) and handles (YAML files)
+# and the interpreter program (full path or command for /usr/bin/env):
 pipeline:
 
   - name: PrimeRawData
-    module: modules/PrimeRawData.jt
+    module: modules/PrimeRawData.py
     handles: handles/PrimeRawData.handles
+    interpreter: python
 
   - name: IllumCorr
-    module: modules/IllumCorr.jt
+    module: modules/IllumCorr.m
     handles: handles/IllumCorr.handles
+    interpreter: Mscript
 
-  - name: IndentifyPrimary
-    module: modules/IdentifyPrimary.jt
-    handles: handles/IdentifyPrimary.handles
+  - name: IdentifyNuclei
+    module: modules/IdentifyNuclei.m
+    handles: handles/IdentifyNuclei.handles
+    interpreter: /opt/local/bin/Mscript
 
-  - name: MeasurePrimary
-    module: modules/MeasurePrimary.jt
-    handles: handles/MeasurePrimary.handles
+  - name: MeasureObjects
+    module: modules/MeasureObjects.py
+    handles: handles/MeasureObjects.handles
+    interpreter: python
 
-  - name: Plot
-    module: modules/Plot.jt
-    handles: handles/Plot.handles
+  - name: PlotMeasurements
+    module: modules/PlotMeasurements.R
+    handles: handles/PlotMeasurements.handles
+    interpreter: Rscript
 
   - name: Whatever
-    module: modules/Whatever.jt
+    module: modules/Whatever.jl
     handles: handles/Whatever.handles
+    interpreter: julia
