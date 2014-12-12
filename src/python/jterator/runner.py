@@ -18,7 +18,7 @@ class JteratorRunner(object):
         self.__description = None
         self.pipeline_filename = None
         self.tmp_filename = None
-        self.collection = None
+        self.joblist = None
 
     @property
     def logs_path(self):
@@ -145,7 +145,7 @@ class JteratorRunner(object):
         Create a list of jobs over which the program should iterate,
         i.e. process one after another or process in parallel.
         '''
-        if self.collection is None:
+        if self.joblist is None:
             # Check pipeline description.
             self.init_hdf5_files()
             checker = JteratorCheck(self.description, self.tmp_filename)
@@ -156,21 +156,21 @@ class JteratorRunner(object):
             if not os.path.isabs(folder_path):
                 folder_path = os.path.join(self.pipeline_folder_path,
                                            folder_path)
-            # currently, this gives a simple list, but it could be extended to
-            # a dictionary with additional keys, such as job id, run time, etc.
-            files_matching = [f for f in os.listdir(folder_path) if re.match(iteration_pattern, f)]
-            if len(files_matching) == 0:
+            job_files = [f for f in os.listdir(folder_path) if re.match(iteration_pattern, f)]
+            if len(job_files) == 0:
                 raise JteratorError('No files found in folder "%s" that match '
                                     'pattern "%s".' %
                                     (folder_path, iteration_pattern))
-            self.collection = files_matching
-            # also save job list to file (as YAML)
+            job_ids = [i+1 for i in xrange(len(job_files))]  # ids from 1 to n
+            job_list = dict(zip(job_ids, job_files))
+            self.joblist = job_list
+            # save job list to file (as YAML)
             jobs_file_path = os.path.join(self.pipeline_folder_path,
                                           '%s.jobs' %
                                           self.description['project']['name'])
             self.jobs_file_path = jobs_file_path
             stream = file(jobs_file_path, 'w+')
-            yaml.dump(files_matching, stream, default_flow_style=False)
+            yaml.dump(job_list, stream, default_flow_style=False)
 
     def create_hdf5_files(self, item_path):
         '''
@@ -195,7 +195,7 @@ class JteratorRunner(object):
                                         item_name))
         h5py.File(output_filename, 'w')
 
-    def run_pipeline(self, mode, job_id):
+    def run_pipeline(self, job_id):
         '''
         For each iteration, run one module after another and
         pass their corresponding handles to them.
@@ -209,8 +209,8 @@ class JteratorRunner(object):
         checker.check_handles()
         checker.check_pipeline_io()
         # Iterate over items that should be processed in the pipeline.
-        if mode == 'jterate':
-            for item in self.collection:
+        if job_id is None:
+            for item in self.joblist.itervalues():
                 # Initialize the pipeline.
                 item_path = os.path.join(self.description['jobs']['folder'],
                                          item)
@@ -224,13 +224,14 @@ class JteratorRunner(object):
                     module.run()
                 # Kill the temporary file containing the pipeline data.
                 os.remove(self.tmp_filename)
-        elif mode == 'parallel':
+        else:
             # Make sure file with list of jobs was created.
             if not os.path.exists(self.jobs_file_path):
-                raise JteratorError('No "joblist" file! Call "jt jobs" first.')
+                raise JteratorError('No joblist file found! '
+                                    'Call "jt joblist"!')
             # Initialize the pipeline.
             items = yaml.load(open(self.jobs_file_path).read())
-            item = items[job_id-1]  # let user index job from 1 to n
+            item = items[job_id]
             item_path = os.path.join(self.description['jobs']['folder'],
                                      item)
             item_path = self.jobs_file_path

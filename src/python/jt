@@ -18,6 +18,7 @@ from functools import partial
 import jterator
 from jterator.runner import JteratorRunner
 from jterator.error import JteratorError
+from jterator.checker import JteratorCheck
 
 
 class MissingCliArgs(JteratorError):
@@ -34,6 +35,9 @@ class JteratorCli(object):
         '''
         Create a project based on a project folder skeleton.
         '''
+        print('repo_path')
+        if not os.path.exists(self.args.repo_path):
+            ''
         repo_content = os.listdir(self.args.repo_path)
         for folder in repo_content:
             if folder in ['skeleton', 'src', 'tests']:
@@ -41,11 +45,10 @@ class JteratorCli(object):
                 # shutil.copytree(folder_path, self.args.path)
                 print(folder)
 
-    def jobs(self):
+    def joblist(self):
         '''
         Create a list of jobs for parallel computing.
         '''
-        print('hi')
         jt = JteratorRunner(pipeline_folder_path=self.args.path)
         jt.description
         jt.create_job_list()
@@ -56,7 +59,19 @@ class JteratorCli(object):
         '''
         jt = JteratorRunner(pipeline_folder_path=self.args.path)
         jt.build_pipeline()
-        jt.run_pipeline(self.args.mode, self.args.job)
+        jt.run_pipeline(self.args.job)
+
+    def check(self):
+        '''
+        Check pipeline and handles descriptor files.
+        '''
+        jt = JteratorRunner(pipeline_folder_path=self.args.path)
+        jt.description
+        jt.init_hdf5_files()
+        checker = JteratorCheck(jt.description, jt.tmp_filename)
+        checker.check_pipeline()
+        checker.check_handles()
+        checker.check_pipeline_io()
 
     @staticmethod
     def process_commands(args, subparser):
@@ -65,8 +80,10 @@ class JteratorCli(object):
             cli.create()
         elif subparser.prog == 'jt run':
             cli.run()
-        elif subparser.prog == 'jt jobs':
-            cli.jobs()
+        elif subparser.prog == 'jt joblist':
+            cli.joblist()
+        elif subparser.prog == 'jt check':
+            cli.check()
         else:
             subparser.print_help()
 
@@ -82,7 +99,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(description='Command-line interface for Jterator.')
     parser.add_argument('-i', '--interactive', action='store_true',
                         default=False)
-    parser.add_argument("-v", "--verbosity", action="count", default=1,
+    parser.add_argument('-v', '--verbosity', action='count', default=1,
                         help='Increase logging verbosity (-v WARN, -vv INFO, '
                         '-vvv DEBUG)')
     parser.add_argument('--version', action='version',
@@ -92,26 +109,33 @@ if __name__ == '__main__':
 
     # 'jt create' parser
     create_command_parser = subparsers.add_parser('create')
-    create_command_parser.add_argument('path', default=os.getcwd(), nargs='?')
-    create_command_parser.add_argument('repo_path',
-                                       default='/Users/Markus/Documents/Jterator',
-                                       nargs='?')
+    create_command_parser.add_argument('path', default=os.getcwd(),
+                                       nargs='?', type=str)
+    create_command_parser.add_argument('repo_path', nargs=1, type=str)
     create_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=create_command_parser))
 
+    # 'jt joblist' parser
+    joblist_command_parser = subparsers.add_parser('joblist')
+    joblist_command_parser.add_argument('path', default=os.getcwd(),
+                                        nargs='?', type=str)
+    joblist_command_parser.set_defaults(handler=partial(
+        JteratorCli.process_commands, subparser=joblist_command_parser))
+
+    # 'jt check' parser
+    check_command_parser = subparsers.add_parser('check')
+    check_command_parser.add_argument('path', default=os.getcwd(),
+                                      nargs='?', type=str)
+    check_command_parser.set_defaults(handler=partial(
+        JteratorCli.process_commands, subparser=check_command_parser))
+
     # 'jt run' parser
     run_command_parser = subparsers.add_parser('run')
-    run_command_parser.add_argument('path', default=os.getcwd(), nargs='?')
-    run_command_parser.add_argument('mode', default='jterate', nargs='?')
-    run_command_parser.add_argument('job', default=None, nargs='?')
+    run_command_parser.add_argument('path', default=os.getcwd(),
+                                    nargs='?', type=str)
+    run_command_parser.add_argument('--job', default=None, type=int)
     run_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=run_command_parser))
-
-    # 'jt jobs' parser
-    jobs_command_parser = subparsers.add_parser('jobs')
-    jobs_command_parser.add_argument('path', default=os.getcwd(), nargs='?')
-    jobs_command_parser.set_defaults(handler=partial(
-        JteratorCli.process_commands, subparser=jobs_command_parser))
 
     # Parse arguments.
     args = parser.parse_args()
