@@ -4,13 +4,21 @@ hdf5_filename: tmp/test.tmp
 # module input arguments
 input:
 
-    OrigImage:
-        hdf5_location: /item
+    DapiFilename:
+        hdf5_location: /DAPI
+        class: str
+
+    Antibody1Filename:
+        hdf5_location: /Antibody1
         class: str
 
 # module output arguments
 output:
 
-    OrigImage:
-        hdf5_location: /PrimeRawData/OrigImage
+    DapiImage:
+        hdf5_location: /PrimeRawData/DapiImage
+        class: ndarray
+
+    Antibody1Image:
+        hdf5_location: /PrimeRawData/Antibody1Image
         class: ndarray

@@ -4,9 +4,9 @@ hdf5_filename: tmp/test.tmp
 # module input arguments
 input:
 
-    OrigImage:
-        hdf5_location: /PrimeRawData/OrigImage
-        class: double
+    DapiImage:
+        hdf5_location: /PrimeRawData/DapiImage
+        class: "Array{Float64,2}"
 
     StatsDirectory:
         parameter: rawdata/BATCH
@@ -19,5 +19,4 @@ output:
 
     CorrImage:
         hdf5_location: /IllumCorr/CorrImage
-        class: double
-        attributes: positive
+        class: "Array{Float64,2}"

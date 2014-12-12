@@ -30,9 +30,9 @@ input_args = checkinputargs(input_args);
 %% input handling %%
 %%%%%%%%%%%%%%%%%%%%
 
-OrigImage = input_args.OrigImage;
-MeanImage = input_args.StatsMeanImage;
-StdImage = input_args.StatsStdImage;
+orig_image = input_args.DapiImage;
+stats_directory = input_args.StatsDirectory;
+stats_filename = input_args.StatsFilename;
 
 
 %%%%%%%%%%%%%%%%
@@ -55,16 +55,6 @@ CorrImage = 10 .^ CorrImage;
 %% make figure %%
 %%%%%%%%%%%%%%%%%
 
-%%% make figure
-fig = figure, imagesc(CorrImage);
-
-%%% save figure as PDF file
-set(fig, 'PaperPosition', [0 0 7 7], 'PaperSize', [7 7]);
-saveas(fig, sprintf('figures/%s', mfilename), 'pdf');
-
-%%% send figure to plotly
-% fig2plotly() 
-
 
 %%%%%%%%%%%%%%%%%%%%
 %% prepare output %%
@@ -73,7 +63,7 @@ saveas(fig, sprintf('figures/%s', mfilename), 'pdf');
 data = struct();
 
 output_args = struct();
-output_args.CorrImage = CorrImage;
+output_args.CorrImage = corr_image;
 
 %% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------

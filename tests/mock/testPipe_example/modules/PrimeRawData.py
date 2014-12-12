@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import numpy as np
+from scipy import misc
 from jterator.api.io import *
 
 
@@ -34,10 +35,14 @@ input_args = checkinputargs(input_args)
 ## input handling ##
 ####################
 
+dapi_filename = input_args['DapiFilename']
+
 
 ################
 ## processing ##
 ################
+
+dapi_image = np.float64(misc.imread(dapi_filename))
 
 
 #################
@@ -50,6 +55,8 @@ input_args = checkinputargs(input_args)
 ####################
 
 output_args = dict()
+output_args['DapiImage'] = dapi_image
+
 data = dict()
 
 ## ------------------------------ module specific -----------------------------

@@ -95,7 +95,7 @@ def checkinputargs(input_args):
     return checked_input_args
 
 
-def writedata(handles, output_args):
+def writedata(handles, data):
     '''
     Writing data to HDF5 file.
     '''
@@ -105,16 +105,16 @@ def writedata(handles, output_args):
                            handles['hdf5_filename'])
     hdf5_root = h5py.File(hdf5_filename, 'r+')
 
-    for key in output_args:
+    for key in data:
         hdf5_location = handles['output'][key]['hdf5_location']
-        hdf5_root.create_dataset(hdf5_location, data=output_args[key])
+        hdf5_root.create_dataset(hdf5_location, data=data[key])
         print('jt -- %s: wrote dataset \'%s\' to HDF5 group: "%s"'
               % (mfilename, key, hdf5_location))
 
     h5py.File.close(hdf5_root)
 
 
-def writeoutputargs(handles, output_tmp):
+def writeoutputargs(handles, output_args):
     '''
     Writing output arguments to HDF5 file
     using the location specified in "handles".
@@ -124,9 +124,9 @@ def writeoutputargs(handles, output_tmp):
     hdf5_filename = handles['hdf5_filename']
     hdf5_root = h5py.File(hdf5_filename, 'r+')
 
-    for key in output_tmp:
+    for key in output_args:
         hdf5_location = handles['output'][key]['hdf5_location']
-        hdf5_root.create_dataset(hdf5_location, data=output_tmp[key])
+        hdf5_root.create_dataset(hdf5_location, data=output_args[key])
         print('jt -- %s: wrote tmp dataset \'%s\' to HDF5 group: "%s"'
               % (mfilename, key, hdf5_location))
 

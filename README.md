@@ -102,7 +102,11 @@ Project:
 Jobs:
 
     folder: path/to/myFolder
-    pattern: .*\.png
+    pattern: 
+        - name: myImage
+          expression: .*\.png
+        - name: myOtherImage
+          expression: .*\.tiff?
 
 Pipeline:
 
@@ -183,7 +187,7 @@ To *download* Jterator clone this repository:
 git clone git@github.com:HackerMD/Jterator.git
 ```
 
-To *install* Jterator locally (developer mode):
+To *install* Jterator locally (developer mode), do:
 
 ```bash
 cd Jterator && pip install -e .

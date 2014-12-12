@@ -211,16 +211,19 @@ class JteratorRunner(object):
         '''
         # Create HDF5 file for temporary data
         # (for pipeline data; temporary file).
-        Tracer()()
         h5py.File(self.tmp_filename, 'w')
         # Write the full path of the processed item into defined location.
         for item in job:
-            item_path = os.path.join(self.description['jobs']['folder'],
-                                     job[item])
+            if isinstance(job[item], str):
+                item_path = os.path.join(self.description['jobs']['folder'],
+                                         job[item])
+                # dt = h5py.special_dtype(vlen=str)
+                # tmp_root.create_dataset(item, data=item_path, dtype=dt)
+            else:
+                item_path = job[item]
             tmp_root = h5py.File(self.tmp_filename, 'r+')
-            dt = h5py.special_dtype(vlen=str)
-            tmp_root.create_dataset(item, data=item_path, dtype=dt)
-            tmp_root.close()
+            tmp_root.create_dataset(item, data=item_path)
+        tmp_root.close()
         # Create HDF5 file for measurement data
         # (for pipeline output; persistent file).
         output_path = os.path.join(self.pipeline_folder_path, 'data')

@@ -20,7 +20,11 @@ project:
 jobs:
 
     folder: rawdata/TIFF
-    pattern: .*C01\.(png|tiff?)
+    pattern: 
+      - name: DAPI
+        expression: .*C01\.(png|tiff?)
+      - name: Antibody1
+        expression: .*C02\.(png|tiff?)
 
 
 # Define path to modules (executable files) and handles (YAML files)
@@ -33,9 +37,9 @@ pipeline:
     interpreter: python
 
   - name: IllumCorr
-    module: modules/IllumCorr.m
+    module: modules/IllumCorr.jl
     handles: handles/IllumCorr.handles
-    interpreter: Mscript
+    interpreter: julia
 
   - name: IdentifyNuclei
     module: modules/IdentifyNuclei.m
@@ -51,8 +55,3 @@ pipeline:
     module: modules/PlotMeasurements.R
     handles: handles/PlotMeasurements.handles
     interpreter: Rscript
-
-  - name: Whatever
-    module: modules/Whatever.jl
-    handles: handles/Whatever.handles
-    interpreter: julia

@@ -86,11 +86,30 @@ checkinputargs <- function(input_args) {
 
 
 #' @rdname Writing data to HDF5 file.
-writedata <- function(handles, output_args) {
+writedata <- function(handles, data) {
 
     mfilename <- "writedata"
 
     hdf5_filename <- sub('/tmp/(.*)\\.tmp', '/data/\\1.data', handles$hdf5_filename)
+
+    for (key in names(data)) {
+      hdf5_location <- handles$output[[key]]$hdf5_location
+      h5createGroup(hdf5_filename, dirname(hdf5_location))
+      h5createDataset(hdf5_filename, hdf5_location, 
+                      dims = dim(data[[key]]),
+                      storage.mode = storage.mode(data[[key]]))
+      h5write(data[[key]], hdf5_filename, hdf5_location)
+      cat(sprintf("jt -- %s: wrote dataset '%s' to HDF5 group: \"%s\"\n",
+                mfilename, key, hdf5_location))
+    }
+}
+
+#' @rdname Writing output arguments to HDF5 file using the location specified in "handles".
+writeoutputargs <- function(handles, output_args) {
+
+    mfilename <- "writeoutputargs"
+
+    hdf5_filename <- handles$hdf5_filename
 
     for (key in names(output_args)) {
       hdf5_location <- handles$output[[key]]$hdf5_location
@@ -99,25 +118,6 @@ writedata <- function(handles, output_args) {
                       dims = dim(output_args[[key]]),
                       storage.mode = storage.mode(output_args[[key]]))
       h5write(output_args[[key]], hdf5_filename, hdf5_location)
-      cat(sprintf("jt -- %s: wrote dataset '%s' to HDF5 group: \"%s\"\n",
-                mfilename, key, hdf5_location))
-    }
-}
-
-#' @rdname Writing output arguments to HDF5 file using the location specified in "handles".
-writeoutputargs <- function(handles, output_tmp) {
-
-    mfilename <- "writeoutputargs"
-
-    hdf5_filename <- handles$hdf5_filename
-
-    for (key in names(output_tmp)) {
-      hdf5_location <- handles$output[[key]]$hdf5_location
-      h5createGroup(hdf5_filename, dirname(hdf5_location))
-      h5createDataset(hdf5_filename, hdf5_location, 
-                      dims = dim(output_tmp[[key]]),
-                      storage.mode = storage.mode(output_tmp[[key]]))
-      h5write(output_tmp[[key]], hdf5_filename, hdf5_location)
       cat(sprintf("jt -- %s: wrote tmp dataset '%s' to HDF5 group: \"%s\"\n",
                 mfilename, key, hdf5_location))
     }

@@ -1,6 +1,6 @@
 %% Writing data to HDF5 file
 
-function writedata(handles, output_args)
+function writedata(handles, data)
 
     import jterator.api.h5.*;
     
@@ -15,10 +15,10 @@ function writedata(handles, output_args)
     % For examples see:
     % http://www.hdfgroup.org/ftp/HDF5/examples/examples-by-api/api18-m.html
 
-    keys = fieldnames(output_args);
+    keys = fieldnames(data);
     for key = 1:length(keys)
         hdf5_location = handles.output.(keys{key}).hdf5_location;
-        value = output_args.(keys{key});
+        value = data.(keys{key});
         h5datacreate(hdf5_filename, hdf5_location, ...
                      'type', class(value), 'size', size(value));
         h5varput(hdf5_filename, hdf5_location, value);

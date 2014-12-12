@@ -1,13 +1,11 @@
-## What's the best way of making this module available to Julia?
-## Currently, I'm including it in the ~/.juliarc.jl.
-## There has to be a better way, though. The variable LOAD_PATH should do the job, 
-## but I haven't yet figured out how...
-
 module jterator
 
 import YAML
-import HDF5
+import HDF5, JLD
 
+###################################################################
+## Note: the HDF5 package doesn't handle dimensions correctly!!! ##
+###################################################################
 
 function gethandles(handles_stream)
     ## Reading "handles" from YAML file.
@@ -39,6 +37,9 @@ function readinputargs(handles)
 
         if haskey(field, "hdf5_location")
             input_args[key]["variable"] = HDF5.h5read(hdf5_filename, field["hdf5_location"])
+            if ndims(input_args[key]["variable"]) > 1
+                input_args[key]["variable"] = input_args[key]["variable"]'
+            end
             @printf("jt -- %s: loaded dataset '%s' from HDF5 group: \"%s\"\n", mfilename, key, field["hdf5_location"])
         elseif haskey(field, "parameter")
             input_args[key]["variable"] = field["parameter"]
@@ -49,15 +50,7 @@ function readinputargs(handles)
 
         if haskey(field, "class")
             input_args[key]["class"] = field["class"]
-        else
-            input_args[key]["class"] = []
-        end
-
-        if haskey(field, "attributes")
-            input_args[key]["attributes"] = field["attributes"]
-        else
-            input_args[key]["attributes"] = []
-        end   
+        end 
 
     end
 
@@ -100,19 +93,24 @@ function checkinputargs(input_args)
 end
 
 
-function writedata(handles, output_args)
+function writedata(handles, data)
     ##Writing data to HDF5 file.
 
     mfilename = "writedata"
 
-    orig_substr = match(r"/tmp/(.*)\.tmp", hdf5_filename).captures[1]
+    hdf5_filename = handles["hdf5_filename"]
+    orig_substr = match(r"tmp/(.*)\.tmp", hdf5_filename).captures[1]
     hdf5_filename = replace(hdf5_filename, r"/tmp/(.*)\.tmp$", 
                             @sprintf("/data/%s.data", orig_substr))
     hdf5_root = HDF5.h5open(hdf5_filename, "r+")
 
-    for key in keys(output_args)
+    for key in keys(data)
         hdf5_location = handles["output"][key]["hdf5_location"]
-        hdf5_root[hdf5_location] = output_args[key]
+        if ndims(output_args[key]) > 1
+            hdf5_root[hdf5_location] = data[key]'
+        else
+            hdf5_root[hdf5_location] = data[key]
+        end
         @printf("jt -- %s: wrote dataset '%s' to HDF5 group: \"%s\"\n",
                 mfilename, key, hdf5_location)
     end
@@ -122,7 +120,7 @@ function writedata(handles, output_args)
 end
 
 
-function writeoutputargs(handles, output_tmp)
+function writeoutputargs(handles, output_args)
     ## Writing output arguments to HDF5 file
     ## using the location specified in "handles".
 
@@ -131,9 +129,13 @@ function writeoutputargs(handles, output_tmp)
     hdf5_filename = handles["hdf5_filename"]
     hdf5_root = HDF5.h5open(hdf5_filename, "r+")
 
-    for key in keys(output_tmp)
+    for key in keys(output_args)
         hdf5_location = handles["output"][key]["hdf5_location"]
-        hdf5_root[hdf5_location] = output_tmp[key]
+        if ndims(output_args[key]) > 1
+            hdf5_root[hdf5_location] = output_args[key]'
+        else
+            hdf5_root[hdf5_location] = output_args[key]
+        end
         @printf("jt -- %s: wrote tmp dataset '%s' to HDF5 group: \"%s\"\n",
                 mfilename, key, hdf5_location)
     end
@@ -143,7 +145,6 @@ function writeoutputargs(handles, output_tmp)
 end
 
 
-export get_handles, read_input_args, check_input_args, write_output_args, 
-write_output_tmp, build_hdf5
+export gethandles, readinputargs, checkinputargs, writeoutputargs, writedata
 
 end
