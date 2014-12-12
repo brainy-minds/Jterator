@@ -69,6 +69,88 @@ Each pipeline has the following layout on the disk:
 Jterator allows only very simplistic type of work-flow -  *pipeline* (somewhat similar to a UNIX-world pipeline). Description of such work-flow must be put sibling to the folder structure described about, i.e. inside the Jterator project folder. Recognizable file name must be **'[ProjectName].pipe'**. Description is a YAML format. 
 
 
+Pipeline descriptor file
+------------------------
+
+Describe your pipeline in the .pipe (YAML) descriptor file:
+
+```yaml
+Project:
+
+    name: myJteratorProject
+    description:
+
+Jobs:
+
+    folder: path/to/myFolder
+    pattern: .*\.png
+
+Pipeline:
+
+    -   name: myModule1
+        module: modules/myModule1.py
+        handles: handles/myModule1.handles
+        interpreter: /usr/bin/python
+
+    -   name: myModule2
+        module: modules/myModule2.R
+        handles: handles/myModule2.handles
+        interpreter: Rscript
+
+    -   name: myModule3
+        module: modules/myModule3.m
+        handles: handles/myModule3.handles
+        interpreter: Mscript
+
+    -   name: myModule4
+        module: modules/myModule4.jl
+        handles: handles/myModule4.handles
+        interpreter: julia
+```
+
+Handles descriptor files
+------------------------
+
+Describe your modules in the .handles (YAML) descriptor files (Python example):
+
+```yaml
+hdf5_filename: tmp/myProject.tmp
+
+input:
+
+    StringExample:
+        parameter: myString
+        class: str
+
+    IntegerExample:
+        parameter: 1
+        class: int
+
+    Hdf5InputExample:
+        hdf5_location: /myModule/InputDataset
+        class: ndarray
+
+    ListExample:
+        parameter: ["myString1", "myString2", "myString3"]
+        class: list
+
+    BoolExample:
+        parameter: Yes
+        class: bool
+
+output:
+
+    Hdf5OutputExample:
+        hdf5_location: /myModule/OutputDataset
+        class: float64
+```
+There are two different types of input arguments:
+* *hdf5_location* is an argument that has to be produced upstream in the pipeline by another module, which saved it into the HDF5 file
+* *parameter* is an argument that is used to control the behavior of the module
+Note that you can provide the optional "class" key, which asserts the datatype
+of the passed argument. It is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R.
+
+
 Getting started
 ---------------
 
