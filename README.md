@@ -46,13 +46,15 @@ Jterator is written in Python but can pipe custom code in different languages. A
 * Python
 * Julia
 
-The following functions are available for modules in all above listed languages:      
+The following functions are available for modules in all above listed languages: 
+     
 Input/output:      
 * **gethandles** Reading "handles" stream (standard input) from YAML file.
 * **readinputargs** Reading input arguments from HDF5 file using the location specified in "handles".
 * **checkinputargs** Checking input arguments for correct "class" (i.e. type)
 * **writeoutputargs** Writing output arguments to HDF5 file using the location specified in "handles".
-* **writedata** Writing data to HDF5 file.       
+* **writedata** Writing data to HDF5 file.
+
 Tools:      
 * **jtfigure** Saving figures as PDF or sending it to plotly.
 
