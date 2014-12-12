@@ -4,22 +4,12 @@ Jterator
 A minimalistic pipeline engine for scientific computing. It is designed to be flexible, but at the same time handy to work with. Jterator is a command-line tool for Unix systems. It comes without a GUI, but rather makes use of easily readable and modifiable YAML files. Figures can either be saved as PDF files or plotted in the browser using d3 technology.
 
 
-Languages
----------
-
-Jterator is written in Python but can pipe custom code in different languages. APIs for input/output handling are currently implemented in the following languages: 
-* Matlab
-* R
-* Python
-* Julia
-
-
 External libraries
 ------------------
 
 Jterator depends on the following languages and external libraries:
 
-* Python: 
+* Python   
     
     https://www.python.org/downloads/
 
@@ -41,6 +31,30 @@ Jterator depends on the following languages and external libraries:
     ```bash
     apt-get -u install hdf5-tools
     ```
+
+* Plotly (optional)    
+    
+    https://plot.ly/api/
+
+
+APIs
+----
+
+Jterator is written in Python but can pipe custom code in different languages. APIs for input/output handling are currently implemented in the following languages: 
+* Matlab
+* R
+* Python
+* Julia
+
+The following functions are available for modules in all above listed languages:
+Input/output:
+* **gethandles** Reading "handles" stream (standard input) from YAML file.
+* **readinputargs** Reading input arguments from HDF5 file using the location specified in "handles".
+* **checkinputargs** Checking input arguments for correct "class" (i.e. type)
+* **writeoutputargs** Writing output arguments to HDF5 file using the location specified in "handles".
+* **writedata** Writing data to HDF5 file.
+Tools:
+* **jtfigure** Saving figures as PDF or sending it to plotly.
 
 
 Pipeline
@@ -145,8 +159,8 @@ output:
         class: float64
 ```
 There are two different types of input arguments:
-* *hdf5_location* is an argument that has to be produced upstream in the pipeline by another module, which saved it into the HDF5 file
-* *parameter* is an argument that is used to control the behavior of the module
+* *hdf5_location* is an argument that has to be produced upstream in the pipeline by another module, which saved it into the HDF5 file.
+* *parameter* is an argument that is used to control the behavior of the module.   
 Note that you can provide the optional "class" key, which asserts the datatype
 of the passed argument. It is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R.
 

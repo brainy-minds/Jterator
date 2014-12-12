@@ -62,8 +62,7 @@ def readinputargs(handles):
 
 def checkinputargs(input_args):
     '''
-    Checks input arguments for correct class (i.e. type) and attributes
-    (attributes are not yet implemented).
+    Checks input arguments for correct class (i.e. type).
     '''
     mfilename = sys._getframe().f_code.co_name
 
@@ -96,10 +95,9 @@ def checkinputargs(input_args):
     return checked_input_args
 
 
-def writeoutputargs(handles, output_args):
+def writedata(handles, output_args):
     '''
-    Writing output arguments to HDF5 file
-    using the location specified in "handles".
+    Writing data to HDF5 file.
     '''
     mfilename = sys._getframe().f_code.co_name
 
@@ -116,7 +114,7 @@ def writeoutputargs(handles, output_args):
     h5py.File.close(hdf5_root)
 
 
-def writeoutputtmp(handles, output_tmp):
+def writeoutputargs(handles, output_tmp):
     '''
     Writing output arguments to HDF5 file
     using the location specified in "handles".

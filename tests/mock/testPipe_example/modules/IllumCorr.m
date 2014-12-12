@@ -70,10 +70,10 @@ saveas(fig, sprintf('figures/%s', mfilename), 'pdf');
 %% prepare output %%
 %%%%%%%%%%%%%%%%%%%%
 
-output_args = struct();
+data = struct();
 
-output_tmp = struct();
-output_tmp.CorrImage = CorrImage;
+output_args = struct();
+output_args.CorrImage = CorrImage;
 
 %% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------
@@ -82,7 +82,10 @@ output_tmp.CorrImage = CorrImage;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator output
 
-writeoutputargs(handles, output_args);
-writeoutputtmp(handles, output_tmp);
+%%% write measurement data to HDF5
+writedata(handles, data);
+
+%%% write temporary pipeline data to HDF5
+writeoutputtmp(handles, output_args);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

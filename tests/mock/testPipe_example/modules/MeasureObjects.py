@@ -2,7 +2,7 @@ import os
 import sys
 import re
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # import mpld3
 # import plotly.plotly as py
 from plotly.graph_objs import *
@@ -85,11 +85,11 @@ plt.close()
 ## prepare output ##
 ####################
 
-output_args = dict()
-output_args['Measurements'] = nuclei_area
+data = dict()
+data['Measurements'] = nuclei_area
 
-output_tmp = dict()
-output_tmp['LabeledSegmentationImage'] = nuclei_label_img
+output_args = dict()
+output_args['LabeledSegmentationImage'] = nuclei_label_img
 
 ## ------------------------------ module specific -----------------------------
 ## ----------------------------------------------------------------------------
@@ -99,9 +99,9 @@ output_tmp['LabeledSegmentationImage'] = nuclei_label_img
 ## jterator output
 
 ### write measurement data to HDF5
-writeoutputargs(handles, output_args)
+writedata(handles, data)
 
 ### write temporary pipeline data to HDF5
-writeoutputtmp(handles, output_tmp)
+writeoutputargs(handles, output_args)
 
 ###############################################################################

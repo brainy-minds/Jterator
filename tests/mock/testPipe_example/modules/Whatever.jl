@@ -45,7 +45,7 @@ input_args = checkinputargs(input_args)
 ####################
 
 output_args = Dict()
-output_tmp = Dict()
+data = Dict()
 
 
 ## ------------------------------ module specific -----------------------------
@@ -55,7 +55,10 @@ output_tmp = Dict()
 ###############################################################################
 ## jterator output
 
+### write measurement data to HDF5
+writedata(handles, data)
+
+### write temporary pipeline data to HDF5
 writeoutputargs(handles, output_args)
-writeoutputtmp(handles, output_tmp)
 
 ###############################################################################

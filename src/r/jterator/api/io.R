@@ -85,10 +85,10 @@ checkinputargs <- function(input_args) {
 }
 
 
-#' @rdname Writing output arguments to HDF5 file using the location specified in "handles".
-writeoutputargs <- function(handles, output_args) {
+#' @rdname Writing data to HDF5 file.
+writedata <- function(handles, output_args) {
 
-    mfilename <- "writeoutputargs"
+    mfilename <- "writedata"
 
     hdf5_filename <- sub('/tmp/(.*)\\.tmp', '/data/\\1.data', handles$hdf5_filename)
 
@@ -105,9 +105,9 @@ writeoutputargs <- function(handles, output_args) {
 }
 
 #' @rdname Writing output arguments to HDF5 file using the location specified in "handles".
-writeoutputtmp <- function(handles, output_tmp) {
+writeoutputargs <- function(handles, output_tmp) {
 
-    mfilename <- "writeoutputtmp"
+    mfilename <- "writeoutputargs"
 
     hdf5_filename <- handles$hdf5_filename
 

@@ -100,11 +100,10 @@ function checkinputargs(input_args)
 end
 
 
-function writeoutputargs(handles, output_args)
-    ##Writing output arguments to HDF5 file
-    ## using the location specified in "handles".
+function writedata(handles, output_args)
+    ##Writing data to HDF5 file.
 
-    mfilename = "writeoutputargs"
+    mfilename = "writedata"
 
     orig_substr = match(r"/tmp/(.*)\.tmp", hdf5_filename).captures[1]
     hdf5_filename = replace(hdf5_filename, r"/tmp/(.*)\.tmp$", 
@@ -123,11 +122,11 @@ function writeoutputargs(handles, output_args)
 end
 
 
-function writeoutputtmp(handles, output_tmp)
+function writeoutputargs(handles, output_tmp)
     ## Writing output arguments to HDF5 file
     ## using the location specified in "handles".
 
-    mfilename = "writeoutputtmp"
+    mfilename = "writeoutputargs"
 
     hdf5_filename = handles["hdf5_filename"]
     hdf5_root = HDF5.h5open(hdf5_filename, "r+")

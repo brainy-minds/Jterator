@@ -70,8 +70,8 @@ if (makePlot) {
 
 output_args <- list()
 
-output_tmp <- list()
-output_tmp[['NuclearArea']] <- nuclei_area
+data <- list()
+data[['NuclearArea']] <- nuclei_area
 
 ## ------------------------------ module specific -----------------------------
 ## ----------------------------------------------------------------------------
@@ -81,6 +81,6 @@ output_tmp[['NuclearArea']] <- nuclei_area
 ## jterator output
 
 writeoutputargs(handles, output_args)
-writeoutputtmp(handles, output_tmp)
+writedata(handles, data)
 
 ###############################################################################

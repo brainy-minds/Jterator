@@ -234,10 +234,10 @@ end
 %%%%%%%%%%%%%%%%%%%%
 
 %%% structure output arguments for later storage in the .HDF5 file
-output_args = struct();
+data = struct();
 
-output_tmp = struct();
-output_tmp.Nuclei = PrimaryObjects;
+output_args = struct();
+output_args.Nuclei = PrimaryObjects;
 
 %% ---------------------------- module specific ---------------------------
 %% ------------------------------------------------------------------------
@@ -246,7 +246,10 @@ output_tmp.Nuclei = PrimaryObjects;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator output
 
-writeoutputargs(handles, output_args);
-writeoutputtmp(handles, output_tmp);
+%%% write measurement data to HDF5
+writedata(handles, data);
+
+%%% write temporary pipeline data to HDF5
+writeoutputtmp(handles, output_args);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
