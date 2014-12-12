@@ -47,16 +47,16 @@ Jterator is written in Python but can pipe custom code in different languages. A
 * Julia
 
 The following functions are available for modules in all above listed languages: 
-     
+
 Input/output:      
-* **gethandles** Reading "handles" stream (standard input) from YAML file.
-* **readinputargs** Reading input arguments from HDF5 file using the location specified in "handles".
-* **checkinputargs** Checking input arguments for correct "class" (i.e. type)
-* **writeoutputargs** Writing output arguments to HDF5 file using the location specified in "handles".
-* **writedata** Writing data to HDF5 file.
+* **gethandles**: Reading "handles" stream (standard input) from YAML file.
+* **readinputargs**: Reading input arguments from HDF5 file using the location specified in "handles".
+* **checkinputargs**: Checking input arguments for correct "class" (i.e. type).
+* **writeoutputargs**: Writing output arguments to HDF5 file using the location specified in "handles".
+* **writedata**: Writing data to HDF5 file.
 
 Tools:      
-* **jtfigure** Saving figures as PDF or sending it to plotly.
+* **jtfigure**: Saving figures as PDF or sending it to plotly.
 
 
 Pipeline
@@ -123,6 +123,10 @@ Pipeline:
         handles: handles/myModule4.handles
         interpreter: julia
 ```
+Note that the value for the "interpreter" key can be either a full path to the interpreter program (e.g. /usr/bin/python) or a command that can be interpreted by /usr/bin/env (e.g. python).
+Also note that the working directory is the jterator project folder. You can provide either a full path to modules and handles files or a path relative to the project folder.
+Currently, only one pattern can be provided. Handling of more patterns will be implemented soon.
+
 
 Handles descriptor files
 ------------------------
