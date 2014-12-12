@@ -31,7 +31,7 @@ setup(
     long_description=readme(),
     author='Yauhen Yakimovich, Markus Herrmann',
     author_email='eugeny dot yakimovitch at gmail dot com',
-    url='https://github.com/ewiger/Jterator',
+    url='https://github.com/HackerMD/Jterator',
     license='MIT',
     scripts=['src/python/jt'],
     packages=[
@@ -42,13 +42,15 @@ setup(
     #     '': ['*.html', '*.svg', '*.js'],
     # },
     include_package_data=True,
-    download_url='https://github.com/ewiger/Jterator/tarball/master',
+    download_url='https://github.com/HackerMD/Jterator/tarball/master',
     install_requires=[
         'h5py>=2.2.1',
         'numpy>=1.5.0',
         'Cython>=0.16',
         'tree_output>=0.1.2',
         'sh>=1.09',
+        'subprocess32>=3.2.6',
+        'yaml>=0.1.4',
     ],
     # data_files=[
     #     ('/usr/local/bin', ['jt']),

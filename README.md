@@ -1,6 +1,8 @@
 Jterator
 ========
 
+[![Build Status](https://travis-ci.org/HackerMD/Jterator.svg?branch=master)](https://travis-ci.org/HackerMD/Jterator)
+
 A minimalistic pipeline engine for scientific computing. It is designed to be flexible, but at the same time handy to work with. Jterator is a command-line tool for Unix systems. It comes without a GUI, but rather makes use of easily readable and modifiable YAML files. Figures can either be saved as PDF files or plotted in the browser using d3 technology.
 
 
@@ -179,6 +181,12 @@ To *download* Jterator clone this repository:
 
 ```bash
 git clone git@github.com:HackerMD/Jterator.git
+```
+
+To *install* Jterator locally (developer mode):
+
+```bash
+cd Jterator && pip install -e .
 ```
 
 To *link* Mscript - a custom tool based on the Julia Matlab interface (https://github.com/JuliaLang/MATLAB.jl) for transforming Matlab scripts into real executables - into /usr/bin for easier execution, do:
