@@ -29,18 +29,18 @@ Jterator depends on the following languages and external libraries:
 
 * HDF5
 
-OSX:
-install via homebrew (https://github.com/Homebrew/homebrew-science)
+    OSX:
+    install via homebrew (https://github.com/Homebrew/homebrew-science)
 
-```bash
-brew tap homebrew/science; brew install hdf5
-```
+    ```bash
+    brew tap homebrew/science; brew install hdf5
+    ```
 
-Linux:
+    Linux:
 
-```bash
-apt-get -u install hdf5-tools
-```
+    ```bash
+    apt-get -u install hdf5-tools
+    ```
 
 
 Pipeline
@@ -87,7 +87,7 @@ sudo ln -s /local/copy/of/Jterator/src/julia/jterator/api/mscript.jl Mscript
 To *create* a new jterator project, do:
 
 ```bash
-jt create [/my/jterator/project/folder] [/my/repository/with/jterator/skeleton]
+jt create [/my/jterator/project/folder] --skel [/my/repository/with/jterator/skeleton]
 ```
 
 This will create your project folder, which will then already have the correct folder layout and will contain skeletons for YAML descriptor files and modules. It will also provide you with the required APIs.

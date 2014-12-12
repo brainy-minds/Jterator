@@ -35,15 +35,13 @@ class JteratorCli(object):
         '''
         Create a project based on a project folder skeleton.
         '''
-        print('repo_path')
-        if not os.path.exists(self.args.repo_path):
-            ''
-        repo_content = os.listdir(self.args.repo_path)
-        for folder in repo_content:
-            if folder in ['skeleton', 'src', 'tests']:
-                # folder_path = os.path.join(self.args.repo_path, folder)
-                # shutil.copytree(folder_path, self.args.path)
-                print(folder)
+        if os.path.exists(self.args.skel):
+            repo_content = os.listdir(self.args.skel)
+            for folder in repo_content:
+                if folder in ['skeleton', 'src', 'tests']:
+                    folder_path = os.path.join(self.args.skel, folder)
+                    shutil.copytree(folder_path, self.args.path)
+                    print(folder)
 
     def joblist(self):
         '''
@@ -111,7 +109,7 @@ if __name__ == '__main__':
     create_command_parser = subparsers.add_parser('create')
     create_command_parser.add_argument('path', default=os.getcwd(),
                                        nargs='?', type=str)
-    create_command_parser.add_argument('repo_path', nargs=1, type=str)
+    create_command_parser.add_argument('--skel', type=str)
     create_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=create_command_parser))
 
