@@ -118,9 +118,9 @@ class JteratorRunner(object):
             if not os.path.exists(handles_path):
                 raise JteratorError('Missing handles: %s' %
                                     handles_path)
-            # Get path to executable.
+            # Get path to interpreter program.
             interpreter_path = module_description['interpreter']
-            # Does executable exist?
+            # Does interpreter program exist?
             if os.path.isabs(interpreter_path):
                 if not os.path.exists(interpreter_path):
                     raise JteratorError('Missing interpreter: %s' %
@@ -128,8 +128,6 @@ class JteratorRunner(object):
                 if not os.access(interpreter_path, os.R_OK):
                     raise JteratorError('Interpreter is not executable: %s' %
                                         interpreter_path)
-            # else:
-            #     try:
             # Extract module information from pipeline description.
             module = Module(name=module_description['name'],
                             module=module_path,
@@ -156,13 +154,20 @@ class JteratorRunner(object):
             if not os.path.isabs(folder_path):
                 folder_path = os.path.join(self.pipeline_folder_path,
                                            folder_path)
-            job_files = [f for f in os.listdir(folder_path) if re.match(iteration_pattern, f)]
-            if len(job_files) == 0:
+            if not os.path.exists(folder_path):
+                raise JteratorError('Folder "%s" does not exist. Double-check '
+                                    '"jobs" section in your pipeline '
+                                    'description: "%s".' %
+                                    (folder_path, self.pipeline_filename))
+            jobs = [f for f in os.listdir(folder_path) if re.match(iteration_pattern, f)]
+            if len(jobs) == 0:
                 raise JteratorError('No files found in folder "%s" that match '
-                                    'pattern "%s".' %
-                                    (folder_path, iteration_pattern))
-            job_ids = [i+1 for i in xrange(len(job_files))]  # ids from 1 to n
-            job_list = dict(zip(job_ids, job_files))
+                                    'pattern "%s". Double-check "jobs" '
+                                    'section in your pipe description: "%s".' %
+                                    (folder_path, iteration_pattern,
+                                     self.pipeline_filename))
+            job_ids = [i+1 for i in xrange(len(jobs))]  # ids from 1 to n
+            job_list = dict(zip(job_ids, jobs))
             self.joblist = job_list
             # save job list to file (as YAML)
             jobs_file_path = os.path.join(self.pipeline_folder_path,
@@ -200,16 +205,16 @@ class JteratorRunner(object):
         For each iteration, run one module after another and
         pass their corresponding handles to them.
         '''
-        # Build the pipeline and iteration procedure.
-        self.build_pipeline()
         self.init_hdf5_files()
-        self.create_job_list()
         # Check structure of pipeline and handles description.
         checker = JteratorCheck(self.description, self.tmp_filename)
         checker.check_handles()
         checker.check_pipeline_io()
-        # Iterate over items that should be processed in the pipeline.
-        if job_id is None:
+        # Build the pipeline.
+        self.build_pipeline()
+        if job_id is None:  # non-parallel mode
+            # Create joblist and iterate over job items.
+            self.create_job_list()
             for item in self.joblist.itervalues():
                 # Initialize the pipeline.
                 item_path = os.path.join(self.description['jobs']['folder'],
@@ -224,8 +229,8 @@ class JteratorRunner(object):
                     module.run()
                 # Kill the temporary file containing the pipeline data.
                 os.remove(self.tmp_filename)
-        else:
-            # Make sure file with list of jobs was created.
+        else:  # parallel mode!
+            # Make sure joblist file was created.
             if not os.path.exists(self.jobs_file_path):
                 raise JteratorError('No joblist file found! '
                                     'Call "jt joblist"!')
