@@ -19,13 +19,13 @@ External libraries
 
 Jterator depends on the following languages and external libraries:
 
-* Python
+* Python: 
+    
+    https://www.python.org/downloads/
 
-https://www.python.org/downloads/
+* Julia (required for Mscript)
 
-* Julia (required for MATLAB interface)
-
-http://julialang.org/downloads/
+    http://julialang.org/downloads/
 
 * HDF5
 
