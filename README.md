@@ -102,7 +102,7 @@ jt check [/my/jterator/project/folder]
 To *run* your pipeline, do:
 
 ```bash
-jt check [/my/jterator/project/folder]
+jt run [/my/jterator/project/folder]
 ```
 
 To create a *joblist* for parallel computing, do:
@@ -121,12 +121,6 @@ To *run* a module individually for debugging purposes, do:
 
 ```bash
 cat handles/myModule.handles | [interpreter] modules/myModule.py
-```
-
-To *run* your pipeline, do:
-
-```bash
-cd /my/jterator/pipeline/folder && jt run
 ```
 
 
@@ -149,4 +143,4 @@ cd tests && nosetests
 To do
 =====
 
-Package management for APIs in different languages.
+Package management for external dependencies and APIs in different languages.
