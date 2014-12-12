@@ -1,4 +1,5 @@
 import os
+import re
 import yaml
 from jterator.error import JteratorError
 
@@ -38,6 +39,20 @@ class JteratorCheck(object):
             raise JteratorError('Pipeline file must contain the key "%s" '
                                 'as a subkey of "%s"' %
                                 ('pattern', 'jobs'))
+        if not type(self.description['jobs']['pattern']) is list:
+            raise JteratorError('The key "pattern" in the pipeline file '
+                                'must contain a list.')
+        for pattern_description in self.description['jobs']['pattern']:
+            if not 'name' in pattern_description:
+                raise JteratorError('Each element of the list in "pattern" '
+                                    'in the pipeline descriptor file '
+                                    'needs to contain the key "%s"' %
+                                    'name')
+            if not 'expression' in pattern_description:
+                raise JteratorError('Each element of the list in "pattern" '
+                                    'in the pipeline descriptor file '
+                                    'needs to contain the key "%s"' %
+                                    'expression')
         # Check required 'pipeline' section
         if not 'pipeline' in self.description:
             raise JteratorError('Pipeline file must contain the key "%s".' %
@@ -106,9 +121,15 @@ class JteratorCheck(object):
             for input_arg in handles['input']:
                 if not 'hdf5_location' in handles['input'][input_arg]:
                     # We only check for pipeline data passed via the HDF5 file.
+                    # So there is no need to check them here.
                     continue
-                if handles['input'][input_arg]['hdf5_location'] == '/item':
-                    # '/item' is written into the HDF5 file by Jterator.
+                name = os.path.basename(handles['input'][input_arg]['hdf5_location'])
+                pattern_names = [pattern['name'] for pattern
+                                 in self.description['jobs']['pattern']]
+                if name in pattern_names:
+                    # They are written into the HDF5 file by Jterator himself
+                    # and are therefore not created in the pipeline.
+                    # So there is no need to check them here.
                     continue
                 if not handles['input'][input_arg]['hdf5_location'] in outputs:
                     raise JteratorError('Input "%s" of module "%s" is not '

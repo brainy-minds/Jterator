@@ -150,7 +150,8 @@ class JteratorRunner(object):
             checker.check_pipeline()
             # Create joblist based on pipeline description.
             folder_path = self.description['jobs']['folder']
-            iteration_pattern = self.description['jobs']['pattern']
+            folder_content = os.listdir(folder_path)
+            folder_content = sorted(folder_content)
             if not os.path.isabs(folder_path):
                 folder_path = os.path.join(self.pipeline_folder_path,
                                            folder_path)
@@ -159,37 +160,67 @@ class JteratorRunner(object):
                                     '"jobs" section in your pipeline '
                                     'description: "%s".' %
                                     (folder_path, self.pipeline_filename))
-            jobs = [f for f in os.listdir(folder_path) if re.match(iteration_pattern, f)]
-            if len(jobs) == 0:
-                raise JteratorError('No files found in folder "%s" that match '
-                                    'pattern "%s". Double-check "jobs" '
-                                    'section in your pipe description: "%s".' %
-                                    (folder_path, iteration_pattern,
-                                     self.pipeline_filename))
-            job_ids = [i+1 for i in xrange(len(jobs))]  # ids from 1 to n
-            job_list = dict(zip(job_ids, jobs))
+            # Extract files from folder for each pattern.
+            iteration_pattern = self.description['jobs']['pattern']
+            jobs_per_pattern = dict()
+            for pattern in iteration_pattern:
+                jobs = [filename for filename in folder_content
+                        if re.match(pattern['expression'], filename)]
+                if len(jobs) == 0:
+                    raise JteratorError('No files found in folder "%s" that match '
+                                        'pattern "%s". Double-check "jobs" '
+                                        'section in your pipe description: "%s".' %
+                                        (folder_path, pattern['expression'],
+                                         self.pipeline_filename))
+                job_ids = [jobid+1 for jobid in xrange(len(jobs))]
+                jobs_per_pattern[pattern['name']] = jobs
+                jobs_per_pattern['jobID'] = job_ids
+            # Make sure all pattern result in same number of jobs.
+            job_number = [len(jobs) for jobs in jobs_per_pattern.itervalues()]
+            if not len(set(job_number)) == 1:
+                raise JteratorError('The files found in folder "%s" for pattern '
+                                    'resulted in different number of jobs.' %
+                                    folder_path)
+            # Wrap all pattern into one joblist.
+            job_list = dict()
+            for job_id in jobs_per_pattern['jobID']:
+                index = job_id - 1
+                job_list[job_id] = dict()
+                job_list[job_id]['jobID'] = jobs_per_pattern['jobID'][index]
+                for pattern in iteration_pattern:
+                    key = pattern['name']
+                    job_list[job_id][key] = jobs_per_pattern[key][index]
             self.joblist = job_list
-            # save job list to file (as YAML)
+            # Save joblist to file (as YAML).
             jobs_file_path = os.path.join(self.pipeline_folder_path,
                                           '%s.jobs' %
                                           self.description['project']['name'])
             self.jobs_file_path = jobs_file_path
             stream = file(jobs_file_path, 'w+')
             yaml.dump(job_list, stream, default_flow_style=False)
+            # Double-check that jobID is correctly specified for each job.
+            for job_id in job_list:
+                if not job_id == job_list[job_id]['jobID']:
+                    raise JteratorError('"JobID" of job #%d is incorrect. '
+                                        'Check joblist file "%s".' %
+                                        (job_id, jobs_file_path))
 
-    def create_hdf5_files(self, item_path):
+    def create_hdf5_files(self, job):
         '''
         Create HDF5 files for temporary pipeline data and module output.
         '''
         # Create HDF5 file for temporary data
         # (for pipeline data; temporary file).
-        item_name = os.path.splitext(os.path.basename(item_path))[0]
+        Tracer()()
         h5py.File(self.tmp_filename, 'w')
-        # Write the full path of the processed item into default location.
-        tmp_root = h5py.File(self.tmp_filename, 'r+')
-        dt = h5py.special_dtype(vlen=str)
-        tmp_root.create_dataset('/item', data=item_path, dtype=dt)
-        tmp_root.close()
+        # Write the full path of the processed item into defined location.
+        for item in job:
+            item_path = os.path.join(self.description['jobs']['folder'],
+                                     job[item])
+            tmp_root = h5py.File(self.tmp_filename, 'r+')
+            dt = h5py.special_dtype(vlen=str)
+            tmp_root.create_dataset(item, data=item_path, dtype=dt)
+            tmp_root.close()
         # Create HDF5 file for measurement data
         # (for pipeline output; persistent file).
         output_path = os.path.join(self.pipeline_folder_path, 'data')
@@ -197,7 +228,7 @@ class JteratorRunner(object):
             os.mkdir(output_path)
         output_filename = os.path.join(output_path, '%s_%s.data' %
                                        (self.description['project']['name'],
-                                        item_name))
+                                        item))
         h5py.File(output_filename, 'w')
 
     def run_pipeline(self, job_id):
@@ -215,11 +246,9 @@ class JteratorRunner(object):
         if job_id is None:  # non-parallel mode
             # Create joblist and iterate over job items.
             self.create_job_list()
-            for item in self.joblist.itervalues():
+            for job in self.joblist.itervalues():
                 # Initialize the pipeline.
-                item_path = os.path.join(self.description['jobs']['folder'],
-                                         item)
-                self.create_hdf5_files(item_path)
+                self.create_hdf5_files(job)
                 # Run the pipeline.
                 for module in self.modules:
                     module.set_error_output(os.path.join(self.logs_path,
