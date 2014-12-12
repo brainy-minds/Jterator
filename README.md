@@ -81,6 +81,7 @@ Each pipeline has the following layout on the disk:
 * **data** folder contains all the data output in form of HDF5 files. These data are shared between modules. 
 * **tmp** folder contains the temporary pipeline data that is shared between modules. These files are killed after successful completion of the pipeline.
 * **figures** folder contains the PDFs of the plots (optional).
+* **subfunctions** folder contains additional executable code, which is called by modules.
 
 Jterator allows only very simplistic type of work-flow -  *pipeline* (somewhat similar to a UNIX-world pipeline). Description of such work-flow must be put sibling to the folder structure described about, i.e. inside the Jterator project folder. Recognizable file name must be **'[ProjectName].pipe'**. Description is a YAML format. 
 
