@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 import sys
-import re
 import yaml
 import h5py
 from jterator.error import JteratorError
@@ -100,18 +99,19 @@ def writedata(handles, data):
     Writing data to HDF5 file.
     '''
     mfilename = sys._getframe().f_code.co_name
-
-    hdf5_filename = hdf5_filename = re.sub('/tmp/(.*)\.tmp$', '/data/\\1.data',
-                           handles['hdf5_filename'])
-    hdf5_root = h5py.File(hdf5_filename, 'r+')
-
+    # Extract filename of the data HDF5 file.
+    hdf5_tmp = h5py.File(handles['hdf5_filename'], 'r')
+    hdf5_filename = hdf5_tmp['datafile'][()]
+    h5py.File.close(hdf5_tmp)
+    # Open the file and write data into it.
+    hdf5_data = h5py.File(hdf5_filename, 'r+')
     for key in data:
         hdf5_location = handles['output'][key]['hdf5_location']
-        hdf5_root.create_dataset(hdf5_location, data=data[key])
+        hdf5_data.create_dataset(hdf5_location, data=data[key])
         print('jt -- %s: wrote dataset \'%s\' to HDF5 group: "%s"'
               % (mfilename, key, hdf5_location))
-
-    h5py.File.close(hdf5_root)
+    # Close the file (very important!).
+    h5py.File.close(hdf5_data)
 
 
 def writeoutputargs(handles, output_args):
@@ -120,14 +120,12 @@ def writeoutputargs(handles, output_args):
     using the location specified in "handles".
     '''
     mfilename = sys._getframe().f_code.co_name
-
-    hdf5_filename = handles['hdf5_filename']
-    hdf5_root = h5py.File(hdf5_filename, 'r+')
-
+    # Open the file and write temporary pipeline data into it.
+    hdf5_tmp = h5py.File(handles['hdf5_filename'], 'r+')
     for key in output_args:
         hdf5_location = handles['output'][key]['hdf5_location']
-        hdf5_root.create_dataset(hdf5_location, data=output_args[key])
+        hdf5_tmp.create_dataset(hdf5_location, data=output_args[key])
         print('jt -- %s: wrote tmp dataset \'%s\' to HDF5 group: "%s"'
               % (mfilename, key, hdf5_location))
-
-    h5py.File.close(hdf5_root)
+    # Close the file (very important!).
+    h5py.File.close(hdf5_tmp)

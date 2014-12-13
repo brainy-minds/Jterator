@@ -90,7 +90,7 @@ writedata <- function(handles, data) {
 
     mfilename <- "writedata"
 
-    hdf5_filename <- sub('/tmp/(.*)\\.tmp', '/data/\\1.data', handles$hdf5_filename)
+    hdf5_filename <- h5read(handles$hdf5_filename, '/datafile')
 
     for (key in names(data)) {
       hdf5_location <- handles$output[[key]]$hdf5_location

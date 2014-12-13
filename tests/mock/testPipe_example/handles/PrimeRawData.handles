@@ -6,11 +6,9 @@ input:
 
     DapiFilename:
         hdf5_location: /DAPI
-        class: str
 
     Antibody1Filename:
         hdf5_location: /Antibody1
-        class: str
 
 # module output arguments
 output:

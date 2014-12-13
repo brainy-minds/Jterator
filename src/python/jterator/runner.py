@@ -3,6 +3,7 @@ import glob
 import re
 import yaml
 import h5py
+import numpy as np
 from jterator.error import JteratorError
 from jterator.checker import JteratorCheck
 from jterator.module import Module
@@ -211,28 +212,32 @@ class JteratorRunner(object):
         '''
         # Create HDF5 file for temporary data
         # (for pipeline data; temporary file).
-        h5py.File(self.tmp_filename, 'w')
+        tmp_root = h5py.File(self.tmp_filename, 'w')
         # Write the full path of the processed item into defined location.
         for item in job:
             if isinstance(job[item], str):
                 item_path = os.path.join(self.description['jobs']['folder'],
                                          job[item])
-                # dt = h5py.special_dtype(vlen=str)
-                # tmp_root.create_dataset(item, data=item_path, dtype=dt)
+                # Only Fixed-length ASCII are compatible (use numpy strings)!!!
+                tmp_root.create_dataset(item, data=np.string_(item_path))
             else:
                 item_path = job[item]
-            tmp_root = h5py.File(self.tmp_filename, 'r+')
-            tmp_root.create_dataset(item, data=item_path)
-        tmp_root.close()
+                tmp_root = h5py.File(self.tmp_filename, 'r+')
+                tmp_root.create_dataset(item, data=item_path)
         # Create HDF5 file for measurement data
         # (for pipeline output; persistent file).
         output_path = os.path.join(self.pipeline_folder_path, 'data')
         if not os.path.isdir(output_path):
             os.mkdir(output_path)
-        output_filename = os.path.join(output_path, '%s_%s.data' %
+        output_filename = os.path.join(output_path, '%s_%d.data' %
                                        (self.description['project']['name'],
-                                        item))
+                                        job['jobID']))
         h5py.File(output_filename, 'w')
+        # Write name of datafile into the temporary HDF5 file.
+        # Only Fixed-length ASCII are compatible (use numpy strings)!!!
+        tmp_root.create_dataset('datafile', data=np.string_(output_filename))
+        # Close the file (very important!).
+        tmp_root.close()
 
     def run_pipeline(self, job_id):
         '''

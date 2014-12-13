@@ -39,16 +39,17 @@ stats_filename = input_args.StatsFilename;
 %% processing %%
 %%%%%%%%%%%%%%%%
 
-%%% correct intensity image for illumination artefact
-% Avoid -Inf values after log10 transform.
-OrigImage(OrigImage == 0) = 1;
-% Apply z-score normalization for each single pixel.
-CorrImage = (log10(OrigImage) - MeanImage) ./ StdImage;
-% Reverse z-score.
-CorrImage = (CorrImage .* mean(StdImage(:))) + mean(MeanImage(:));
-% Reverse log10 transform that was applied to images when learning 
-% mean/std statistics as well the corrected image.
-CorrImage = 10 .^ CorrImage;
+
+% %%% correct intensity image for illumination artefact
+% % Avoid -Inf values after log10 transform.
+% OrigImage(OrigImage == 0) = 1;
+% % Apply z-score normalization for each single pixel.
+% CorrImage = (log10(OrigImage) - MeanImage) ./ StdImage;
+% % Reverse z-score.
+% CorrImage = (CorrImage .* mean(StdImage(:))) + mean(MeanImage(:));
+% % Reverse log10 transform that was applied to images when learning 
+% % mean/std statistics as well the corrected image.
+% CorrImage = 10 .^ CorrImage;
 
 
 %%%%%%%%%%%%%%%%%
@@ -61,6 +62,7 @@ CorrImage = 10 .^ CorrImage;
 %%%%%%%%%%%%%%%%%%%%
 
 data = struct();
+data.Test = 'bla';
 
 output_args = struct();
 output_args.CorrImage = corr_image;
@@ -76,6 +78,6 @@ output_args.CorrImage = corr_image;
 writedata(handles, data);
 
 %%% write temporary pipeline data to HDF5
-writeoutputtmp(handles, output_args);
+writeoutputargs(handles, output_args);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

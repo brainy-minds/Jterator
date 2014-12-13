@@ -1,15 +1,20 @@
-importall jterator
-using MAT
+import os
+import sys
+import re
+import numpy as np
+from scipy.io import loadmat
+from jterator.api.io import *
 
-mfilename = match(r"([^/]+)\.jl$", @__FILE__()).captures[1]
+
+mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
 
 ###############################################################################
 ## jterator input
 
-@printf("jt - %s:\n", mfilename)
+print("jt - %s:" % mfilename)
 
 ### read YAML from standard input
-handles_stream = readall(STDIN)
+handles_stream = sys.stdin
 
 ### retrieve handles from .YAML files
 handles = gethandles(handles_stream)
@@ -30,7 +35,7 @@ input_args = checkinputargs(input_args)
 ## input handling ##
 ####################
 
-orig_image = input_args["DapiImage"]
+orig_image = np.array(input_args["DapiImage"])
 stats_directory = input_args["StatsDirectory"]
 stats_filename = input_args["StatsFilename"]
 
@@ -40,23 +45,21 @@ stats_filename = input_args["StatsFilename"]
 ################
 
 ### build absolute path to illumination correction file
-stats_path = joinpath(stats_directory, stats_filename)
-if ~isabspath(stats_path)
-    stats_path = joinpath(pwd(), stats_path)
-end
-
-### load illumination correction file
-stats = matread(stats_path)
-
-### extract pre-calculated statistics
-mean_image = float64(stats["stat_values"]["mean"])
-std_image = float64(stats["stat_values"]["std"])
+stats_path = os.path.join(stats_directory, stats_filename)
+if not os.path.isabs(stats_path):
+    stats_path = os.path.join(os.getcwd(), stats_path)
+### load illumination correction file and extract statistics
+stats = loadmat(stats_path)
+# this works in principle, but always hangs when I run the module
+stats = stats['stat_values']
+mean_image = np.array(stats['mean'])
+std_image = np.array(stats['std'])
 
 ### correct intensity image for illumination artefact
-orig_image[orig_image .== 0] = 1 
-corr_image = (log10(orig_image) - mean_image) ./ std_image
-corr_image = (corr_image .* mean(std_image)) + mean(mean_image)
-corr_image = 10 .^ corr_image
+orig_image[orig_image == 0] = 1
+corr_image = (np.log10(orig_image) - mean_image) / std_image
+corr_image = (corr_image * mean(std_image)) + mean(mean_image)
+corr_image = 10 ** corr_image
 
 
 #################
@@ -68,11 +71,9 @@ corr_image = 10 .^ corr_image
 ## prepare output ##
 ####################
 
-output_args = Dict()
+output_args = dict()
 output_args["CorrImage"] = corr_image
-
-data = Dict()
-data["Test"] = "bla"
+data = dict()
 
 
 ## ------------------------------ module specific -----------------------------

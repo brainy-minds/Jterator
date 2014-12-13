@@ -56,7 +56,7 @@ nuclei_label_img = measure.label(nuclei_img)
 regions = measure.regionprops(nuclei_label_img)
 
 ### extract "area" measurement
-nuclei_area = [regions[i].area for i in range(nuclei_num)]
+nuclei_area = [regions[index].area for index in range(nuclei_num)]
 
 
 #################

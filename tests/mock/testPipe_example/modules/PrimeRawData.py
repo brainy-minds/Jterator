@@ -5,6 +5,8 @@ import numpy as np
 from scipy import misc
 from jterator.api.io import *
 
+from IPython.core.debugger import Tracer
+
 
 mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
 
@@ -36,6 +38,7 @@ input_args = checkinputargs(input_args)
 ####################
 
 dapi_filename = input_args['DapiFilename']
+ab_filename = input_args['Antibody1Filename']
 
 
 ################
@@ -43,6 +46,7 @@ dapi_filename = input_args['DapiFilename']
 ################
 
 dapi_image = np.float64(misc.imread(dapi_filename))
+ab_image = np.float64(misc.imread(dapi_filename))
 
 
 #################
@@ -56,6 +60,7 @@ dapi_image = np.float64(misc.imread(dapi_filename))
 
 output_args = dict()
 output_args['DapiImage'] = dapi_image
+output_args['Antibody1Image'] = ab_image
 
 data = dict()
 

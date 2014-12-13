@@ -6,7 +6,6 @@ input:
 
     DapiImage:
         hdf5_location: /PrimeRawData/DapiImage
-        class: "Array{Float64,2}"
 
     StatsDirectory:
         parameter: rawdata/BATCH
@@ -19,4 +18,6 @@ output:
 
     CorrImage:
         hdf5_location: /IllumCorr/CorrImage
-        class: "Array{Float64,2}"
+
+    Test:
+        hdf5_location: /IllumCorr/Test
