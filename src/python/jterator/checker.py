@@ -1,5 +1,4 @@
 import os
-import re
 import yaml
 from jterator.error import JteratorError
 
@@ -92,12 +91,12 @@ class JteratorCheck(object):
             if not 'hdf5_filename' in handles:
                 raise JteratorError('Handles file must contain the key "%s".' %
                                     'hdf5_filename')
-            if os.path.abspath(handles['hdf5_filename']) != self.tmp_filename:
-                raise JteratorError('The key "hdf5_filename" is not specified '
-                                    'correctly in handles of module "%s".\n'
-                                    'It should be "%s" according to the '
-                                    'pipeline descriptor file.' %
-                                    (module['name'], self.tmp_filename))
+            # if os.path.abspath(handles['hdf5_filename']) != self.tmp_filename:
+            #     raise JteratorError('The key "hdf5_filename" is not specified '
+            #                         'correctly in handles of module "%s".\n'
+            #                         'It should be "%s" according to the '
+            #                         'pipeline descriptor file.' %
+            #                         (module['name'], self.tmp_filename))
             # Check required 'input' section
             if not 'input' in handles:
                 raise JteratorError('Handles file must contain the key "%s".' %

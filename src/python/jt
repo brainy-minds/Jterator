@@ -56,7 +56,6 @@ class JteratorCli(object):
         Run Jterator pipe if it is found in the current working folder.
         '''
         jt = JteratorRunner(pipeline_folder_path=self.args.path)
-        jt.build_pipeline()
         jt.run_pipeline(self.args.job)
 
     def check(self):

@@ -81,7 +81,6 @@ Each pipeline has the following layout on the disk:
 * **modules** folder contains all the executable code for programs.
 * **logs** folder contains all the output from STDOUT and STERR streams, obtained for each executable that has been executed.
 * **data** folder contains all the data output in form of HDF5 files. These data are shared between modules. 
-* **tmp** folder contains the temporary pipeline data that is shared between modules. These files are killed after successful completion of the pipeline.
 * **figures** folder contains the PDFs of the plots (optional).
 * **subfunctions** folder contains additional executable code, which is called by modules.
 
@@ -141,7 +140,7 @@ Handles descriptor files
 Describe your modules in the .handles (YAML) descriptor files (Python example):
 
 ```yaml
-hdf5_filename: tmp/myProject.tmp
+hdf5_filename: None
 
 input:
 
@@ -171,6 +170,10 @@ output:
         hdf5_location: /myModule/OutputDataset
         class: float64
 ```
+The value of the key "hdf5_filename" can be left empty or set to 'None'.
+It will be filled in by Jterator. The program generates a temporary file
+and writes its filename into the handles descriptor file in order to make it available to the modules. 
+Note that the temporary file will currently not get killed when an error occurs. This is implemented in this way to allow debugging of the module that broke. Make sure to clean up the temporary files manually.    
 There are two different types of input arguments:
 * *hdf5_location* is an argument that has to be produced upstream in the pipeline by another module, which saved it into the HDF5 file.
 * *parameter* is an argument that is used to control the behavior of the module.   

@@ -45,6 +45,7 @@ def readinputargs(handles):
             print('jt -- %s: parameter \'%s\': "%s"'
                   % (mfilename, key, str(field['parameter'])))
         else:
+            h5py.File.close(hdf5_root)
             raise JteratorError('Possible variable keys are '
                                 '\'hdf5_location\' or \'parameter\'')
 

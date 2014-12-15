@@ -4,6 +4,7 @@ import re
 import yaml
 import h5py
 import numpy as np
+import tempfile
 from jterator.error import JteratorError
 from jterator.checker import JteratorCheck
 from jterator.module import Module
@@ -85,15 +86,18 @@ class JteratorRunner(object):
 
     def init_hdf5_files(self):
         '''
-        Determine name of HDF5 files for temporary pipeline data.
+        Create temporary file and return its filename.
         '''
         if self.tmp_filename is None:
-            tmp_path = os.path.join(self.pipeline_folder_path, 'tmp')
-            if not os.path.isdir(tmp_path):
-                os.mkdir(tmp_path)
-            tmp_filename = os.path.join(tmp_path, '%s.tmp' %
-                                        self.description['project']['name'])
-            self.tmp_filename = tmp_filename
+            tmp_filename = tempfile.mkstemp()
+            self.tmp_filename = tmp_filename[1]
+            # tmp_path = os.path.join(self.pipeline_folder_path, 'tmp')
+            # if not os.path.isdir(tmp_path):
+            #     os.mkdir(tmp_path)
+            # tmp_filename = os.path.join(tmp_path, '%s.tmp' %
+            #                             self.description['project']['name'])
+            # self.tmp_filename = tmp_filename
+            print('The temporary "hdf5_filename" is "%s"' % self.tmp_filename)
 
     def build_pipeline(self):
         '''
@@ -132,8 +136,9 @@ class JteratorRunner(object):
             # Extract module information from pipeline description.
             module = Module(name=module_description['name'],
                             module=module_path,
-                            handles=open(handles_path),
-                            interpreter=interpreter_path)
+                            handles=handles_path,
+                            interpreter=interpreter_path,
+                            tmp_filename=self.tmp_filename)
             self.modules.append(module)
         if not self.modules:
             raise JteratorError('No module description was found in:'
@@ -210,8 +215,8 @@ class JteratorRunner(object):
         '''
         Create HDF5 files for temporary pipeline data and module output.
         '''
-        # Create HDF5 file for temporary data
-        # (for pipeline data; temporary file).
+        # Create HDF5 file for pipeline data (temporary file).
+        # Alternatively, consider using "HDF5 File Image Operations".
         tmp_root = h5py.File(self.tmp_filename, 'w')
         # Write the full path of the processed item into defined location.
         for item in job:
@@ -224,8 +229,7 @@ class JteratorRunner(object):
                 item_path = job[item]
                 tmp_root = h5py.File(self.tmp_filename, 'r+')
                 tmp_root.create_dataset(item, data=item_path)
-        # Create HDF5 file for measurement data
-        # (for pipeline output; persistent file).
+        # Create HDF5 file for measurement data (persistent file).
         output_path = os.path.join(self.pipeline_folder_path, 'data')
         if not os.path.isdir(output_path):
             os.mkdir(output_path)

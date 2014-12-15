@@ -1,4 +1,6 @@
 import os
+import re
+import yaml
 from subprocess32 import (PIPE, Popen)
 from jterator.error import JteratorError
 
@@ -13,7 +15,7 @@ class Module(object):
     Note: a lot of logic is re-thought and borrowed from github:ewiger/pipette.
     '''
 
-    def __init__(self, name, module, handles, interpreter):
+    def __init__(self, name, module, handles, interpreter, tmp_filename):
         '''
         Initiate a new Jterator module.
 
@@ -23,19 +25,22 @@ class Module(object):
 
         :module:          Path to a program file that can be executed.
 
-        :handles:         FileObj instance, i.e. it can behave like an
-                          opened file.
+        :handles:         Path to handles file.
 
         :interpreter:     Path to program that should execute the program file.
+
+        :tmp_filename:    Filename of the temporary HDF5 file.
         '''
         self.name = name
         self.module = module
+        self.handles = open(handles)
         # Require 'handles' to be a file object.
-        if not hasattr(handles, 'read'):
+        if not hasattr(self.handles , 'read'):
             raise JteratorError('Passed argument \'handles\' is not a file '
                                 'object.')
-        self.handles = handles
+        self.handles_filename = handles
         self.interpreter = interpreter
+        self.tmp_filename = tmp_filename
         # Effectively, these are used as arguments for Popen call.
         # That's why it is actually legal to use PIPE as a default value here.
         # Note: Set values to None to avoid interaction with the program.
@@ -102,7 +107,25 @@ class Module(object):
             # Prepare handles input.
             input_data = None
             if self.streams['input'] == PIPE:
-                input_data = self.handles.read()
+                input_data = self.handles.readlines()  # read()
+                # We have to provide the temporary filename to the modules.
+                # Let's write it into handles and save the changes to the file.
+                i = -1
+                for line in input_data:
+                    i = i + 1
+                    # Replace the value of the 'hdf5_filename' key.
+                    # Doing this via YAML should be saver.
+                    if re.match('hdf5_filename', line):
+                        hdf5_key = yaml.load(line)
+                        hdf5_key['hdf5_filename'] = self.tmp_filename
+                        input_data[i] = yaml.dump(hdf5_key,
+                                                  default_flow_style=False)
+                # Write the new handles file.
+                input_data = ''.join(input_data)
+                new_handles = open(self.handles_filename, 'w')
+                new_handles.write(input_data)
+                print('The value of the "hdf5_filename" key has been replaced '
+                      'in the handles file.')
             # Execute sub-process.
             (stdoutdata, stderrdata) = process.communicate(input=input_data)
             print stdoutdata
@@ -118,6 +141,9 @@ class Module(object):
         except ValueError as error:
             raise JteratorError('Failed running \'%s\'. Reason: \'%s\'' %
                                 (command, str(error)))
+
+        # Shall we kill the temporary file in case of error?
+        # It would be cleaner, but we could not debug anymore.
 
     def __str__(self):
         return ':%s: @ <%s>' % (self.name, self.module)
