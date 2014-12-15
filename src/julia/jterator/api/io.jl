@@ -10,12 +10,12 @@ import HDF5
 function gethandles(handles_stream)
     ## Reading "handles" from YAML file.
 
-    mfilename = "gethandles" # can we get this automatically?
+    mfilename = "gethandles"
 
     # Reading handles from YAML.
     handles = YAML.load(handles_stream)
 
-    @printf("jt -- %s: loaded handles\n", mfilename)
+    @printf("jt -- %s: loaded 'handles'\n", mfilename)
 
     return handles
 
@@ -107,9 +107,9 @@ function writedata(handles, data)
         for key in keys(data)
             hdf5_location = handles["output"][key]["hdf5_location"]
             if ismatch(r"Array", string(typeof(data[key])))
-                hdf5_data[hdf5_location] = data[key]'
+                HDF5.h5write(hdf5_filename, hdf5_location, data[key]')
             else
-                hdf5_data[hdf5_location] = data[key]
+                HDF5.h5write(hdf5_filename, hdf5_location, data[key])
             end
             @printf("jt -- %s: wrote dataset '%s' to HDF5 group: \"%s\"\n",
                     mfilename, key, hdf5_location)
@@ -132,10 +132,11 @@ function writeoutputargs(handles, output_args)
         hdf5_root = HDF5.h5open(hdf5_filename, "r+")
         for key in keys(output_args)
             hdf5_location = handles["output"][key]["hdf5_location"]
+            HDF5.h5write(hdf5_filename, hdf5_location, output_args[key])
             if ismatch(r"Array", string(typeof(output_args[key])))
-                hdf5_root[hdf5_location] = output_args[key]'
+                HDF5.h5write(hdf5_filename, hdf5_location, output_args[key]')
             else
-                hdf5_root[hdf5_location] = output_args[key]
+                HDF5.h5write(hdf5_filename, hdf5_location, output_args[key])
             end
             @printf("jt -- %s: wrote tmp dataset '%s' to HDF5 group: \"%s\"\n",
                     mfilename, key, hdf5_location)
