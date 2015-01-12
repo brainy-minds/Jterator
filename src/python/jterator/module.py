@@ -125,7 +125,7 @@ class Module(object):
                 new_handles = open(self.handles_filename, 'w')
                 new_handles.write(input_data)
                 print('The value of the "hdf5_filename" key has been replaced '
-                      'in the handles file.')
+                      'in "%s".' % self.handles_filename)
             # Execute sub-process.
             (stdoutdata, stderrdata) = process.communicate(input=input_data)
             print stdoutdata
@@ -142,8 +142,8 @@ class Module(object):
             raise JteratorError('Failed running \'%s\'. Reason: \'%s\'' %
                                 (command, str(error)))
 
-        # Shall we kill the temporary file in case of error?
-        # It would be cleaner, but we could not debug anymore.
+        # We should by default kill the temporary file in case of error!
+        # Let's implement a debug mode that explicitly preserves the file!
 
     def __str__(self):
         return ':%s: @ <%s>' % (self.name, self.module)

@@ -9,7 +9,7 @@ from jterator.error import JteratorError
 from jterator.checker import JteratorCheck
 from jterator.module import Module
 
-from IPython.core.debugger import Tracer
+# from IPython.core.debugger import Tracer
 
 
 class JteratorRunner(object):
