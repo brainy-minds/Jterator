@@ -3,7 +3,7 @@ import sys
 import re
 import numpy as np
 from scipy.io import loadmat
-from jterator.api.io import *
+from jterator.api import *
 
 
 mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)

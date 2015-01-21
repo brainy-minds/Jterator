@@ -3,9 +3,9 @@ import sys
 import re
 import numpy as np
 from scipy import misc
-from jterator.api.io import *
+from jterator.api import *
 
-from IPython.core.debugger import Tracer
+# from IPython.core.debugger import Tracer
 
 
 mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)

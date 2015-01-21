@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 # import plotly.plotly as py
 from plotly.graph_objs import *
 from skimage import measure
-from jterator.api.io import *
+from jterator.api import *
 
 
 mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)

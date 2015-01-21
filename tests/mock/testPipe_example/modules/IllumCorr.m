@@ -1,4 +1,4 @@
-import jterator.api.io.*;
+import jterator.*;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator input
@@ -40,16 +40,16 @@ stats_filename = input_args.StatsFilename;
 %%%%%%%%%%%%%%%%
 
 
-% %%% correct intensity image for illumination artefact
-% % Avoid -Inf values after log10 transform.
-% OrigImage(OrigImage == 0) = 1;
-% % Apply z-score normalization for each single pixel.
-% CorrImage = (log10(OrigImage) - MeanImage) ./ StdImage;
-% % Reverse z-score.
-% CorrImage = (CorrImage .* mean(StdImage(:))) + mean(MeanImage(:));
-% % Reverse log10 transform that was applied to images when learning 
-% % mean/std statistics as well the corrected image.
-% CorrImage = 10 .^ CorrImage;
+%%% correct intensity image for illumination artefact
+% Avoid -Inf values after log10 transform.
+OrigImage(OrigImage == 0) = 1;
+% Apply z-score normalization for each single pixel.
+CorrImage = (log10(OrigImage) - MeanImage) ./ StdImage;
+% Reverse z-score.
+CorrImage = (CorrImage .* mean(StdImage(:))) + mean(MeanImage(:));
+% Reverse log10 transform that was applied to images when learning 
+% mean/std statistics as well the corrected image.
+CorrImage = 10 .^ CorrImage;
 
 
 %%%%%%%%%%%%%%%%%
