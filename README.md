@@ -85,28 +85,28 @@ Tools (not yet implemented):
 * **jtfigure**: Saving figures as PDF or sending it to plotly.
 
 Ultimately, we will provide the APIs via packages for each language (see TODO). For now, you have to add the path to the API for each language: 
-- Python
+- Python    
     Include the following line in your *.bash_profile* file:
 
     ```bash
     export PYTHONPATH=$HOME/jterator/src/python
     ```
 
-- R
+- R     
     Include the following line in your *.Rprofile* file: 
 
     ```r
     source(file.path(Sys.getenv("HOME"), "jterator/src/r/jterator/api/io.R"))
     ```
 
-- Julia
+- Julia     
     Include the following line in your *.juliarc.jl* file: 
 
     ```julia
     include(joinpath(homedir(), "jterator/src/julia/jterator/api/io.jl"))
     ```
 
-- Matlab
+- Matlab    
     Include the following line in your *startup.m*:   
 
     ```matlab
