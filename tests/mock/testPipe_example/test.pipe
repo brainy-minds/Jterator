@@ -6,6 +6,10 @@
 #
 # To run modules individually use the following command:
 #   $ cat [handles_filename] | [executable] [module_filename]
+#
+#
+# WARNING: Do not comment part of the module list in "pipeline"!
+# For unknown reasons this leads to weird behavior.
 
 
 # Define your project:
@@ -44,7 +48,7 @@ pipeline:
   - name: IdentifyNuclei
     module: modules/IdentifyNuclei.m
     handles: handles/IdentifyNuclei.handles
-    interpreter: /opt/local/bin/Mscript
+    interpreter: Mscript
 
   - name: MeasureObjects
     module: modules/MeasureObjects.py
