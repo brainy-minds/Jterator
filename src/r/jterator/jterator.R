@@ -2,7 +2,7 @@ library(yaml)
 library(rhdf5)
 
 
-#' Reading "handles" from YAML file.
+#' @rdname Reading "handles" from YAML file.
 gethandles <- function(handles_stream) {
 
     mfilename <- "gethandles"

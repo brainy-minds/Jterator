@@ -6,7 +6,6 @@ from jterator.error import JteratorError
 
 # from IPython.core.debugger import Tracer
 
-
 def gethandles(handles_stream):
     '''
     Reading "handles" from YAML file.

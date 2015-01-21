@@ -3,6 +3,8 @@ module jterator
 using YAML
 using HDF5
 
+export gethandles, readinputargs, checkinputargs, writeoutputargs, writedata
+
 ###################################################################
 ## Note: the HDF5 package doesn't handle dimensions correctly!!! ##
 ###################################################################
@@ -144,8 +146,5 @@ function writeoutputargs(handles, output_args)
     end
 
 end
-
-
-export gethandles, readinputargs, checkinputargs, writeoutputargs, writedata
 
 end

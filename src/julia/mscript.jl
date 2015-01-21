@@ -29,7 +29,7 @@ end
 input_stream = readall(STDIN)
 
 # start Matlab session
-print("Mscript: Julia is happy to do MATLAB's job :)\nMscript: ")
+print("Mscript: ")
 s1 = MSession()
 
 # send standard input stream into Matlab session
