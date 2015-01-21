@@ -19,6 +19,15 @@ Jterator depends on the following languages and external libraries:
 
     http://julialang.org/downloads/
 
+    To install from source:
+
+    ```bash
+    git clone git://github.com/JuliaLang/julia.git ~/julia
+    cd ~/julia
+    git checkout release-0.3
+    make
+    ```
+
 * HDF5
 
     OSX:
@@ -42,11 +51,26 @@ Jterator depends on the following languages and external libraries:
 APIs
 ----
 
-Jterator is written in Python but can pipe custom code in different languages. APIs for input/output handling are currently implemented in the following languages: 
-* Matlab
-* R
+Jterator is written in Python, but can pipe custom code in different languages. APIs for input/output handling are currently implemented in the following languages: 
 * Python
+* R
 * Julia
+* Matlab
+
+Language specific package dependencies: 
+* Python 
+    - *YAML*    
+    - *h5py*    
+* R     
+    - *yaml*    
+    - *rhdf5*   
+* Julia     
+    - *YAML*    
+    - *HDF5*    
+    - *MATLAB*  
+* Matlab (already provided)
+    - *mhdf5tools* (includes important extensions!)
+    - *yamlmatlab*
 
 The following functions are available for modules in all above listed languages: 
 
@@ -57,7 +81,7 @@ Input/output:
 * **writeoutputargs**: Writing output arguments to HDF5 file using the location specified in "handles".
 * **writedata**: Writing data to HDF5 file.
 
-Tools:      
+Tools (not yet implemented):      
 * **jtfigure**: Saving figures as PDF or sending it to plotly.
 
 
@@ -187,14 +211,15 @@ Getting started
 To *download* Jterator clone this repository:
 
 ```bash
-git clone git@github.com:HackerMD/Jterator.git
+git clone git@github.com:HackerMD/Jterator.git ~/jterator
 ```
 
-To *install* Jterator locally (developer mode), do:
+To *use* the Jterator command line interface, add the jterator directory to your executable path:
 
 ```bash
-cd Jterator && pip install -e .
+export PATH=$PATH:~/jterator/src/python
 ```
+To add the executable path permanently, include this command in your .bash_profile file.
 
 To *link* Mscript - a custom tool based on the Julia Matlab interface (https://github.com/JuliaLang/MATLAB.jl) for transforming Matlab scripts into real executables - into /usr/bin for easier execution, do:
 
@@ -209,7 +234,7 @@ jt create [/my/jterator/project/folder] --skel [/my/repository/with/jterator/ske
 ```
 
 This will create your project folder, which will then already have the correct folder layout and will contain skeletons for YAML descriptor files and modules. It will also provide you with the required APIs.
-Now you will have to place your custom code into the module skeletons and define the pipeline in the .pipe file as well as input/output arguments in the corresponding .handles files. Shabam! You are ready to go...
+Now you will have to place your custom code into the module skeletons and define the pipeline in the .pipe file as well as input/output arguments in the corresponding .handles files. And shabam! you are ready to go...
 
 To *check* your existing jterator project (YAML descriptor files), do:
 
@@ -245,7 +270,7 @@ cat handles/myModule.handles | [interpreter] modules/myModule.py
 Developing Jterator
 ===================
 
-Modules can be written in virtually any programming language as long as such language can provide tools for working with *YAML* and *HDF5* data formats.
+Modules can be written in any programming language that provides libraries for for *YAML* and *HDF5* file formats.
 You are welcome to further extent the list of languages by writing additional APIs.
 
 
