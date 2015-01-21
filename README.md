@@ -96,7 +96,7 @@ Ultimately, we will provide the APIs via packages for each language (see TODO). 
     Include the following line in your *.Rprofile* file: 
 
     ```r
-    source(file.path(Sys.getenv("HOME"), "jterator/src/r/jterator/api/io.R"))
+    source(file.path(Sys.getenv("HOME"), "jterator/src/r/jterator/jterator.R"))
     ```
 
 - Julia     
