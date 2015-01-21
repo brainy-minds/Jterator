@@ -84,6 +84,28 @@ Input/output:
 Tools (not yet implemented):      
 * **jtfigure**: Saving figures as PDF or sending it to plotly.
 
+Ultimately, we will provide the APIs via packages for each language (see TODO). For now, you have to add the path to the API for each language: 
+- Python
+    Include the following line in your *.bash_profile* file:
+    ```bash
+    export PYTHONPATH=$HOME/jterator/src/python
+    ```
+- R
+    Include the following line in your *.Rprofile* file:
+    ```R
+    source(file.path(Sys.getenv("HOME"), "jterator/src/r/jterator/api/io.R"))
+    ```
+- Julia
+    Include the following line in your *.juliarc.jl* file:
+    ```Julia
+    include(joinpath(homedir(), "jterator/src/julia/jterator/api/io.jl"))
+    ```
+- Matlab
+    Include the following line in your *startup.m*:
+    ```Matlab
+    addpath(genpath(fullpath(getenv('HOME'),'jterator/src/matlab')))
+    ```
+
 
 Pipeline
 ========
@@ -219,6 +241,12 @@ To *use* the Jterator command line interface, add the jterator directory to your
 export PATH=$PATH:~/jterator/src/python
 ```
 To add the executable path permanently, include this command in your .bash_profile file.
+    
+Alternatively, you can install Jterator locally:
+```bash
+cd ~/jterator
+pip install -e .
+```
 
 To *use* Mscript - a custom tool based on the Julia Matlab interface (https://github.com/JuliaLang/MATLAB.jl) for transforming Matlab scripts into real executables - create a softlink in a directory on your PATH (e.g. /usr/bin):
 
@@ -290,4 +318,4 @@ cd tests && nosetests
 To do
 =====
 
-Package management for external dependencies and APIs in different languages.
+Package management for external dependencies and APIs in different languages.  
