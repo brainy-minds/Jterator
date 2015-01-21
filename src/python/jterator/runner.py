@@ -270,6 +270,7 @@ class JteratorRunner(object):
         if job_id is None:  # non-parallel mode
             # Create joblist and iterate over job items.
             self.create_job_list()
+            self.get_job_list()
             for job in self.joblist.itervalues():
                 # Initialize the pipeline.
                 self.create_hdf5_files(job)
@@ -285,9 +286,8 @@ class JteratorRunner(object):
         else:  # parallel mode
             self.get_job_list()
             # Initialize the pipeline.
-            item = self.job_list[job_id]
-            item_path = os.path.join(self.description['jobs']['folder'],
-                                     item)
+            item = self.joblist[job_id]
+            item_path = os.path.join(self.description['jobs']['folder'], item)
             item_path = self.jobs_file_path
             self.create_hdf5_files(item_path)
             # Run the pipeline.
