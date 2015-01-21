@@ -1,4 +1,4 @@
-#!/usr/bin/julia
+#!/usr/bin/env julia
 using MATLAB
 
 # This Julia script turns a Matlab script into a real executable, which 

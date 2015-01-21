@@ -146,71 +146,67 @@ class JteratorRunner(object):
         Create a list of jobs over which the program should iterate,
         i.e. process one after another or process in parallel.
         '''
+        # Check pipeline description.
+        self.init_hdf5_files()
+        checker = JteratorCheck(self.description, self.tmp_filename)
+        checker.check_pipeline()
+        # Create joblist based on pipeline description.
+        folder_path = self.description['jobs']['folder']
+        folder_content = os.listdir(folder_path)
+        folder_content = sorted(folder_content)
+        if not os.path.isabs(folder_path):
+            folder_path = os.path.join(self.pipeline_folder_path,
+                                       folder_path)
+        if not os.path.exists(folder_path):
+            raise JteratorError('Folder "%s" does not exist. Double-check '
+                                '"jobs" section in your pipeline '
+                                'description: "%s".' %
+                                (folder_path, self.pipeline_filename))
+        # Extract files from folder for each pattern.
+        iteration_pattern = self.description['jobs']['pattern']
+        jobs_per_pattern = dict()
+        for pattern in iteration_pattern:
+            jobs = [filename for filename in folder_content
+                    if re.match(pattern['expression'], filename)]
+            if len(jobs) == 0:
+                raise JteratorError('No files found in folder "%s" that match '
+                                    'pattern "%s". Double-check "jobs" '
+                                    'section in your pipe description: "%s".' %
+                                    (folder_path, pattern['expression'],
+                                     self.pipeline_filename))
+            job_ids = [jobid+1 for jobid in xrange(len(jobs))]
+            jobs_per_pattern[pattern['name']] = jobs
+            jobs_per_pattern['jobID'] = job_ids
+        # Make sure all pattern result in same number of jobs.
+        job_number = [len(jobs) for jobs in jobs_per_pattern.itervalues()]
+        if not len(set(job_number)) == 1:
+            raise JteratorError('The files found in folder "%s" for pattern '
+                                'resulted in different number of jobs.' %
+                                folder_path)
+        # Wrap all pattern into one joblist.
+        job_list = dict()
+        for job_id in jobs_per_pattern['jobID']:
+            index = job_id - 1
+            job_list[job_id] = dict()
+            job_list[job_id]['jobID'] = jobs_per_pattern['jobID'][index]
+            for pattern in iteration_pattern:
+                key = pattern['name']
+                job_list[job_id][key] = jobs_per_pattern[key][index]
+        self.joblist = job_list
+        # Save joblist to file (as YAML).
         jobs_file_path = os.path.join(self.pipeline_folder_path,
                                       '%s.jobs' %
                                       self.description['project']['name'])
         self.jobs_file_path = jobs_file_path
-        if os.path.exists(jobs_file_path):
-            job_list = yaml.load(open(jobs_file_path).read())
-            self.joblist = job_list
-        else:
-            # Check pipeline description.
-            self.init_hdf5_files()
-            checker = JteratorCheck(self.description, self.tmp_filename)
-            checker.check_pipeline()
-            # Create joblist based on pipeline description.
-            folder_path = self.description['jobs']['folder']
-            folder_content = os.listdir(folder_path)
-            folder_content = sorted(folder_content)
-            if not os.path.isabs(folder_path):
-                folder_path = os.path.join(self.pipeline_folder_path,
-                                           folder_path)
-            if not os.path.exists(folder_path):
-                raise JteratorError('Folder "%s" does not exist. Double-check '
-                                    '"jobs" section in your pipeline '
-                                    'description: "%s".' %
-                                    (folder_path, self.pipeline_filename))
-            # Extract files from folder for each pattern.
-            iteration_pattern = self.description['jobs']['pattern']
-            jobs_per_pattern = dict()
-            for pattern in iteration_pattern:
-                jobs = [filename for filename in folder_content
-                        if re.match(pattern['expression'], filename)]
-                if len(jobs) == 0:
-                    raise JteratorError('No files found in folder "%s" that match '
-                                        'pattern "%s". Double-check "jobs" '
-                                        'section in your pipe description: "%s".' %
-                                        (folder_path, pattern['expression'],
-                                         self.pipeline_filename))
-                job_ids = [jobid+1 for jobid in xrange(len(jobs))]
-                jobs_per_pattern[pattern['name']] = jobs
-                jobs_per_pattern['jobID'] = job_ids
-            # Make sure all pattern result in same number of jobs.
-            job_number = [len(jobs) for jobs in jobs_per_pattern.itervalues()]
-            if not len(set(job_number)) == 1:
-                raise JteratorError('The files found in folder "%s" for pattern '
-                                    'resulted in different number of jobs.' %
-                                    folder_path)
-            # Wrap all pattern into one joblist.
-            job_list = dict()
-            for job_id in jobs_per_pattern['jobID']:
-                index = job_id - 1
-                job_list[job_id] = dict()
-                job_list[job_id]['jobID'] = jobs_per_pattern['jobID'][index]
-                for pattern in iteration_pattern:
-                    key = pattern['name']
-                    job_list[job_id][key] = jobs_per_pattern[key][index]
-            self.joblist = job_list
-            # Save joblist to file (as YAML).
-            stream = file(jobs_file_path, 'w+')
-            yaml.dump(job_list, stream, default_flow_style=False)
-            print('Joblist was written to file: "%s".' % jobs_file_path)
-            # Double-check that jobID is correctly specified for each job.
-            for job_id in job_list:
-                if not job_id == job_list[job_id]['jobID']:
-                    raise JteratorError('"JobID" of job #%d is incorrect. '
-                                        'Check joblist file "%s".' %
-                                        (job_id, jobs_file_path))
+        stream = file(jobs_file_path, 'w+')
+        yaml.dump(job_list, stream, default_flow_style=False)
+        print('Joblist was written to file: "%s".' % jobs_file_path)
+        # Double-check that jobID is correctly specified for each job.
+        for job_id in job_list:
+            if not job_id == job_list[job_id]['jobID']:
+                raise JteratorError('"JobID" of job #%d is incorrect. '
+                                    'Check joblist file "%s".' %
+                                    (job_id, jobs_file_path))
 
     def create_hdf5_files(self, job):
         '''
