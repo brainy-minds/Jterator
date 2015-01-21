@@ -89,14 +89,11 @@ class JteratorRunner(object):
         Create temporary file and return its filename.
         '''
         if self.tmp_filename is None:
-            tmp_filename = tempfile.mkstemp()
-            self.tmp_filename = tmp_filename[1]
-            # tmp_path = os.path.join(self.pipeline_folder_path, 'tmp')
-            # if not os.path.isdir(tmp_path):
-            #     os.mkdir(tmp_path)
-            # tmp_filename = os.path.join(tmp_path, '%s.tmp' %
-            #                             self.description['project']['name'])
-            # self.tmp_filename = tmp_filename
+            # Get absolute path to temporary directory ($TMPDIR)
+            tmp_directory = tempfile.gettempdir()
+            tmp_filename = os.path.join(tmp_directory, '%s.tmp' %
+                                        self.description['project']['name'])
+            self.tmp_filename = tmp_filename
             print('The temporary "hdf5_filename" is "%s"' % self.tmp_filename)
 
     def build_pipeline(self):
@@ -149,7 +146,14 @@ class JteratorRunner(object):
         Create a list of jobs over which the program should iterate,
         i.e. process one after another or process in parallel.
         '''
-        if self.joblist is None:
+        jobs_file_path = os.path.join(self.pipeline_folder_path,
+                                      '%s.jobs' %
+                                      self.description['project']['name'])
+        self.jobs_file_path = jobs_file_path
+        if os.path.exists(jobs_file_path):
+            job_list = yaml.load(open(jobs_file_path).read())
+            self.joblist = job_list
+        else:
             # Check pipeline description.
             self.init_hdf5_files()
             checker = JteratorCheck(self.description, self.tmp_filename)
@@ -198,12 +202,9 @@ class JteratorRunner(object):
                     job_list[job_id][key] = jobs_per_pattern[key][index]
             self.joblist = job_list
             # Save joblist to file (as YAML).
-            jobs_file_path = os.path.join(self.pipeline_folder_path,
-                                          '%s.jobs' %
-                                          self.description['project']['name'])
-            self.jobs_file_path = jobs_file_path
             stream = file(jobs_file_path, 'w+')
             yaml.dump(job_list, stream, default_flow_style=False)
+            print('Joblist was written to file: "%s".' % jobs_file_path)
             # Double-check that jobID is correctly specified for each job.
             for job_id in job_list:
                 if not job_id == job_list[job_id]['jobID']:
@@ -233,6 +234,8 @@ class JteratorRunner(object):
         output_path = os.path.join(self.pipeline_folder_path, 'data')
         if not os.path.isdir(output_path):
             os.mkdir(output_path)
+        # For now, we create one hdf5 file per job. We could, however,
+        # preallocate one big hdf5 for all jobs to omit data fusion.
         output_filename = os.path.join(output_path, '%s_%d.data' %
                                        (self.description['project']['name'],
                                         job['jobID']))
@@ -245,7 +248,7 @@ class JteratorRunner(object):
 
     def run_pipeline(self, job_id):
         '''
-        For each iteration, run one module after another and
+        For each iteration, run one module after another (or in parallel) and
         pass their corresponding handles to them.
         '''
         self.init_hdf5_files()
@@ -270,8 +273,8 @@ class JteratorRunner(object):
                     module.run()
                 # Kill the temporary file containing the pipeline data.
                 os.remove(self.tmp_filename)
-        else:  # parallel mode!
-            # Make sure joblist file was created.
+        else:  # parallel mode
+            # Requires joblist file.
             if not os.path.exists(self.jobs_file_path):
                 raise JteratorError('No joblist file found! '
                                     'Call "jt joblist"!')
@@ -289,5 +292,3 @@ class JteratorRunner(object):
                 module.set_standard_output(os.path.join(self.logs_path,
                                            '%s.output' % module.name))
                 module.run()
-            # Kill the temporary file containing the pipeline data.
-            os.remove(self.tmp_filename)
