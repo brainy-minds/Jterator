@@ -248,7 +248,8 @@ class JteratorRunner(object):
         output_filename = os.path.join(output_path, '%s_%d.data' %
                                        (self.description['project']['name'],
                                         job['jobID']))
-        h5py.File(output_filename, 'w')
+        data_root = h5py.File(output_filename, 'w')
+        data_root.close()
         # Write name of datafile into the temporary HDF5 file.
         # Only Fixed-length ASCII are compatible (use numpy strings)!!!
         tmp_root.create_dataset('datafile', data=np.string_(output_filename))
@@ -286,10 +287,8 @@ class JteratorRunner(object):
         else:  # parallel mode
             self.get_job_list()
             # Initialize the pipeline.
-            item = self.joblist[job_id]
-            item_path = os.path.join(self.description['jobs']['folder'], item)
-            item_path = self.jobs_file_path
-            self.create_hdf5_files(item_path)
+            job = self.joblist[job_id]
+            self.create_hdf5_files(job)
             # Run the pipeline.
             for module in self.modules:
                 module.set_error_output(os.path.join(self.logs_path,

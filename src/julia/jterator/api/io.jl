@@ -1,7 +1,7 @@
 module jterator
 
-import YAML
-import HDF5
+using YAML
+using HDF5
 
 ###################################################################
 ## Note: the HDF5 package doesn't handle dimensions correctly!!! ##
@@ -129,10 +129,9 @@ function writeoutputargs(handles, output_args)
     hdf5_filename = handles["hdf5_filename"]
     
     if ~isempty(output_args) 
-        hdf5_root = HDF5.h5open(hdf5_filename, "r+")
+        hdf5_tmp = HDF5.h5open(hdf5_filename, "r+")
         for key in keys(output_args)
             hdf5_location = handles["output"][key]["hdf5_location"]
-            HDF5.h5write(hdf5_filename, hdf5_location, output_args[key])
             if ismatch(r"Array", string(typeof(output_args[key])))
                 HDF5.h5write(hdf5_filename, hdf5_location, output_args[key]')
             else
@@ -141,7 +140,7 @@ function writeoutputargs(handles, output_args)
             @printf("jt -- %s: wrote tmp dataset '%s' to HDF5 group: \"%s\"\n",
                     mfilename, key, hdf5_location)
         end
-        close(hdf5_root)
+        close(hdf5_tmp)
     end
 
 end
