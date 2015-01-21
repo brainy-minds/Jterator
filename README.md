@@ -100,10 +100,10 @@ Ultimately, we will provide the APIs via packages for each language (see TODO). 
     ```
 
 - Julia     
-    Include the following line in your *.juliarc.jl* file: 
+    Include the following line in your *.bash_profile* file: 
 
-    ```julia
-    include(joinpath(homedir(), "jterator/src/julia/jterator/api/io.jl"))
+    ```bash
+    export JULIA_LOAD_PATH=$HOME/jterator/src/julia/jterator
     ```
 
 - Matlab    
