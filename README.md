@@ -89,7 +89,7 @@ Ultimately, we will provide the APIs via packages for each language (see TODO). 
     Include the following line in your *.bash_profile* file: 
 
     ```bash
-    export PYTHONPATH=$HOME/jterator/src/python
+    export PYTHONPATH=$PYTHONPATH:$HOME/jterator/src/python
     ```
 
 - R     
@@ -103,7 +103,7 @@ Ultimately, we will provide the APIs via packages for each language (see TODO). 
     Include the following line in your *.bash_profile* file: 
 
     ```bash
-    export JULIA_LOAD_PATH=$HOME/jterator/src/julia/jterator
+    export JULIA_LOAD_PATH=$JULIA_LOAD_PATH:$HOME/jterator/src/julia/jterator
     ```
 
 - Matlab    
