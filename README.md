@@ -155,7 +155,6 @@ Pipeline:
 ```
 Note that the value for the "interpreter" key can be either a full path to the interpreter program (e.g. /usr/bin/python) or a command that can be interpreted by /usr/bin/env (e.g. python).
 Also note that the working directory is the jterator project folder. You can provide either a full path to modules and handles files or a path relative to the project folder.
-Currently, only one pattern can be provided. Handling of more patterns will be implemented soon.
 
 
 Handles descriptor files
@@ -221,10 +220,11 @@ export PATH=$PATH:~/jterator/src/python
 ```
 To add the executable path permanently, include this command in your .bash_profile file.
 
-To *link* Mscript - a custom tool based on the Julia Matlab interface (https://github.com/JuliaLang/MATLAB.jl) for transforming Matlab scripts into real executables - into /usr/bin for easier execution, do:
+To *use* Mscript - a custom tool based on the Julia Matlab interface (https://github.com/JuliaLang/MATLAB.jl) for transforming Matlab scripts into real executables - create a softlink in a directory on your PATH (e.g. /usr/bin):
 
 ```bash
-sudo ln -s /local/copy/of/Jterator/src/julia/jterator/api/mscript.jl Mscript
+cd /usr/bin
+sudo ln -s ~/jterator/src/julia/mscript.jl Mscript
 ```
 
 To *create* a new jterator project, do:
@@ -242,7 +242,7 @@ To *check* your existing jterator project (YAML descriptor files), do:
 jt check [/my/jterator/project/folder]
 ```
 
-To *run* your pipeline, do:
+To *run* your pipeline in iterative model, do:
 
 ```bash
 jt run [/my/jterator/project/folder]
@@ -254,16 +254,20 @@ To create a *joblist* for parallel computing, do:
 jt joblist [/my/jterator/project/folder]
 ```
 
-To *run* your pipeline in *parallel* mode, do:
+To *run* individual jobs (parallel mode), do:
 
 ```bash
-jt check [/my/jterator/project/folder] --job [jobID]
+jt run [/my/jterator/project/folder] --job [jobID]
 ```
 
 To *run* a module individually for debugging purposes, do:
 
 ```bash
-cat handles/myModule.handles | [interpreter] modules/myModule.py
+cat [handles_name] | [interpreter] [modules_name]
+```
+Example for a python module:
+```bash
+cat handles/myModule.handles | python modules/myModule.py
 ```
 
 
