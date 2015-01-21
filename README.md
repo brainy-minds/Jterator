@@ -86,25 +86,33 @@ Tools (not yet implemented):
 
 Ultimately, we will provide the APIs via packages for each language (see TODO). For now, you have to add the path to the API for each language: 
 - Python
-    Include the following line in your *.bash_profile* file:    
+    Include the following line in your *.bash_profile* file:
+
     ```bash
     export PYTHONPATH=$HOME/jterator/src/python
     ```
+
 - R
-    Include the following line in your *.Rprofile* file:    
-    ```R
+    Include the following line in your *.Rprofile* file: 
+
+    ```r
     source(file.path(Sys.getenv("HOME"), "jterator/src/r/jterator/api/io.R"))
     ```
+
 - Julia
-    Include the following line in your *.juliarc.jl* file:  
-    ```Julia
+    Include the following line in your *.juliarc.jl* file: 
+
+    ```julia
     include(joinpath(homedir(), "jterator/src/julia/jterator/api/io.jl"))
     ```
+
 - Matlab
-    Include the following line in your *startup.m*:     
-    ```Matlab
+    Include the following line in your *startup.m*:   
+
+    ```matlab
     addpath(genpath(fullpath(getenv('HOME'),'jterator/src/matlab')))
     ```
+
 
 
 Pipeline
