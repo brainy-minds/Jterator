@@ -94,7 +94,7 @@ To this end, include the following lines in your *.bash_profile* file:
 
 - R     
 
-    ```r
+    ```bash
     export R_LIBS=$R_LIBS:$HOME/jterator/src/r/jterator
     ```
 
