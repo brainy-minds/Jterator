@@ -30,12 +30,12 @@ setup(
     description='A minimalistic pipeline engine for scientific computing',
     long_description=readme(),
     author='Yauhen Yakimovich, Markus Herrmann',
-    author_email='eugeny dot yakimovitch at gmail dot com',
+    author_email='markus dot herrmann at uzh dot ch',
     url='https://github.com/HackerMD/Jterator',
     license='MIT',
     scripts=['src/python/jt'],
     packages=[
-        'jterator', 'jterator.api',
+        'jterator',
     ],
     package_dir={'': 'src/python'},
     # package_data={
@@ -50,7 +50,7 @@ setup(
         'tree_output>=0.1.2',
         'sh>=1.09',
         'subprocess32>=3.2.6',
-        'yaml>=0.1.4',
+        # 'yaml>=0.1.4',
     ],
     # data_files=[
     #     ('/usr/local/bin', ['jt']),

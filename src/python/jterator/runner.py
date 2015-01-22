@@ -94,7 +94,8 @@ class JteratorRunner(object):
             tmp_filename = os.path.join(tmp_directory, '%s.tmp' %
                                         self.description['project']['name'])
             self.tmp_filename = tmp_filename
-            print('The temporary "hdf5_filename" is "%s"' % self.tmp_filename)
+            print('Temporary pipeline data is stored in "%s"'
+                  % self.tmp_filename)
 
     def build_pipeline(self):
         '''
@@ -264,6 +265,7 @@ class JteratorRunner(object):
         self.init_hdf5_files()
         # Check structure of pipeline and handles description.
         checker = JteratorCheck(self.description, self.tmp_filename)
+        checker.check_pipeline()
         checker.check_handles()
         checker.check_pipeline_io()
         # Build the pipeline.
