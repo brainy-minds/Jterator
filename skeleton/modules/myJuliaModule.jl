@@ -1,4 +1,4 @@
-include("/Users/Markus/Documents/Jterator/src/julia/jterator/src/io.jl")
+importall jterator
 
 mfilename = match(r"([^/]+)\.jl$", @__FILE__()).captures[1]
 
@@ -35,9 +35,9 @@ input_args = checkinputargs(input_args)
 ################
 
 
-#################
-## make figure ##
-#################
+#####################
+## display results ##
+#####################
 
 
 ####################

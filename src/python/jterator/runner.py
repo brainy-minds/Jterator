@@ -94,7 +94,7 @@ class JteratorRunner(object):
             tmp_filename = os.path.join(tmp_directory, '%s.tmp' %
                                         self.description['project']['name'])
             self.tmp_filename = tmp_filename
-            print('Temporary pipeline data is stored in "%s"'
+            print('jt - Temporary pipeline data is stored in "%s"'
                   % self.tmp_filename)
 
     def build_pipeline(self):
@@ -278,6 +278,7 @@ class JteratorRunner(object):
                 # Initialize the pipeline.
                 self.create_hdf5_files(job)
                 # Run the pipeline.
+                print('\n')
                 for module in self.modules:
                     module.set_error_output(os.path.join(self.logs_path,
                                             '%s.error' % module.name))
@@ -292,6 +293,7 @@ class JteratorRunner(object):
             job = self.joblist[job_id]
             self.create_hdf5_files(job)
             # Run the pipeline.
+            print('\n')
             for module in self.modules:
                 module.set_error_output(os.path.join(self.logs_path,
                                         '%s.error' % module.name))

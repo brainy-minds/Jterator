@@ -1,7 +1,7 @@
+from jterator.api import *
 import os
 import sys
 import re
-from jterator.api.io import *
 
 
 mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
@@ -39,9 +39,9 @@ input_args = checkinputargs(input_args)
 ################
 
 
-#################
-## make figure ##
-#################
+#####################
+## display results ##
+#####################
 
 
 ####################

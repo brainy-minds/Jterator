@@ -10,9 +10,12 @@ function checked_input_args = checkinputargs(input_args)
                 error('argument "%s" is of class "%s" instead of expected "%s"', ...
                       names{i}, class(arg.variable), arg.class)
             end
-        end
-        fprintf(sprintf('jt -- %s: argument ''%s'' passed check\n', ...
+            fprintf(sprintf('jt -- %s: argument ''%s'' passed check\n', ...
                     mfilename, names{i}));
+        else
+            fprintf(sprintf('jt -- %s: argument ''%s'' not checked\n', ...
+                        mfilename, names{i}));
+        end
     end
 
     % return parameters in simplified form

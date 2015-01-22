@@ -21,6 +21,18 @@ from jterator.error import JteratorError
 from jterator.checker import JteratorCheck
 
 
+LOGO = '''
+   _ _                 _
+  (_) |               | |
+   _| |_ ___ _ __ __ _| |_ ___  _ __
+  | | __/ _ \ '__/ _` | __/ _ \| '__|
+  | | ||  __/ | | (_| | || (_) | |
+  | |\__\___|_|  \__,_|\__\___/|_|
+ _/ |
+|__/    https://github.com/HackerMD/Jterator (ver. %(version)s)
+'''
+
+
 class MissingCliArgs(JteratorError):
     '''Malformed arguments provided in the command-line.'''
 
@@ -30,6 +42,11 @@ class JteratorCli(object):
 
     def __init__(self, args):
         self.args = args
+        self.print_logo_and_prompt()
+
+    def print_logo_and_prompt(self):
+        vars = {'version': jterator.__version__}
+        print LOGO % vars
 
     def create(self):
         '''
@@ -94,11 +111,11 @@ class ArgumentParser(argparse.ArgumentParser):
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Command-line interface for Jterator.')
-    parser.add_argument('-i', '--interactive', action='store_true',
-                        default=False)
-    parser.add_argument('-v', '--verbosity', action='count', default=1,
-                        help='Increase logging verbosity (-v WARN, -vv INFO, '
-                        '-vvv DEBUG)')
+    # parser.add_argument('-i', '--interactive', action='store_true',
+    #                     default=False)
+    # parser.add_argument('-v', '--verbosity', action='count', default=1,
+    #                     help='Increase logging verbosity (-v WARN, -vv INFO, '
+    #                     '-vvv DEBUG)')
     parser.add_argument('--version', action='version',
                         version='%(prog)s ' + jterator.__version__)
 
@@ -137,7 +154,7 @@ if __name__ == '__main__':
     # Parse arguments.
     args = parser.parse_args()
     # On error this will print help and cause exit with explanation message.
-    is_interactive = args.interactive
+    # is_interactive = args.interactive
 
     # Configure logging.
     # if is_interactive:

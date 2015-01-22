@@ -1,4 +1,4 @@
-source("/Users/Markus/Documents/Jterator/src/r/jterator/api/io.R")
+library(jterator)
 
 mfilename <- basename(sub("--file=(.*).R", "\\1",
                       grep("--file=.*R", commandArgs(), value=TRUE)))
@@ -36,9 +36,9 @@ input_args <- checkinputargs(input_args)
 ################
 
 
-#################
-## make figure ##
-#################
+#####################
+## display results ##
+#####################
 
 
 ####################

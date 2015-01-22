@@ -80,7 +80,7 @@ class JteratorCheck(object):
                                     'in the pipeline descriptor file '
                                     'needs to contain the key "%s"' %
                                     'interpreter')
-        print('Pipeline check successful!')
+        print('jt - Pipeline check successful!')
 
     def check_handles(self):
         '''
@@ -106,7 +106,7 @@ class JteratorCheck(object):
             if not 'output' in handles:
                 raise JteratorError('Handles file must contain the key "%s".' %
                                     'output')
-        print('Handles check successful!')
+        print('jt - Handles check successful!')
 
     def check_pipeline_io(self):
         '''
@@ -136,4 +136,4 @@ class JteratorCheck(object):
                     raise JteratorError('Input "%s" of module "%s" is not '
                                         'created upstream in the pipeline.' %
                                         (input_arg, module['name']))
-        print('Input/output check successful!')
+        print('jt - Input/output check successful!')
