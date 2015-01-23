@@ -27,8 +27,8 @@ jobs:
     pattern: 
       - name: DAPI
         expression: .*C01\.(png|tiff?)
-      - name: Antibody1
-        expression: .*C02\.(png|tiff?)
+      - name: Celltrace
+        expression: .*C03\.(png|tiff?)
 
 
 # Define path to modules (executable files) and handles (YAML files)
@@ -50,12 +50,12 @@ pipeline:
     handles: handles/IdentifyNuclei.handles
     interpreter: Mscript
 
-  - name: MeasureObjects
-    module: modules/MeasureObjects.py
-    handles: handles/MeasureObjects.handles
-    interpreter: python
+  # - name: MeasureObjects
+  #   module: modules/MeasureObjects.py
+  #   handles: handles/MeasureObjects.handles
+  #   interpreter: python
 
-  - name: PlotMeasurements
-    module: modules/PlotMeasurements.R
-    handles: handles/PlotMeasurements.handles
-    interpreter: Rscript
+  # - name: PlotMeasurements
+  #   module: modules/PlotMeasurements.R
+  #   handles: handles/PlotMeasurements.handles
+  #   interpreter: Rscript

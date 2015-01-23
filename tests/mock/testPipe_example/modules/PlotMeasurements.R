@@ -39,9 +39,9 @@ makePlot <- input_args$MakePlot
 ################
 
 
-#################
-## make figure ##
-#################
+#####################
+## display results ##
+#####################
 
 if (makePlot) {
 

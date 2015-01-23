@@ -32,7 +32,7 @@ if strcmpi(varargin,'debugON')
     figure
     h=gcf;
     dbclear in PerimeterWatershedSegmentation
-%     dbstop in PerimeterWatershedSegmentation.m at 499
+    % dbstop in PerimeterWatershedSegmentation.m at 42
 %     dbstop in PerimeterWatershedSegmentation.m at 544
 else
     debug = false;
@@ -78,7 +78,7 @@ if ~isempty(ObjectIDs)
         end
 
         %% Select concave regions meeting the Radius/Angle criteria
-        QualifyingRegionsMask = (propsConcaveRegion(:,11)>=MinEquivAngle) & (propsConcaveRegion(:,12)<=MaxEqivRadius);%0.1, 30
+        QualifyingRegionsMask = (propsConcaveRegion(:,11)>=degtorad(MinEquivAngle)) & (propsConcaveRegion(:,12)<=MaxEqivRadius);%0.1, 30
         SelectedRegions = propsConcaveRegion(QualifyingRegionsMask,:);
 
         %% Define cut points
@@ -100,6 +100,7 @@ if ~isempty(ObjectIDs)
         else
             error('%s: ''SelectionMethod'' not specified correctly',mfilename)
         end
+
 
 % ======================================================================================================================================
 % === object image -- start ==============================================================================================================

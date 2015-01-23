@@ -62,9 +62,9 @@ corr_image = (corr_image * mean(std_image)) + mean(mean_image)
 corr_image = 10 ** corr_image
 
 
-#################
-## make figure ##
-#################
+#####################
+## display results ##
+#####################
 
 
 ####################

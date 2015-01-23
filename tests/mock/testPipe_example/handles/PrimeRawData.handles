@@ -1,22 +1,21 @@
-# full path to HDF5 file
-hdf5_filename: tmp/test.tmp
+hdf5_filename: /var/folders/7_/tqn1hw4d4nl6t17kcrg7v7jw0000gq/T/test.tmp
 
-# module input arguments
+
 input:
 
-    DapiFilename:
+    DapiFilename: 
         hdf5_location: /DAPI
 
-    Antibody1Filename:
-        hdf5_location: /Antibody1
+    CelltraceFilename:
+        hdf5_location: /Celltrace
 
-# module output arguments
+
 output:
 
     DapiImage:
         hdf5_location: /PrimeRawData/DapiImage
         class: ndarray
 
-    Antibody1Image:
-        hdf5_location: /PrimeRawData/Antibody1Image
+    CelltraceImage:
+        hdf5_location: /PrimeRawData/CelltraceImage
         class: ndarray

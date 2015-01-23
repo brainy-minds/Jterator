@@ -1,5 +1,5 @@
 # full path to HDF5 file
-hdf5_filename: tmp/test.tmp
+hdf5_filename: /var/folders/7_/tqn1hw4d4nl6t17kcrg7v7jw0000gq/T/test.tmp
 
 # module input arguments
 input:
@@ -9,7 +9,7 @@ input:
         class: ndarray
 
     Objects: 
-        hdf5_location: /IdentifyPrimary/Nuclei
+        hdf5_location: /IdentifyNuclei/Nuclei
         class: ndarray
 
     Features:

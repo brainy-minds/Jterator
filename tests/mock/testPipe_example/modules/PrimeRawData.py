@@ -38,7 +38,7 @@ input_args = checkinputargs(input_args)
 ####################
 
 dapi_filename = input_args['DapiFilename']
-ab_filename = input_args['Antibody1Filename']
+celltrace_filename = input_args['CelltraceFilename']
 
 
 ################
@@ -46,12 +46,12 @@ ab_filename = input_args['Antibody1Filename']
 ################
 
 dapi_image = np.float64(misc.imread(dapi_filename))
-ab_image = np.float64(misc.imread(dapi_filename))
+celltrace_image = np.float64(misc.imread(celltrace_filename))
 
 
-#################
-## make figure ##
-#################
+#####################
+## display results ##
+#####################
 
 
 ####################
@@ -60,7 +60,7 @@ ab_image = np.float64(misc.imread(dapi_filename))
 
 output_args = dict()
 output_args['DapiImage'] = dapi_image
-output_args['Antibody1Image'] = ab_image
+output_args['CelltraceImage'] = celltrace_image
 
 data = dict()
 

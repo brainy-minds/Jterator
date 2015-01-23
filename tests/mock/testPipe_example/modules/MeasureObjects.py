@@ -59,9 +59,9 @@ regions = measure.regionprops(nuclei_label_img)
 nuclei_area = [regions[index].area for index in range(nuclei_num)]
 
 
-#################
-## make figure ##
-#################
+#####################
+## display results ##
+#####################
 
 ### make figure with matplotlib
 plt.hist(nuclei_area)

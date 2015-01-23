@@ -1,23 +1,29 @@
-# full path to HDF5 file
-hdf5_filename: tmp/test.tmp
+hdf5_filename: /var/folders/7_/tqn1hw4d4nl6t17kcrg7v7jw0000gq/T/test.tmp
 
-# module input arguments
 input:
 
-    DapiImage:
-        hdf5_location: /PrimeRawData/DapiImage
+  DapiImage:
+    hdf5_location: /PrimeRawData/DapiImage
 
-    StatsDirectory:
-        parameter: rawdata/BATCH
+  CelltraceImage:
+    hdf5_location: /PrimeRawData/CelltraceImage
 
-    StatsFilename:
-        parameter: Measurements_batch_illcor_channel001_zstack000.mat
+  StatsDirectory:
+    parameter: rawdata/BATCH
 
-# module output arguments
+  StatsFilenameDapi:
+    parameter: Measurements_batch_illcor_channel001_zstack000.mat
+
+  StatsFilenameCelltrace:
+    parameter: Measurements_batch_illcor_channel003_zstack000.mat
+
 output:
 
-    CorrImage:
-        hdf5_location: /IllumCorr/CorrImage
+  CorrImageDapi:
+    hdf5_location: /IllumCorr/CorrImageDapi
 
-    Test:
-        hdf5_location: /IllumCorr/Test
+  CorrImageCelltrace:
+    hdf5_location: /IllumCorr/CorrImageCelltrace
+
+  Test:
+    hdf5_location: /IllumCorr/Test

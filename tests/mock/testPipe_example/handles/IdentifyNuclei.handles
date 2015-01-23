@@ -1,87 +1,91 @@
-# full path to HDF5 file
-hdf5_filename: tmp/test.tmp
+hdf5_filename: /var/folders/7_/tqn1hw4d4nl6t17kcrg7v7jw0000gq/T/test.tmp
 
-# module input arguments
+
 input:
 
-    # smoothing
+  CorrImage:
+    hdf5_location: /IllumCorr/CorrImageDapi
+    class: double
 
-    doSmooth:
-        parameter: Yes
-        class: logical
+  # Preprocessing: smooth intensity image
+  doSmooth:
+    parameter: Yes
+    class: logical
 
-    SmoothingMethod:
-        parameter: Median
+  SmoothingMethod:
+    parameter: Median
 
-    SmoothingFilterSize:
-        parameter: 3
+  SmoothingFilterSize:
+    parameter: 3
 
-    # intensity thresholding: first segmentation mask
+  # Identify objects by intensity thresholding
+  ThresholdCorrection:
+    parameter: 1
 
-    ThresholdMethod:
-        parameter: Otsu Global
+  ThresholdMethod:
+    parameter: Otsu Global
 
-    ThresholdCorrection:
-        parameter: 1
+  ThresholdRange:
+    parameter: [0,1]
+    class: double
 
-    ThresholdRange:
-        parameter: [0, 1]
-        class: double
+  pObject:
+    parameter: 10
 
-    pObject:
-        parameter: 10%
-        class: char
+  # Cut clumped objects based on perimeter/watershed analysis
+  CuttingPasses:
+    parameter: 2
 
-    # separation of clumped objects: final segmentation mask
+  MaxSolidity:
+    parameter: 0.91
 
-    CuttingPasses:
-        parameter: 2
+  MinFormFactor:
+    parameter: 0.45
 
-    MaxSolidity:
-        parameter: 0.9
+  MaxArea:
+    parameter: 50000
 
-    MinFormFactor:
-        parameter: 0.45
+  MinArea:
+    parameter: 7000
 
-    MaxArea:
-        parameter: 50000
+  MinCutArea:
+    parameter: 2500
 
-    MinArea:
-        parameter: 5000
+  SlidingWindow:
+    parameter: 8
 
-    MinCutArea:
-        parameter: 1000
+  FilterSize:
+    parameter: 1
 
-    doTestModeShape:
-        parameter: No
-        class: logical
+  MaxConcaveRadius:
+    parameter: 30
 
-    SlidingWindow:
-        parameter: 8
+  CircularSegment:
+    parameter: 6
 
-    FilterSize:
-        parameter: 1
+  # Plot results
+  doPlot:
+    parameter: Yes
 
-    MaxConcaveRadius:
-        parameter: 30
+  doTestModePerimeter:
+    parameter: No
 
-    CircularSegment:
-        parameter: 6
+  doTestModeShape:
+    parameter: No
 
-    doTestModePerimeter:
-        parameter: No
-        class: logical
+  # Store results
+  doSaveSegmentedImage:
+    parameter: Yes
 
-    # image intensity thresholding
+  OrigImageFilename:
+    hdf5_location: /DAPI
 
-    doSaveFigures:
-        parameter: Yes
-        class: logical
+  SegmentationPath:
+    parameter: rawdata/SEGMENTATION
 
-# module output arguments
+
 output:
 
-    Nuclei:
-        hdf5_location: /IdentifyPrimary/Nuclei
-        class: double
-
+  Nuclei:
+    hdf5_location: /IdentifyNuclei/Nuclei
+    class: double
