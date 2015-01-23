@@ -115,13 +115,6 @@ Pipeline
 ========
 
 
-Modules
--------
-
-Think of your pipeline as a sequence of connected modules (a linked list). 
-The sequence and structure of your pipeline is defined in a YAML pipeline descriptor file. The input/output settings for each module are provided by additional YAML handles descriptor files. Each module represents a program that reads YAML from an STDIN file descriptor. Outputs are stored in two separate HDF5 files: measurement data, which will be kept, and temporary pipeline data, which will be discarded.
-
-
 Project layout 
 --------------
 
@@ -228,6 +221,154 @@ There are two different types of input arguments:
 * *parameter* is an argument that is used to control the behavior of the module.   
 Note that you can provide the optional "class" key, which asserts the datatype
 of the passed argument. It is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R.
+
+
+Modules
+-------
+
+Think of your pipeline as a sequence of connected modules (a linked list). 
+The sequence and structure of your pipeline is defined in a YAML pipeline descriptor file. The input/output settings for each module are provided by additional YAML handles descriptor files. Each module represents a program that reads YAML from an STDIN file descriptor. Outputs are stored in two separate HDF5 files: measurement data, which will be kept, and temporary pipeline data, which will be discarded.
+
+Example Python module:
+
+```python
+from jterator.api import *
+import os
+import sys
+import re
+
+
+mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
+
+###############################################################################
+## jterator input
+
+print('jt - %s:' % mfilename)
+
+### standard input
+handles_stream = sys.stdin
+
+### retrieve handles from .YAML files
+handles = gethandles(handles_stream)
+
+### read input arguments from .HDF5 files
+input_args = readinputargs(handles)
+
+### check whether input arguments are valid
+input_args = checkinputargs(input_args)
+
+###############################################################################
+
+
+## ----------------------------------------------------------------------------
+## ------------------------------ module specific -----------------------------
+
+####################
+## input handling ##
+####################
+
+
+################
+## processing ##
+################
+
+
+#####################
+## display results ##
+#####################
+
+
+####################
+## prepare output ##
+####################
+
+output_args = dict()
+output_tmp = dict()
+
+## ------------------------------ module specific -----------------------------
+## ----------------------------------------------------------------------------
+
+
+###############################################################################
+## jterator output
+
+### write output data to HDF5
+writeoutputargs(handles, output_args)
+writeoutputtmp(handles, output_tmp)
+
+###############################################################################
+
+```
+
+Example Matlab module:
+
+```matlab
+import jterator.*;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% jterator input
+
+fprintf(sprintf('jt - %s:\n', mfilename));
+
+%%% read standard input
+handles_stream = input_stream; % input_stream is provided by Mscript!
+
+%%% change current working directory
+cd(currentDirectory)
+
+%%% retrieve handles from .YAML files
+handles = gethandles(handles_stream);
+
+%%% read input arguments from .HDF5 files
+input_args = readinputargs(handles);
+
+%%% check whether input arguments are valid
+input_args = checkinputargs(input_args);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% ------------------------------------------------------------------------
+%% ---------------------------- module specific ---------------------------
+
+
+%%%%%%%%%%%%%%%%%%%%
+%% input handling %%
+%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%
+%% processing %%
+%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%% display results %%
+%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%
+%% prepare output %%
+%%%%%%%%%%%%%%%%%%%%
+
+output_args = struct();
+output_tmp = struct();
+
+%% ---------------------------- module specific ---------------------------
+%% ------------------------------------------------------------------------
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% jterator output
+
+%%% write output data to HDF5
+writeoutputargs(handles, output_args);
+writeoutputtmp(handles, output_tmp;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+```
 
 
 Getting started
