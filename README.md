@@ -114,6 +114,11 @@ To this end, include the following lines in your *.bash_profile* file:
 Pipeline
 ========
 
+Think of your pipeline as a sequence of connected modules (a linked list). 
+The sequence and structure of your pipeline is defined in a YAML pipeline descriptor file. The input/output settings for each module are provided by additional YAML handles descriptor files. Each module represents a program that reads YAML from the STDIN file descriptor and stores outputs in HDF5 files:
+    - HDF5 file for measurement data: located in your project directory  
+    - HDF5 file for temporary pipeline data: located in a temporary directory 
+
 
 Project layout 
 --------------
@@ -226,8 +231,7 @@ of the passed argument. It is language specific, e.g. 'float64' in Python, 'doub
 Modules
 -------
 
-Think of your pipeline as a sequence of connected modules (a linked list). 
-The sequence and structure of your pipeline is defined in a YAML pipeline descriptor file. The input/output settings for each module are provided by additional YAML handles descriptor files. Each module represents a program that reads YAML from an STDIN file descriptor. Outputs are stored in two separate HDF5 files: measurement data, which will be kept, and temporary pipeline data, which will be discarded.
+The Jterator APIs are written in way that enables more or less the same module syntax in each language.
 
 Example Python module:
 
