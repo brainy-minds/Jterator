@@ -107,7 +107,7 @@ function writedata(handles, data)
         hdf5_filename = HDF5.h5read(handles["hdf5_filename"], "datafile")
         hdf5_data = HDF5.h5open(hdf5_filename, "r+")
         for key in keys(data)
-            hdf5_location = handles["output"][key]["hdf5_location"]
+            hdf5_location = keys(key)
             if ismatch(r"Array", string(typeof(data[key])))
                 HDF5.h5write(hdf5_filename, hdf5_location, data[key]')
             else

@@ -16,7 +16,7 @@ function writedata(handles, data)
 
     keys = fieldnames(data);
     for key = 1:length(keys)
-        hdf5_location = handles.output.(keys{key}).hdf5_location;
+        hdf5_location = keys{key};
         value = data.(keys{key});
         h5datacreate(hdf5_filename, hdf5_location, ...
                      'type', class(value), 'size', size(value));

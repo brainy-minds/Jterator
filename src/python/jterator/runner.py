@@ -200,7 +200,7 @@ class JteratorRunner(object):
         self.jobs_file_path = jobs_file_path
         stream = file(jobs_file_path, 'w+')
         yaml.dump(job_list, stream, default_flow_style=False)
-        print('Joblist was written to file: "%s".' % jobs_file_path)
+        print('jt - Joblist was written to file: "%s".' % jobs_file_path)
         # Double-check that jobID is correctly specified for each job.
         for job_id in job_list:
             if not job_id == job_list[job_id]['jobID']:
@@ -246,9 +246,11 @@ class JteratorRunner(object):
             os.mkdir(output_path)
         # For now, we create one hdf5 file per job. We could, however,
         # preallocate one big hdf5 for all jobs to omit data fusion.
-        output_filename = os.path.join(output_path, '%s_%d.data' %
+        output_filename = os.path.join(output_path, '%s_%.5d.data' %
                                        (self.description['project']['name'],
                                         job['jobID']))
+        print('jt - Measurement data are written to HDF5 file: "%s".'
+              % output_filename)
         data_root = h5py.File(output_filename, 'w')
         data_root.close()
         # Write name of datafile into the temporary HDF5 file.

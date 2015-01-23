@@ -106,7 +106,7 @@ def writedata(handles, data):
     # Open the file and write data into it.
     hdf5_data = h5py.File(hdf5_filename, 'r+')
     for key in data:
-        hdf5_location = handles['output'][key]['hdf5_location']
+        hdf5_location = key
         hdf5_data.create_dataset(hdf5_location, data=data[key])
         print('jt -- %s: wrote dataset \'%s\' to HDF5 location: "%s"'
               % (mfilename, key, hdf5_location))

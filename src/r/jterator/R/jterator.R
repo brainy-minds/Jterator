@@ -110,7 +110,7 @@ writedata <- function(handles, data) {
     hdf5_filename <- h5read(handles$hdf5_filename, '/datafile')
 
     for (key in names(data)) {
-      hdf5_location <- handles$output[[key]]$hdf5_location
+      hdf5_location <- key
       h5createGroup(hdf5_filename, dirname(hdf5_location))
       h5createDataset(hdf5_filename, hdf5_location, 
                       dims = dim(data[[key]]),
