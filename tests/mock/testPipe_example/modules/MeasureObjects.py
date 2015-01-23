@@ -3,8 +3,7 @@ import sys
 import re
 import numpy as np
 import matplotlib.pyplot as plt
-# import mpld3
-# import plotly.plotly as py
+import plotly.plotly as py
 from plotly.graph_objs import *
 from skimage import measure
 from jterator.api import *
@@ -32,15 +31,13 @@ input_args = checkinputargs(input_args)
 ###############################################################################
 
 
-## ----------------------------------------------------------------------------
-## ------------------------------ module specific -----------------------------
-
 ####################
 ## input handling ##
 ####################
 
-### convert into numpy array
-nuclei_img = np.array(input_args['Nuclei'])
+objects = np.array(input_args['Objects'])
+
+doPlot = input_args['doPlot']
 
 
 ################
@@ -48,37 +45,37 @@ nuclei_img = np.array(input_args['Nuclei'])
 ################
 
 ### get object ids and total number of objects
-nuclei_ids = np.unique(nuclei_img)
-nuclei_num = nuclei_ids.shape[0]
+object_ids = np.unique(objects)
+object_ids = object_ids[object_ids!=0]  # remove '0' background
+object_num = object_ids.shape[0]
 
 ### measure object properties
-nuclei_label_img = measure.label(nuclei_img)
-regions = measure.regionprops(nuclei_label_img)
+objects_labeled = measure.label(objects)
+regions = measure.regionprops(objects_labeled)
 
-### extract "area" measurement
-nuclei_area = [regions[index].area for index in range(nuclei_num)]
+### extract measured features
+object_area = [regions[index].area for index in range(object_num)]
 
 
 #####################
 ## display results ##
 #####################
 
-### make figure with matplotlib
-plt.hist(nuclei_area)
-plt.title("Nuclear area")
-plt.xlabel("Area in pixel")
-plt.ylabel("Number of cells")
+if doPlot:
 
-### save figure as PDF file
-plt.savefig('figures/%s.pdf' % mfilename, format='pdf')
-plt.close()
+    ### make figure with matplotlib
+    plt.hist(object_area)
+    plt.title("Cell area")
+    plt.xlabel("Area in pixel")
+    plt.ylabel("Cells")
 
-### send figure to plotly
-# fig = plt.gcf()
-# plot_url = py.plot_mpl(fig, filename='mpl-basic-histogram')
+    ### save figure as PDF file
+    plt.savefig('figures/%s.pdf' % mfilename, format='pdf')
+    plt.close()
 
-### alternatively, one can use mpld3
-# mpld3.show_d3()
+    # ### send figure to plotly
+    # fig = plt.gcf()
+    # plot_url = py.plot_mpl(fig, filename='mpl-basic-histogram')
 
 
 ####################
@@ -86,13 +83,9 @@ plt.close()
 ####################
 
 data = dict()
-data['Measurements'] = nuclei_area
+data['Measurements'] = object_area
 
 output_args = dict()
-output_args['LabeledSegmentationImage'] = nuclei_label_img
-
-## ------------------------------ module specific -----------------------------
-## ----------------------------------------------------------------------------
 
 
 ###############################################################################

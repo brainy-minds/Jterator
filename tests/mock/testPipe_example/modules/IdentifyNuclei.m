@@ -24,24 +24,21 @@ input_args = checkinputargs(input_args);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%% ------------------------------------------------------------------------
-%% ---------------------------- module specific ---------------------------
-
-
 %%%%%%%%%%%%%%%%%%%%
 %% input handling %%
 %%%%%%%%%%%%%%%%%%%%
 
 InputImage = input_args.CorrImage;
 
+%%% Input arguments for object smoothing by median filtering
+doSmooth = input_args.doSmooth;
+SmoothingFilterSize = input_args.SmoothingFilterSize;
+
 %%% Input arguments for identifying objects by intensity threshold
 ThresholdCorrection = input_args.ThresholdCorrection;
 ThresholdMethod = input_args.ThresholdMethod;
 ThresholdRange = input_args.ThresholdRange;
 pObject = input_args.pObject;
-doSmooth = input_args.doSmooth;
-SmoothingMethod = input_args.SmoothingMethod;
-SmoothingFilterSize = input_args.SmoothingFilterSize;
 
 %%% Input arguments for cutting clumped objects
 CuttingPasses = input_args.CuttingPasses;
@@ -60,7 +57,7 @@ doPlot = input_args.doPlot;
 doTestModePerimeter = input_args.doTestModePerimeter;
 doTestModeShape = input_args.doTestModeShape;
 
-%%% Input arguments for saving segmentation images
+%%% Input arguments for saving segmented images
 doSaveSegmentedImage = input_args.doSaveSegmentedImage;
 OrigImageFilename = input_args.OrigImageFilename;
 SegmentationPath = input_args.SegmentationPath;
@@ -70,12 +67,16 @@ SegmentationPath = input_args.SegmentationPath;
 %% processing %%
 %%%%%%%%%%%%%%%%
 
-%% Threshold image
-MinimumThreshold = ThresholdRange(1);
-MaximumThreshold = ThresholdRange(2);
+%%% Smooth image
+if doSmooth
+    SmoothedImage = SmoothImage(InputImage, SmoothingFilterSize);
+else
+    SmoothedImage = InputImage;
+end
 
-%%% Normalize image intensities a la CellProfiler
-NormImage = InputImage ./ 2^16;
+%% Threshold image
+MinimumThreshold = ThresholdRange(1) .* 2^16;
+MaximumThreshold = ThresholdRange(2) .* 2^16;
 
 %%% Calculate threshold
 threshhold = ImageThreshold(ThresholdMethod, ...
@@ -83,12 +84,12 @@ threshhold = ImageThreshold(ThresholdMethod, ...
                             MinimumThreshold, ...
                             MaximumThreshold, ...
                             ThresholdCorrection, ...
-                            NormImage, ...
+                            SmoothedImage, ...
                             []);
 
 %%% Threshold intensity image to detect objects
-ThreshImage = zeros(size(NormImage), 'double');
-ThreshImage(NormImage > threshhold) = 1;
+ThreshImage = zeros(size(SmoothedImage), 'double');
+ThreshImage(SmoothedImage > threshhold) = 1;
 
 %%% Fill holes in objects
 FillImage = imfill(double(ThreshImage),'holes');
@@ -148,13 +149,13 @@ if ~isempty(FillImage)
         
         %%% Perform the actual segmentation        
         CutMask(:,:,i) = PerimeterWatershedSegmentation(Objects2Cut, ...
-                                                    NormImage, ...
-                                                    PerimeterProps, ...
-                                                    MaxConcaveRadius, ...
-                                                    CircularSegment, ...
-                                                    MinCutArea, ...
-                                                    PerimSegAngMethod, ...
-                                                    SelectionMethod);
+                                                        SmoothedImage, ...
+                                                        PerimeterProps, ...
+                                                        MaxConcaveRadius, ...
+                                                        CircularSegment, ...
+                                                        MinCutArea, ...
+                                                        PerimSegAngMethod, ...
+                                                        SelectionMethod);
         ObjectsCut(:,:,i) = bwlabel(Objects2Cut .* ~CutMask(:,:,i));
         
     end
@@ -183,7 +184,26 @@ else
      
 end
 
-% TODO: calculate centroids and store them together with the object ids
+
+%% Make some default measurements
+
+%%% Calculate object counts
+NucleiCount = max(unique(IdentifiedNuclei));
+
+%%% Calculate cell centroids
+tmp = regionprops(logical(IdentifiedNuclei),'Centroid');
+NucleiCentroid = cat(1, tmp.Centroid);
+if isempty(NucleiCentroid)
+    NucleiCentroid = [0 0];   % follow CP's convention to save 0s if no object
+end
+
+%%% Calculate cell boundary
+NucleiBorderPixel = bwboundaries(IdentifiedNuclei);
+NucleiBorderPixel = NucleiBorderPixel{1}(1:end-1, :);
+P = NucleiBorderPixel(NucleiBorderPixel(:,1) == min(NucleiBorderPixel(:,1)), :);
+P = P(1,:);
+NucleiBoundary = bwtraceboundary(IdentifiedNuclei, P, 'SW'); % anticlockwise
+NucleiBoundary = fliplr(NucleiBoundary(1:end-1,:)); % not closed
 
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -193,7 +213,6 @@ end
         
 if doPlot
 
-    %%% Create overlay image
     B = bwboundaries(AllCut, 'holes');
     imCutShapeObjectsLabel = label2rgb(bwlabel(AllCut),'jet','k','shuffle');
     
@@ -203,15 +222,16 @@ if doPlot
     subplot(2,2,2), imagesc(logical(AllSelected==1)),
     title('Cut lines on selected original objects');
     hold on
-    white = cat(3, ones(size(AllSelected)), ones(size(AllSelected)), ones(size(AllSelected)));
-    h = imagesc(white);
+    redOutline = cat(3, ones(size(AllSelected)), zeros(size(AllSelected)), zeros(size(AllSelected)));
+    h = imagesc(redOutline);
     set(h, 'AlphaData', logical(sum(CutMask, 3)))
     hold off
     freezeColors
     subplot(2,2,1), imagesc(AllSelected), colormap('jet'),
     title('Selected original objects');
     freezeColors
-    subplot(2,2,3), imagesc(NormImage),
+    subplot(2,2,3), imagesc(InputImage),
+    colormap(gray)
     title('Outlines of separated objects');
     hold on
     for k = 1:length(B)
@@ -228,7 +248,8 @@ if doPlot
     set(fig, 'PaperPosition', [0 0 7 7], 'PaperSize', [7 7]);
     saveas(fig, sprintf('figures/%s', mfilename), 'pdf');
 
-    p = fig2plotly(fig);
+    %%% Send figure to Plotly
+    % plot_url = fig2plotly(fig)
 
 end
 
@@ -256,12 +277,12 @@ end
 
 %%% Structure output arguments for later storage in the .HDF5 file
 data = struct();
+data.NucleiCount = NucleiCount;
+data.NucleiCentroids = NucleiCentroid;
+data.NucleiBoundary = NucleiBoundary;
 
 output_args = struct();
 output_args.Nuclei = IdentifiedNuclei;
-
-%% ---------------------------- module specific ---------------------------
-%% ------------------------------------------------------------------------
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

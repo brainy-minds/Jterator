@@ -1,5 +1,21 @@
 hdf5_filename: /var/folders/7_/tqn1hw4d4nl6t17kcrg7v7jw0000gq/T/test.tmp
 
+# Identify nuclei
+# ===============
+
+# The module identifies 'nuclei' objects by intensity thresholding and 
+# subsequent separation of clumped objects along watershed lines.
+# 
+# Clumped objects are selected based on area/shape features.
+# The selected clumped objects are then subjected to perimeter analysis in order
+# to identify concave regions. Then watershed lines, which connect two concave 
+# regions with each other, are identified the optimal separation line is chosen
+# for each clump.
+#
+# Authors:
+#  Markus Herrmann (PerimeterWatershedSegmentation.m and Jterator module implementation)
+#  Nicolas Battich (CP module SeparatePrimary.m)
+#  Anatol Schwab (PerimeterAnaylsis.m)
 
 input:
 
@@ -7,18 +23,19 @@ input:
     hdf5_location: /IllumCorr/CorrImageDapi
     class: double
 
-  # Preprocessing: smooth intensity image
+  # Preprocessing: smooth intensity image by median filtering
+  # ---------------------------------------------------------
+
   doSmooth:
     parameter: Yes
-    class: logical
-
-  SmoothingMethod:
-    parameter: Median
 
   SmoothingFilterSize:
     parameter: 3
 
+
   # Identify objects by intensity thresholding
+  # ------------------------------------------
+
   ThresholdCorrection:
     parameter: 1
 
@@ -32,7 +49,10 @@ input:
   pObject:
     parameter: 10
 
-  # Cut clumped objects based on perimeter/watershed analysis
+
+  # Separate (cut) clumped objects based on perimeter/watershed analysis
+  # --------------------------------------------------------------------
+
   CuttingPasses:
     parameter: 2
 
@@ -63,7 +83,10 @@ input:
   CircularSegment:
     parameter: 6
 
+
   # Plot results
+  # ------------
+
   doPlot:
     parameter: Yes
 
@@ -73,7 +96,10 @@ input:
   doTestModeShape:
     parameter: No
 
+
   # Store results
+  # -------------
+
   doSaveSegmentedImage:
     parameter: Yes
 

@@ -50,10 +50,15 @@ pipeline:
     handles: handles/IdentifyNuclei.handles
     interpreter: Mscript
 
-  # - name: MeasureObjects
-  #   module: modules/MeasureObjects.py
-  #   handles: handles/MeasureObjects.handles
-  #   interpreter: python
+  - name: IdentifyCells
+    module: modules/IdentifyCells.m
+    handles: handles/IdentifyCells.handles
+    interpreter: Mscript
+
+  - name: MeasureObjects
+    module: modules/MeasureObjects.py
+    handles: handles/MeasureObjects.handles
+    interpreter: python
 
   # - name: PlotMeasurements
   #   module: modules/PlotMeasurements.R

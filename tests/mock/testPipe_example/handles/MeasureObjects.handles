@@ -1,28 +1,20 @@
-# full path to HDF5 file
 hdf5_filename: /var/folders/7_/tqn1hw4d4nl6t17kcrg7v7jw0000gq/T/test.tmp
 
-# module input arguments
 input:
 
     Image:
-        parameter: /PrimeRawData/OrigImage
+        hdf5_location: /IllumCorr/CorrImageCelltrace
         class: ndarray
 
     Objects: 
-        hdf5_location: /IdentifyNuclei/Nuclei
+        hdf5_location: /IdentifyCells/Cells
         class: ndarray
 
     Features:
-        parameter: ["Area", "Shape", "Intensity"]
+        parameter: ["Area", "Intensity"]
         class: list
 
-    doSaveFigures:
-        parameter: No
-        class: bool
+    doPlot:
+        parameter: Yes
 
-# module output arguments
 output:
-
-    Measurements:
-        hdf5_location: /MeasureObjects/Measurements
-        class: float64
