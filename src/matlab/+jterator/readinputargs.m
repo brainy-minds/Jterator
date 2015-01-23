@@ -3,8 +3,8 @@
 
 function input_args = readinputargs(handles)
 
-    import jterator.api.h5.*;
-    import jterator.api.etc.*;
+    import h5.*;
+    import etc.*;
     
 
     hdf5_filename = handles.hdf5_filename;
@@ -17,7 +17,7 @@ function input_args = readinputargs(handles)
 
         if isfield(field, 'hdf5_location')
             input_args.(key).variable = h5varget(hdf5_filename, field.hdf5_location);
-            fprintf(sprintf('jt -- %s: loaded dataset ''%s'' from HDF5 group: "%s"\n', ...
+            fprintf(sprintf('jt -- %s: loaded dataset ''%s'' from HDF5 location: "%s"\n', ...
                     mfilename, key, field.hdf5_location))
         elseif isfield(field, 'parameter')
             input_args.(key).variable = field.parameter;

@@ -37,7 +37,7 @@ def readinputargs(handles):
             # note: we index into the dataset to retrieve its content,
             # otherwise it would be loaded as hdf5 object
             input_args[key]['variable'] = hdf5_root[field['hdf5_location']][()]
-            print('jt -- %s: loaded dataset \'%s\' from HDF5 group: "%s"'
+            print('jt -- %s: loaded dataset \'%s\' from HDF5 location: "%s"'
                   % (mfilename, key, field['hdf5_location']))
         elif 'parameter' in field:
             input_args[key]['variable'] = field['parameter']
@@ -108,7 +108,7 @@ def writedata(handles, data):
     for key in data:
         hdf5_location = handles['output'][key]['hdf5_location']
         hdf5_data.create_dataset(hdf5_location, data=data[key])
-        print('jt -- %s: wrote dataset \'%s\' to HDF5 group: "%s"'
+        print('jt -- %s: wrote dataset \'%s\' to HDF5 location: "%s"'
               % (mfilename, key, hdf5_location))
     # Close the file (very important!).
     h5py.File.close(hdf5_data)
@@ -125,7 +125,7 @@ def writeoutputargs(handles, output_args):
     for key in output_args:
         hdf5_location = handles['output'][key]['hdf5_location']
         hdf5_tmp.create_dataset(hdf5_location, data=output_args[key])
-        print('jt -- %s: wrote tmp dataset \'%s\' to HDF5 group: "%s"'
+        print('jt -- %s: wrote tmp dataset \'%s\' to HDF5 location: "%s"'
               % (mfilename, key, hdf5_location))
     # Close the file (very important!).
     h5py.File.close(hdf5_tmp)

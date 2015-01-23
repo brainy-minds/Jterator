@@ -38,7 +38,7 @@ readinputargs <- function(handles) {
 
       if ("hdf5_location" %in% names(field)) {
         input_args[[key]]$variable <- h5read(hdf5_filename, field$hdf5_location)
-        cat(sprintf("jt -- %s: loaded dataset '%s' from HDF5 group: \"%s\"\n",
+        cat(sprintf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n",
                 mfilename, key, field$hdf5_location))
       }
       else if ("parameter" %in% names(field)) {
@@ -116,7 +116,7 @@ writedata <- function(handles, data) {
                       dims = dim(data[[key]]),
                       storage.mode = storage.mode(data[[key]]))
       h5write(data[[key]], hdf5_filename, hdf5_location)
-      cat(sprintf("jt -- %s: wrote dataset '%s' to HDF5 group: \"%s\"\n",
+      cat(sprintf("jt -- %s: wrote dataset '%s' to HDF5 location: \"%s\"\n",
                 mfilename, key, hdf5_location))
     }
 }
@@ -139,7 +139,7 @@ writeoutputargs <- function(handles, output_args) {
                       dims = dim(output_args[[key]]),
                       storage.mode = storage.mode(output_args[[key]]))
       h5write(output_args[[key]], hdf5_filename, hdf5_location)
-      cat(sprintf("jt -- %s: wrote tmp dataset '%s' to HDF5 group: \"%s\"\n",
+      cat(sprintf("jt -- %s: wrote tmp dataset '%s' to HDF5 location: \"%s\"\n",
                 mfilename, key, hdf5_location))
     }
 }

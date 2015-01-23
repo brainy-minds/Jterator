@@ -43,7 +43,7 @@ function readinputargs(handles)
                 if ismatch(r"Array", string(typeof(input_args[key]["variable"])))
                     input_args[key]["variable"] = input_args[key]["variable"]'
                 end
-                @printf("jt -- %s: loaded dataset '%s' from HDF5 group: \"%s\"\n", mfilename, key, field["hdf5_location"])
+                @printf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n", mfilename, key, field["hdf5_location"])
             elseif haskey(field, "parameter")
                 input_args[key]["variable"] = field["parameter"]
                 @printf("jt -- %s: parameter '%s': \"%s\"\n", mfilename, key, input_args[key]["variable"])          
@@ -113,7 +113,7 @@ function writedata(handles, data)
             else
                 HDF5.h5write(hdf5_filename, hdf5_location, data[key])
             end
-            @printf("jt -- %s: wrote dataset '%s' to HDF5 group: \"%s\"\n",
+            @printf("jt -- %s: wrote dataset '%s' to HDF5 location: \"%s\"\n",
                     mfilename, key, hdf5_location)
         end
         close(hdf5_data)
@@ -139,7 +139,7 @@ function writeoutputargs(handles, output_args)
             else
                 HDF5.h5write(hdf5_filename, hdf5_location, output_args[key])
             end
-            @printf("jt -- %s: wrote tmp dataset '%s' to HDF5 group: \"%s\"\n",
+            @printf("jt -- %s: wrote tmp dataset '%s' to HDF5 location: \"%s\"\n",
                     mfilename, key, hdf5_location)
         end
         close(hdf5_tmp)

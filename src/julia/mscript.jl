@@ -2,19 +2,14 @@
 using MATLAB
 
 # This Julia script turns a Matlab script into a real executable, which 
-# can accept standard input within a PIPE.
+# can accept standard input within a PIPE. In addition, it preserves the
+# current working directory and adds it to the Matlab search path. 
 #
 # The approach requires an installation of Julia:
-#  - install application: http://julialang.org/downloads/
-#  - install from source: https://github.com/JuliaLang/julia
+#   http://julialang.org/downloads/
 # 
-# It further depends on the Julia "MATLAB" package: 
-#  see https://github.com/JuliaLang/MATLAB.jl
-#
-# General note: 
-# This engine approach via Julia seems to be the best option out there.
-# However, the startup time of Julia is yet very slow. So you thus should avoid
-# using the Mscript routine for small problems.
+# It further depends on the Julia "MATLAB" package:
+#   https://github.com/JuliaLang/MATLAB.jl
 #
 # Author: Markus Herrmann <markus.herrmann@imls.uzh.ch>
 
@@ -33,13 +28,17 @@ print("Mscript: ")
 s1 = MSession()
 
 # send standard input stream into Matlab session
-print("Mscript: forward standard input to Matlab\n")
+print("Mscript: Forward standard input to Matlab.\n")
 put_variable(s1, :input_stream, input_stream)
 
 # send current working directory into Matlab session
-print("Mscript: forward current working directory to Matlab\n")
+print("Mscript: Forward current working directory to Matlab.\n")
 put_variable(s1, :currentDirectory, pwd())
 
+# add current working directory to the Matlab path
+print("Mscript: Add current working directory to the Matlab search path.\n")
+eval_string(s1, "addpath(genpath(pwd()))")
+
 # run script within Matlab session
-print("Mscript: run Matlab script ...\n\n")
+print("Mscript: Run Matlab script...\n\n")
 eval_string(s1, @sprintf("run(\'%s\')", script_path))

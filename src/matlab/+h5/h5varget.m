@@ -33,7 +33,7 @@ function data = h5varget ( varargin )
 error(nargchk(2,7,nargin,'struct'));
 
 % Jterator hack
-import jterator.api.h5.*;
+import h5.*;
 
 args = parse_h5_args ( varargin{:} );
 

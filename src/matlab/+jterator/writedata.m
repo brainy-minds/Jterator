@@ -2,7 +2,7 @@
 
 function writedata(handles, data)
 
-    import jterator.api.h5.*;
+    import h5.*;
     
 
     hdf5_filename = h5varget(handles.hdf5_filename, '/datafile');
@@ -21,7 +21,7 @@ function writedata(handles, data)
         h5datacreate(hdf5_filename, hdf5_location, ...
                      'type', class(value), 'size', size(value));
         h5varput(hdf5_filename, hdf5_location, value);
-        fprintf(sprintf('jt -- %s: wrote dataset ''%s'' to HDF5 group: "%s"\n', ...
+        fprintf(sprintf('jt -- %s: wrote dataset ''%s'' to HDF5 location: "%s"\n', ...
                         mfilename, keys{key}, hdf5_location));
     end
 end
