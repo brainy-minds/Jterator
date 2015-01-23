@@ -115,8 +115,8 @@ Pipeline
 ========
 
 Think of your pipeline as a sequence of connected modules (a linked list). 
-The sequence and structure of your pipeline is defined in a YAML pipeline descriptor file. The input/output settings for each module are provided by additional YAML handles descriptor files. Each module represents a program that reads YAML from the STDIN file descriptor and stores outputs in HDF5 files:
-    - HDF5 file for measurement data: located in your project directory  
+The sequence and structure of your pipeline is defined in a YAML pipeline descriptor file. The input/output settings for each module are provided by additional YAML handles descriptor files. Each module represents a program that reads YAML from the STDIN file descriptor and stores outputs in HDF5 files:        
+    - HDF5 file for measurement data: located in your project directory      
     - HDF5 file for temporary pipeline data: located in a temporary directory 
 
 
