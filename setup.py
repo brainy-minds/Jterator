@@ -25,12 +25,12 @@ def get_version():
 
 
 setup(
-    name='Jterator',
+    name='jterator',
     version=get_version(),
-    description='A minimalistic pipeline engine for scientific computing',
+    description='A minimalistic pipeline engine for scientific computing.',
     long_description=readme(),
     author='Yauhen Yakimovich, Markus Herrmann',
-    author_email='markus dot herrmann at uzh dot ch',
+    author_email='markusdherrmann at gmail dot com',
     url='https://github.com/HackerMD/Jterator',
     license='MIT',
     scripts=['src/python/jt'],
@@ -50,7 +50,7 @@ setup(
         'tree_output>=0.1.2',
         'sh>=1.09',
         'subprocess32>=3.2.6',
-        # 'yaml>=0.1.4',
+        'yaml>=0.1.4',
     ],
     # data_files=[
     #     ('/usr/local/bin', ['jt']),
