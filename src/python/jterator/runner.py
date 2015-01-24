@@ -13,6 +13,9 @@ from jterator.module import Module
 
 
 class JteratorRunner(object):
+    '''
+    Main component for running a Jterator pipeline.
+    '''
 
     def __init__(self, pipeline_folder_path):
         self.pipeline_folder_path = os.getcwd()
@@ -94,7 +97,7 @@ class JteratorRunner(object):
             tmp_filename = os.path.join(tmp_directory, '%s.tmp' %
                                         self.description['project']['name'])
             self.tmp_filename = tmp_filename
-            print('jt - Temporary pipeline data is stored in "%s"'
+            print('jt - Temporary pipeline data is stored in HDF5 file "%s"'
                   % self.tmp_filename)
 
     def build_pipeline(self):
@@ -244,18 +247,18 @@ class JteratorRunner(object):
         output_path = os.path.join(self.pipeline_folder_path, 'data')
         if not os.path.isdir(output_path):
             os.mkdir(output_path)
-        # For now, we create one hdf5 file per job. We could, however,
-        # preallocate one big hdf5 for all jobs to omit data fusion.
+        # For now, we create one hdf5 file for each job.
         output_filename = os.path.join(output_path, '%s_%.5d.data' %
                                        (self.description['project']['name'],
                                         job['jobID']))
-        print('jt - Measurement data are written to HDF5 file: "%s".'
+        print('jt - Measurement data is stored in HDF5 file: "%s".'
               % output_filename)
         data_root = h5py.File(output_filename, 'w')
         data_root.close()
         # Write name of datafile into the temporary HDF5 file.
         # Only Fixed-length ASCII are compatible (use numpy strings)!!!
         tmp_root.create_dataset('datafile', data=np.string_(output_filename))
+        tmp_root.create_dataset('jobid', data=job['jobID'])
         # Close the file (very important!).
         tmp_root.close()
 
@@ -272,11 +275,13 @@ class JteratorRunner(object):
         checker.check_pipeline_io()
         # Build the pipeline.
         self.build_pipeline()
-        if job_id is None:  # non-parallel mode
-            # Create joblist and iterate over job items.
+        if job_id is None:  # iterative mode
+            # Create and get joblist.
             self.create_job_list()
             self.get_job_list()
+            # Iterate over job items.
             for job in self.joblist.itervalues():
+                print('\njt - processing job # %d' % job['jobID'])
                 # Initialize the pipeline.
                 self.create_hdf5_files(job)
                 # Run the pipeline.
@@ -287,12 +292,12 @@ class JteratorRunner(object):
                     module.set_standard_output(os.path.join(self.logs_path,
                                                '%s.output' % module.name))
                     module.run()
-                # Kill the temporary file containing the pipeline data.
-                os.remove(self.tmp_filename)
         else:  # parallel mode
+            # Get joblist (needs to be pre-created calling 'jt joblist').
             self.get_job_list()
-            # Initialize the pipeline.
             job = self.joblist[job_id]
+            print('\njt - processing job # %d' % job['jobID'])
+            # Initialize the pipeline.
             self.create_hdf5_files(job)
             # Run the pipeline.
             print('\n')

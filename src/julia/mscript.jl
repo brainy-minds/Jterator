@@ -28,17 +28,17 @@ print("Mscript: ")
 s1 = MSession()
 
 # send standard input stream into Matlab session
-print("Mscript: Forward standard input to Matlab.\n")
+print("Mscript: Forward standard input to Matlab\n")
 put_variable(s1, :input_stream, input_stream)
 
 # send current working directory into Matlab session
-print("Mscript: Forward current working directory to Matlab.\n")
+print("Mscript: Forward current working directory to Matlab\n")
 put_variable(s1, :currentDirectory, pwd())
 
 # add current working directory to the Matlab path
-print("Mscript: Add current working directory to the Matlab search path.\n")
+print("Mscript: Add current working directory to the Matlab search path\n")
 eval_string(s1, "addpath(genpath(pwd()))")
 
 # run script within Matlab session
-print("Mscript: Run Matlab script...\n\n")
+print("Mscript: Run Matlab script...\n")
 eval_string(s1, @sprintf("run(\'%s\')", script_path))

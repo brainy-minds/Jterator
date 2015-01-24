@@ -4,28 +4,27 @@ import yaml
 from subprocess32 import (PIPE, Popen)
 from jterator.error import JteratorError
 
-from IPython.core.debugger import Tracer
+# from IPython.core.debugger import Tracer
 
 
 class Module(object):
     '''
-    Main component of any Jterator pipeline. Able to handle IO streams and
-    form a linked list.
+    Building block of a Jterator pipeline.
 
     Note: a lot of logic is re-thought and borrowed from github:ewiger/pipette.
     '''
 
     def __init__(self, name, module, handles, interpreter, tmp_filename):
         '''
-        Initiate a new Jterator module.
+        Initiate a Jterator module.
 
         :name:            Name or description of the module, it may differ
                           from the corresponding interpreter. Cannot have white
                           spaces.
 
-        :module:          Path to a program file that can be executed.
+        :module:          Path to program file that should be executed.
 
-        :handles:         Path to handles file.
+        :handles:         Path to handles file that provides input/output info.
 
         :interpreter:     Path to program that should execute the program file.
 
@@ -33,12 +32,7 @@ class Module(object):
         '''
         self.name = name
         self.module = module
-        self.handles = open(handles)
-        # Require 'handles' to be a file object.
-        if not hasattr(self.handles , 'read'):
-            raise JteratorError('Passed argument \'handles\' is not a file '
-                                'object.')
-        self.handles_filename = handles
+        self.handles = handles
         self.interpreter = interpreter
         self.tmp_filename = tmp_filename
         # Effectively, these are used as arguments for Popen call.
@@ -107,7 +101,7 @@ class Module(object):
             # Prepare handles input.
             input_data = None
             if self.streams['input'] == PIPE:
-                input_data = self.handles.readlines()
+                input_data = open(self.handles).readlines()
                 # We have to provide the temporary filename to the modules.
                 # Let's write it into handles and save the changes to the file.
                 i = -1
@@ -122,8 +116,9 @@ class Module(object):
                                                   default_flow_style=False)
                 # Write the new handles file.
                 input_data = ''.join(input_data)
-                new_handles = open(self.handles_filename, 'w')
+                new_handles = open(self.handles, 'w')
                 new_handles.write(input_data)
+                new_handles.close()
             # Execute sub-process.
             (stdoutdata, stderrdata) = process.communicate(input=input_data)
             print stdoutdata
