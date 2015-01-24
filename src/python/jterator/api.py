@@ -44,7 +44,7 @@ def readinputargs(handles):
             print('jt -- %s: parameter \'%s\': "%s"'
                   % (mfilename, key, str(field['parameter'])))
         else:
-            h5py.File.close(hdf5_root)
+            hdf5_root.close()
             raise JteratorError('Possible variable keys are '
                                 '\'hdf5_location\' or \'parameter\'')
 
@@ -54,7 +54,7 @@ def readinputargs(handles):
         if 'attributes' in field:
             input_args[key]['attributes'] = field['attributes']
 
-    h5py.File.close(hdf5_root)
+    hdf5_root.close()
 
     return input_args
 
@@ -102,7 +102,7 @@ def writedata(handles, data):
     # Extract filename of the data HDF5 file.
     hdf5_tmp = h5py.File(handles['hdf5_filename'], 'r')
     hdf5_filename = hdf5_tmp['datafile'][()]
-    h5py.File.close(hdf5_tmp)
+    hdf5_tmp.close()
     # Open the file and write data into it.
     hdf5_data = h5py.File(hdf5_filename, 'r+')
     for key in data:
@@ -111,7 +111,7 @@ def writedata(handles, data):
         print('jt -- %s: wrote dataset \'%s\' to HDF5 location: "%s"'
               % (mfilename, key, hdf5_location))
     # Close the file (very important!).
-    h5py.File.close(hdf5_data)
+    hdf5_data.close()
 
 
 def writeoutputargs(handles, output_args):
@@ -128,4 +128,4 @@ def writeoutputargs(handles, output_args):
         print('jt -- %s: wrote tmp dataset \'%s\' to HDF5 location: "%s"'
               % (mfilename, key, hdf5_location))
     # Close the file (very important!).
-    h5py.File.close(hdf5_tmp)
+    hdf5_tmp.close()

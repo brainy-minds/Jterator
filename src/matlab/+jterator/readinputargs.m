@@ -9,6 +9,8 @@ function input_args = readinputargs(handles)
 
     hdf5_filename = handles.hdf5_filename;
 
+    fid = H5F.open(hdf5_filename);
+
     input_args = struct();
     keys = fieldnames(handles.input);
     for i = 1:length(keys)
@@ -16,7 +18,7 @@ function input_args = readinputargs(handles)
         field = handles.input.(key);
 
         if isfield(field, 'hdf5_location')
-            input_args.(key).variable = h5varget(hdf5_filename, field.hdf5_location);
+            input_args.(key).variable = h5varget(fid, field.hdf5_location);
             fprintf(sprintf('jt -- %s: loaded dataset ''%s'' from HDF5 location: "%s"\n', ...
                     mfilename, key, field.hdf5_location))
         elseif isfield(field, 'parameter')
@@ -45,12 +47,8 @@ function input_args = readinputargs(handles)
             input_args.(key).class = field.class;
         end
 
-        % if isfield(field, 'attributes')
-        %     input_args.(key).attributes = {field.attributes};
-        % else
-        %     input_args.(key).attributes = {};
-        % end   
-
     end
+
+    H5F.close(fid);
     
 end

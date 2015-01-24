@@ -37,8 +37,8 @@ put_variable(s1, :currentDirectory, pwd())
 
 # add current working directory to the Matlab path
 print("Mscript: Add current working directory to the Matlab search path\n")
-eval_string(s1, "addpath(genpath(pwd()))")
+eval_string(s1, "addpath(genpath(currentDirectory))")
 
 # run script within Matlab session
-print("Mscript: Run Matlab script...\n")
+print("Mscript: Run Matlab script...\n\n")
 eval_string(s1, @sprintf("run(\'%s\')", script_path))

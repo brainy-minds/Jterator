@@ -77,14 +77,14 @@ function checkinputargs(input_args)
                 loaded_class = typeof(input_args[key]["variable"])
 
                 if ~isequal(string(loaded_class), expected_class) 
-                    error(@sprintf("argument \"%s\" is of class \"%s\" instead of expected \"%s\"", 
+                    error(@sprintf("argument '%s' is of class \"%s\" instead of expected \"%s\"", 
                           key, loaded_class, expected_class))
                 end
 
-                @printf("jt -- %s: argument \"%s\" passed check\n", mfilename, key)
+                @printf("jt -- %s: argument '%s' passed check\n", mfilename, key)
 
             else
-                @printf("jt -- %s: argument \"%s\" not checked\n", mfilename, key)
+                @printf("jt -- %s: argument '%s' not checked\n", mfilename, key)
             end
 
             # return parameters in simplified form

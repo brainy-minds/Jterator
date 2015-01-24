@@ -15,14 +15,18 @@ function writeoutputargs(handles, output_args)
     % For examples see:
     % http://www.hdfgroup.org/ftp/HDF5/examples/examples-by-api/api18-m.html
 
+    fid = H5F.open(hdf5_filename, 'H5F_ACC_RDWR','H5P_DEFAULT');
+
     keys = fieldnames(output_args);
     for key = 1:length(keys)
         hdf5_location = handles.output.(keys{key}).hdf5_location;
         value = output_args.(keys{key});
-        h5datacreate(hdf5_filename, hdf5_location, ...
+        h5datacreate(fid, hdf5_location, ...
                      'type', class(value), 'size', size(value));
-        h5varput(hdf5_filename, hdf5_location, value);
+        h5varput(fid, hdf5_location, value);
         fprintf(sprintf('jt -- %s: wrote tmp dataset ''%s'' to HDF5 location: "%s"\n', ...
                     mfilename, keys{key}, hdf5_location));
     end
+
+    H5F.close(fid);
 end
