@@ -1,6 +1,0 @@
-- Hierarchical output
--- add logging with loggers everywhere
--- move houtput outside of the project, use an external module.
--- log steps with the nice output in console
-
-- create package management for APIs
