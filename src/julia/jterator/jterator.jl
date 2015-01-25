@@ -32,6 +32,8 @@ function readinputargs(handles)
     
     hdf5_filename = handles["hdf5_filename"]
 
+    fid = h5open(hdf5_filename, "r")
+
     input_args = Dict()
     if ~isempty(handles)
         for key in keys(handles["input"])
@@ -39,7 +41,7 @@ function readinputargs(handles)
             input_args[key] = Dict()
 
             if haskey(field, "hdf5_location")
-                input_args[key]["variable"] = HDF5.h5read(hdf5_filename, field["hdf5_location"])
+                input_args[key]["variable"] = read(fid, field["hdf5_location"])
                 if ismatch(r"Array", string(typeof(input_args[key]["variable"])))
                     input_args[key]["variable"] = input_args[key]["variable"]'
                 end
@@ -56,6 +58,8 @@ function readinputargs(handles)
             end 
         end
     end
+
+    close(fid)
 
     return input_args
     
@@ -104,14 +108,14 @@ function writedata(handles, data)
     mfilename = "writedata"
 
     if ~isempty(data)
-        hdf5_filename = HDF5.h5read(handles["hdf5_filename"], "datafile")
-        hdf5_data = HDF5.h5open(hdf5_filename, "r+")
+        hdf5_filename = h5read(handles["hdf5_filename"], "datafile")
+        hdf5_data = h5open(hdf5_filename, "r+")
         for key in keys(data)
             hdf5_location = keys(key)
             if ismatch(r"Array", string(typeof(data[key])))
-                HDF5.h5write(hdf5_filename, hdf5_location, data[key]')
+                write(hdf5_data, hdf5_location, data[key]')
             else
-                HDF5.h5write(hdf5_filename, hdf5_location, data[key])
+                write(hdf5_data, hdf5_location, data[key])
             end
             @printf("jt -- %s: wrote dataset '%s' to HDF5 location: \"%s\"\n",
                     mfilename, key, hdf5_location)
@@ -131,13 +135,13 @@ function writeoutputargs(handles, output_args)
     hdf5_filename = handles["hdf5_filename"]
     
     if ~isempty(output_args) 
-        hdf5_tmp = HDF5.h5open(hdf5_filename, "r+")
+        hdf5_tmp = h5open(hdf5_filename, "r+")
         for key in keys(output_args)
             hdf5_location = handles["output"][key]["hdf5_location"]
             if ismatch(r"Array", string(typeof(output_args[key])))
-                HDF5.h5write(hdf5_filename, hdf5_location, output_args[key]')
+                write(hdf5_tmp, hdf5_location, output_args[key]')
             else
-                HDF5.h5write(hdf5_filename, hdf5_location, output_args[key])
+                write(hdf5_tmp, hdf5_location, output_args[key])
             end
             @printf("jt -- %s: wrote tmp dataset '%s' to HDF5 location: \"%s\"\n",
                     mfilename, key, hdf5_location)

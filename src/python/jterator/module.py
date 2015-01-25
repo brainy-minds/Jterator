@@ -4,7 +4,7 @@ import yaml
 from subprocess32 import (PIPE, Popen)
 from jterator.error import JteratorError
 
-# from IPython.core.debugger import Tracer
+from IPython.core.debugger import Tracer
 
 
 class Module(object):
@@ -121,14 +121,22 @@ class Module(object):
                 new_handles.close()
             # Execute sub-process.
             (stdoutdata, stderrdata) = process.communicate(input=input_data)
-            print stdoutdata
-            print stderrdata
             # Write output and errors.
             self.write_output_and_errors(stdoutdata, stderrdata)
+            # Modify for nicer output to command line.
+            ignor_list = ['INFO:']
+            if any([re.search(x, stderrdata) for x in ignor_list]):
+                newstderrdata = str()
+                for line in stderrdata.split('\n'):
+                    if not any([re.search(x, line) for x in ignor_list]):
+                        newstderrdata = newstderrdata + line
+                stderrdata = newstderrdata
+            print stdoutdata
+            print stderrdata
             # Close STDIN file descriptor.
             process.stdin.close
             # Take care of any errors during the execution.
-            if process.returncode > 0 or stderrdata:
+            if process.returncode > 0:  # or stderrdata
                 raise JteratorError(self.get_error_message(process,
                                     input_data))
         except ValueError as error:

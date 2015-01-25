@@ -3,7 +3,7 @@ Jterator
 
 [![Build Status](https://travis-ci.org/HackerMD/Jterator.svg?branch=master)](https://travis-ci.org/HackerMD/Jterator)
 
-A minimalistic pipeline engine for scientific computing. It is designed to be flexible, but at the same time handy to work with. Jterator is a command-line tool for Unix systems. It comes without a GUI, but rather makes use of easily readable and modifiable YAML files. Figures can either be saved as PDF files or plotted in the browser using d3 technology.
+A minimalistic pipeline engine for scientific computing. It is designed to be flexible, but at the same time handy to work with. Jterator is a command-line tool for Unix systems. It comes without a GUI, but rather makes use of easily readable and modifiable YAML files. Figures can either be saved as PDF files or displayed in the browser using d3 technology.
 
 
 External libraries
@@ -14,6 +14,8 @@ Jterator depends on the following languages and external libraries:
 * Python   
     
     https://www.python.org/downloads/
+
+    See full list of python package dependencies in setup.py.
 
 * Julia (required for Mscript)
 
@@ -43,10 +45,6 @@ Jterator depends on the following languages and external libraries:
     apt-get -u install hdf5-tools
     ```
 
-* Plotly (optional)    
-    
-    https://plot.ly/api/
-
 
 APIs
 ----
@@ -60,7 +58,9 @@ Jterator is written in Python, but can pipe custom code in different languages. 
 Language specific package dependencies: 
 * Python 
     - *YAML*    
-    - *h5py*    
+    - *h5py*  
+    - *matplotlib*
+    - *mpld3*  
 * R     
     - *yaml*    
     - *rhdf5*   
@@ -79,10 +79,8 @@ Input/output:
 * **readinputargs**: Reading input arguments from HDF5 file using the location specified in "handles".
 * **checkinputargs**: Checking input arguments for correct "class" (i.e. type).
 * **writeoutputargs**: Writing output arguments to HDF5 file using the location specified in "handles".
-* **writedata**: Writing data to HDF5 file.
-
-Tools (not yet implemented):      
-* **jtfigure**: Saving figures as PDF or sending it to plotly.
+* **writedata**: Writing data to HDF5 file.     
+* **figure2browser**: Displaying figures in the browser (so far only implemented for python).
 
 Ultimately, we will provide the APIs via packages for each language (see TODO). For now, you have to add the path to the API for each language.
 To this end, include the following lines in your *.bash_profile* file:   
@@ -129,7 +127,7 @@ Each pipeline has the following layout on the disk:
 * **modules** folder contains all the executable code for programs.
 * **logs** folder contains all the output from STDOUT and STERR streams, obtained for each executable that has been executed.
 * **data** folder contains all the data output in form of HDF5 files. These data are shared between modules. 
-* **figures** folder contains the PDFs of the plots (optional).
+* **figures** folder contains PDF or HTML files of figures saved in modules.
 * **subfunctions** folder contains additional executable code, which is called by modules.
 
 Jterator allows only very simplistic type of work-flow -  *pipeline* (somewhat similar to a UNIX-world pipeline). Description of such work-flow must be put sibling to the folder structure described about, i.e. inside the Jterator project folder. Recognizable file name must be **'[ProjectName].pipe'**. Description is a YAML format. 
@@ -141,12 +139,12 @@ Pipeline descriptor file
 Describe your pipeline in the .pipe (YAML) descriptor file:
 
 ```yaml
-Project:
+project:
 
     name: myJteratorProject
     description:
 
-Jobs:
+jobs:
 
     folder: path/to/myFolder
     pattern: 
@@ -155,7 +153,7 @@ Jobs:
         - name: myOtherImage
           expression: .*\.tiff?
 
-Pipeline:
+pipeline:
 
     -   name: myModule1
         module: modules/myModule1.py
@@ -178,7 +176,7 @@ Pipeline:
         interpreter: julia
 ```
 Note that the value for the "interpreter" key can be either a full path to the interpreter program (e.g. /usr/bin/python) or a command that can be interpreted by /usr/bin/env (e.g. python).
-Also note that the working directory is the jterator project folder. You can provide either a full path to modules and handles files or a path relative to the project folder.
+Also note that the working directory is by default the project folder. You can provide either a full path to modules and handles files or a path relative to the project folder.
 
 
 Handles descriptor files
@@ -220,10 +218,10 @@ output:
 The value of the key "hdf5_filename" can be left empty or set to 'None'.
 It will be filled in by Jterator. The program generates a temporary file
 and writes its filename into the handles descriptor file in order to make it available to the modules. 
-Note that the temporary file will currently not get killed when an error occurs. This is implemented in this way to allow debugging of the module that broke. Make sure to clean up the temporary files manually.    
+Note that the temporary file will currently not get killed when an error occurs to allow debugging of the module that broke. The temporary directory will be cleaned automatically once you shut down your computer.     
 There are two different types of input arguments:
-* *hdf5_location* is an argument that has to be produced upstream in the pipeline by another module, which saved it into the HDF5 file.
-* *parameter* is an argument that is used to control the behavior of the module.   
+* *hdf5_location* is an argument that has to be produced upstream in the pipeline by another module, which saved the corresponding data into the specified location in the HDF5 file.   
+* *parameter* is an argument that is used to control the behavior of the module. It is module-specific and hence independent of other modules.    
 Note that you can provide the optional "class" key, which asserts the datatype
 of the passed argument. It is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R.
 
@@ -231,7 +229,7 @@ of the passed argument. It is language specific, e.g. 'float64' in Python, 'doub
 Modules
 -------
 
-The Jterator APIs are written in way that enables more or less the same module syntax in each language.
+The Jterator APIs are written in way that enables more or less the same syntax in each language.
 
 Example Python module:
 
@@ -360,7 +358,7 @@ writeoutputtmp(handles, output_tmp;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ```
-
+Note that Matlab scripts are executed by "Mscript", a customized Julia-based Matlab engine, which forwards the standard input stream and the current working directory to the Matlab session. Side-note: Julia is awesome!    
 
 Getting started
 ---------------
@@ -454,4 +452,5 @@ cd tests && nosetests
 To do
 =====
 
-Package management for external dependencies and APIs in different languages.  
+Package management for external dependencies and APIs in different languages. 
+

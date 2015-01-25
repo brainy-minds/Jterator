@@ -251,7 +251,7 @@ class JteratorRunner(object):
         output_filename = os.path.join(output_path, '%s_%.5d.data' %
                                        (self.description['project']['name'],
                                         job['jobID']))
-        print('jt - Measurement data is stored in HDF5 file: "%s".'
+        print('jt - Measurement data is stored in HDF5 file "%s".'
               % output_filename)
         data_root = h5py.File(output_filename, 'w')
         data_root.close()
@@ -275,13 +275,14 @@ class JteratorRunner(object):
         checker.check_pipeline_io()
         # Build the pipeline.
         self.build_pipeline()
+        print('jt - Log files are stored in directory "./logs"')
         if job_id is None:  # iterative mode
             # Create and get joblist.
             self.create_job_list()
             self.get_job_list()
             # Iterate over job items.
             for job in self.joblist.itervalues():
-                print('\njt - processing job # %d' % job['jobID'])
+                print('\njt - Processing job # %d ...' % job['jobID'])
                 # Initialize the pipeline.
                 self.create_hdf5_files(job)
                 # Run the pipeline.

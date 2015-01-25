@@ -2,9 +2,13 @@ from __future__ import unicode_literals
 import sys
 import yaml
 import h5py
+import urlparse
+import urllib
+import webbrowser
 from jterator.error import JteratorError
 
 # from IPython.core.debugger import Tracer
+
 
 def gethandles(handles_stream):
     '''
@@ -129,3 +133,9 @@ def writeoutputargs(handles, output_args):
               % (mfilename, key, hdf5_location))
     # Close the file (very important!).
     hdf5_tmp.close()
+
+
+def figure2browser(path):
+    url = urlparse.urljoin('file:', urllib.pathname2url(path))
+    webbrowser.get("open %s").open(url)
+
