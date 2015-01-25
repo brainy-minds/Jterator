@@ -15,7 +15,7 @@ Jterator depends on the following languages and external libraries:
     
     https://www.python.org/downloads/
 
-    See full list of python package dependencies in setup.py.
+    For a full list of python package dependencies see setup.py.
 
 * Julia (required for Mscript)
 
@@ -450,7 +450,7 @@ cd tests && nosetests
 ```
 
 To do
-=====
+-----
 
 Package management for external dependencies and APIs in different languages. 
 
