@@ -82,8 +82,8 @@ Language specific package dependencies:
     - *YAML*    
     - *HDF5*    
         Note for Brutus users:
-        Change line 48 in BinDeps.jl to    
-        ```julia
+        Modify line 48 in BinDeps.jl (put :wget at first position)    
+        ```
         checkcmd in (:wget, :curl, :fetch)
         ```
     - *MATLAB*  
