@@ -15,7 +15,13 @@ Jterator depends on the following languages and external libraries:
     
     https://www.python.org/downloads/
 
-    For a full list of python package dependencies see setup.py.
+    For a full list of python package dependencies see setup.py.    
+
+    Note for Brutus users:      
+    Use python 2.7.2    
+    ```bash
+    module load python/2.7.2
+    ```
 
 * Julia (required for Mscript)
 
@@ -28,6 +34,14 @@ Jterator depends on the following languages and external libraries:
     cd ~/julia
     git checkout release-0.3
     make
+    ```
+
+    Note for Brutus users:  
+    Create a 'Make.user' file and add the following lines    
+    ```bash
+    OPENBLAS_NO_AVX=1
+    OPENBLAS_NO_AVX2=1
+    OPENBLAS_DYNAMIC_ARCH = 1
     ```
 
 * HDF5
@@ -67,6 +81,11 @@ Language specific package dependencies:
 * Julia     
     - *YAML*    
     - *HDF5*    
+        Note for Brutus users:
+        Change line 48 in BinDeps.jl to    
+        ```julia
+        checkcmd in (:wget, :curl, :fetch)
+        ```
     - *MATLAB*  
 * Matlab (already provided)
     - *mhdf5tools* (includes important extensions!)
