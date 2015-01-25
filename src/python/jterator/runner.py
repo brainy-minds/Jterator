@@ -289,9 +289,9 @@ class JteratorRunner(object):
                 print('\n')
                 for module in self.modules:
                     module.set_error_output(os.path.join(self.logs_path,
-                                            '%s.error' % module.name))
+                                            '%s_%.5d.error' % (module.name, job['jobID'])))
                     module.set_standard_output(os.path.join(self.logs_path,
-                                               '%s.output' % module.name))
+                                               '%s_%.5d.output' % (module.name, job['jobID'])))
                     module.run()
                 os.remove(self.tmp_filename)  # necessary for python modules??
         else:  # parallel mode
@@ -305,7 +305,7 @@ class JteratorRunner(object):
             print('\n')
             for module in self.modules:
                 module.set_error_output(os.path.join(self.logs_path,
-                                        '%s.error' % module.name))
+                                        '%s_%.5d.error' % (module.name, job['jobID'])))
                 module.set_standard_output(os.path.join(self.logs_path,
-                                           '%s.output' % module.name))
+                                           '%s_%.5d.output' % (module.name, job['jobID'])))
                 module.run()

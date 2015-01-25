@@ -4,8 +4,6 @@ import yaml
 from subprocess32 import (PIPE, Popen)
 from jterator.error import JteratorError
 
-from IPython.core.debugger import Tracer
-
 
 class Module(object):
     '''
@@ -35,9 +33,6 @@ class Module(object):
         self.handles = handles
         self.interpreter = interpreter
         self.tmp_filename = tmp_filename
-        # Effectively, these are used as arguments for Popen call.
-        # That's why it is actually legal to use PIPE as a default value here.
-        # Note: Set values to None to avoid interaction with the program.
         self.streams = {
             'input': PIPE,
             'output': PIPE,
@@ -136,7 +131,7 @@ class Module(object):
             # Close STDIN file descriptor.
             process.stdin.close
             # Take care of any errors during the execution.
-            if process.returncode > 0:  # or stderrdata
+            if process.returncode > 0 or re.search('Error', stderrdata):
                 raise JteratorError(self.get_error_message(process,
                                     input_data))
         except ValueError as error:
