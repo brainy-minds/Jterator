@@ -56,7 +56,7 @@ else:
 
 # 4) Run 'JTCluster'
 print('jt - JTCluster Submission:')
-project = os.path.dirname(os.path.realpath(__file__))
+project = os.path.dirname(os.getcwd())
 joblist_filename = '%s.jobs' % project
 joblist = yaml.load(open(joblist_filename))
 
