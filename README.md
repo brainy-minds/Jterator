@@ -18,31 +18,10 @@ Jterator depends on the following languages and external libraries:
     For a full list of python package dependencies see setup.py.    
 
     Note for Brutus users:      
-    Use python 2.7.2    
-    ```bash
-    module load python/2.7.2
-    ```
-
-* Julia (required for Mscript)
-
-    http://julialang.org/downloads/
-
-    To install from source:
-
-    ```bash
-    git clone git://github.com/JuliaLang/julia.git ~/julia
-    cd ~/julia
-    git checkout release-0.3
-    make
-    ```
-
-    Note for Brutus users:  
-    Create a 'Make.user' file and add the following lines    
-    ```bash
-    OPENBLAS_NO_AVX=1
-    OPENBLAS_NO_AVX2=1
-    OPENBLAS_DYNAMIC_ARCH = 1
-    ```
+        Use python 2.7.2    
+        ```bash
+        module load python/2.7.2
+        ```
 
 * HDF5
 
@@ -59,6 +38,27 @@ Jterator depends on the following languages and external libraries:
     apt-get -u install hdf5-tools
     ```
 
+* Julia (required for Mscript)
+
+    http://julialang.org/downloads/
+
+    To install from source:
+
+    ```bash
+    git clone git://github.com/JuliaLang/julia.git ~/julia
+    cd ~/julia
+    git checkout release-0.3
+    make
+    ```
+
+    Note for Brutus users:  
+        Create a 'Make.user' file and add the following lines    
+        ```bash
+        OPENBLAS_NO_AVX=1
+        OPENBLAS_NO_AVX2=1
+        OPENBLAS_DYNAMIC_ARCH = 1
+        ```
+
 
 APIs
 ----
@@ -74,19 +74,26 @@ Language specific package dependencies:
     - *YAML*    
     - *h5py*  
     - *matplotlib*
-    - *mpld3*  
+    - *mpld3*   
+    Note for Brutus users:  
+        Install packages as follows        
+        ```bash
+        pip install --user [package]
+        ```     
 * R     
     - *yaml*    
     - *rhdf5*   
 * Julia     
     - *YAML*    
     - *HDF5*    
-        Note for Brutus users:
-        Modify line 48 in BinDeps.jl (put :wget at first position)    
-        ```
-        checkcmd in (:wget, :curl, :fetch)
-        ```
+        Note for Brutus users:      
+            Modify line 48 in BinDeps.jl (put :wget at first position)    
+            ```
+            checkcmd in (:wget, :curl, :fetch)
+            ```
     - *MATLAB*  
+    - *PyCall*
+    - *PyPlot*
 * Matlab (already provided)
     - *mhdf5tools* (includes important extensions!)
     - *yamlmatlab*
@@ -450,6 +457,9 @@ Example for a python module:
 ```bash
 cat handles/myModule.handles | python modules/myModule.py
 ```
+Note that this command works only after the module has already been executed,
+since it requires the upstream pipeline data and the "hdf5_filename" key must have been updated by Jterator.      
+There are some issues with debugging (e.g. in python) because 'cat' keeps the standard input blocked. Working on this...
 
 
 Developing Jterator
