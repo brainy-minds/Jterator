@@ -50,7 +50,7 @@ setup(
         'tree_output>=0.1.2',
         'sh>=1.09',
         'subprocess32>=3.2.6',
-        'yaml>=0.1.4',
+        'PyYAML>=3.11',
     ],
     # data_files=[
     #     ('/usr/local/bin', ['jt']),
