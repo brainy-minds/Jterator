@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import os
 import yaml
+import mmap
+import time
 import re
 from subprocess32 import (PIPE, Popen, call)
 
@@ -25,25 +27,42 @@ if not os.path.exists('lsf'):
     os.mkdir('lsf')
 
 # 2) Run 'PreCluster'
-print('\njt - Submitting PreCluster')
+print('jt - PreCluster submission:')
+print('jt - Job # %d' % 1)
 lsf = os.path.abspath(os.path.join('lsf', '%.5d.precluster' % 1))
 call(['bsub', '-W', '8:00', '-o', lsf,
-     '-R', 'rusage[mem=4000,scratch=4000]',
+     '-R', 'rusage[mem=8000,scratch=8000]',
      'jt', 'run', '--job', '1'])
 
+# 3) Check results of 'PreCluster' step
+while True:
+    if os.path.exists(lsf):
+        f = open(lsf)
+        s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+        if s.find('Failed') != -1:
+            failed = True
+        else:
+            failed = False
+        f.close()
+        break
+    else:
+        print('jt - PreCluster step running...')
+        time.sleep(30)
 
+if failed:
+    raise Exception('PreCluster step failed')
+else:
+    print('jt - PreCluster step successfully completed')
 
-# # 3) Run 'JTCluster'
-# print('\njt - Submit JTCluster')
-# project = os.path.dirname(os.path.realpath(__file__))
-# joblist_filename = '%s.jobs' % project
-# joblist = yaml.load(open(joblist_filename))
+# 4) Run 'JTCluster'
+print('jt - JTCluster Submission:')
+project = os.path.dirname(os.path.realpath(__file__))
+joblist_filename = '%s.jobs' % project
+joblist = yaml.load(open(joblist_filename))
 
-# if not os.path.exists('lsf'):
-#     os.mkdir('lsf')
-
-# for job in joblist:
-#     lsf = os.path.abspath(os.path.join('lsf', '%.5d.jtcluster' % job['jobid']))
-#     call(['bsub', '-W', '8:00', '-o', lsf,
-#          '-R', 'rusage[mem=4000,scratch=4000]',
-#          'jt', 'run', '--job', job['jobid']])
+for job in joblist:
+    print('jt - Job # %d' % job['jobid'])
+    lsf = os.path.abspath(os.path.join('lsf', '%.5d.jtcluster' % job['jobid']))
+    call(['bsub', '-W', '8:00', '-o', lsf,
+         '-R', 'rusage[mem=8000,scratch=8000]',
+         'jt', 'run', '--job', job['jobid']])
