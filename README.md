@@ -18,11 +18,10 @@ Jterator depends on the following languages and external libraries:
     *Jterator* is written in python. For a full list of python package dependencies see setup.py.   
 
     Note for Brutus users:      
-        Import Python module (use 2.7.2) 
-
-        ```bash
-        module load python/2.7.2
-        ```
+    Import Python module (use 2.7.2)
+    ```
+    module load python/2.7.2
+    ```
 
 * **HDF5**
 
@@ -40,11 +39,10 @@ Jterator depends on the following languages and external libraries:
     ```
 
     Note for Brutus users:      
-        Import HDF5 module
-
-        ```bash
-        module load hdf5
-        ```
+    Import HDF5 module
+    ```
+    module load hdf5
+    ```
 
 optional
 --------
@@ -63,24 +61,22 @@ optional
     ```
 
     Note for Brutus users:  
-        You need to install Julia in your home directory.
-        To this end, create a 'Make.user' file and add the following lines 
-
-        ```bash
-        OPENBLAS_NO_AVX=1
-        OPENBLAS_NO_AVX2=1
-        OPENBLAS_DYNAMIC_ARCH=1
-        ```
+    You need to install Julia in your home directory.
+    To this end, create a 'Make.user' file and add the following lines 
+    ```
+    OPENBLAS_NO_AVX=1
+    OPENBLAS_NO_AVX2=1
+    OPENBLAS_DYNAMIC_ARCH=1
+    ```
 * **R**     
     
     http://www.r-project.org
 
     Note for Brutus users:  
-        Import R module (use version 3.1.2) 
-
-        ```bash
-        module load new openblas/0.2.8_seq r/3.1.2
-        ```
+    Import R module (use version 3.1.2) 
+    ```
+    module load new openblas/0.2.8_seq r/3.1.2
+    ```
 
 
 APIs
@@ -99,19 +95,18 @@ APIs depend on the following packages:
     - *matplotlib*
     - *mpld3*   
     Note for Brutus users:  
-        Install packages as follows 
-
-        ```bash
-        pip install --user [package]
-        ```      
+    Install packages as follows 
+    ```
+    pip install --user [package]
+    ```      
 * Julia     
     - *YAML*    
     - *HDF5*    
         Note for Brutus users:      
-            Modify line 48 in BinDeps.jl (put :wget at first position)    
-            ```
-            checkcmd in (:wget, :curl, :fetch)
-            ```
+        Modify line 48 in BinDeps.jl (put :wget at first position)    
+        ```
+        checkcmd in (:wget, :curl, :fetch)
+        ```
     - *MATLAB*  
     - *PyCall*
     - *PyPlot*
