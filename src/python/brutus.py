@@ -4,6 +4,7 @@ import yaml
 import mmap
 import time
 import re
+import glob
 from subprocess32 import (PIPE, Popen, call)
 
 '''
@@ -56,8 +57,7 @@ else:
 
 # 4) Run 'JTCluster'
 print('jt - JTCluster Submission:')
-project = os.path.basename(os.getcwd())
-joblist_filename = '%s.jobs' % project
+joblist_filename = glob.glob(os.path.join(os.getcwd(), '*.jobs'))[0]
 joblist = yaml.load(open(joblist_filename))
 
 for job in joblist:
