@@ -293,7 +293,8 @@ class JteratorRunner(object):
                     module.set_standard_output(os.path.join(self.logs_path,
                                                '%s_%.5d.output' % (module.name, job['jobID'])))
                     module.run()
-                os.remove(self.tmp_filename)  # necessary for python modules??
+                # Delete temporary pipeline file
+                os.remove(self.tmp_filename)
         else:  # parallel mode
             # Get joblist (needs to be pre-created calling 'jt joblist').
             self.get_job_list()
@@ -309,3 +310,5 @@ class JteratorRunner(object):
                 module.set_standard_output(os.path.join(self.logs_path,
                                            '%s_%.5d.output' % (module.name, job['jobID'])))
                 module.run()
+            # Delete temporary pipeline file
+            os.remove(self.tmp_filename)

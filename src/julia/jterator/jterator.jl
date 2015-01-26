@@ -2,8 +2,12 @@ module jterator
 
 using YAML
 using HDF5
+using PyCall
+@pyimport urlparse
+@pyimport urllib
+@pyimport webbrowser
 
-export gethandles, readinputargs, checkinputargs, writeoutputargs, writedata
+export gethandles, readinputargs, checkinputargs, writeoutputargs, writedata, figure2browser
 
 ###################################################################
 ## Note: the HDF5 package doesn't handle dimensions correctly!!! ##
@@ -149,6 +153,13 @@ function writeoutputargs(handles, output_args)
         close(hdf5_tmp)
     end
 
+end
+
+
+function figure2browser(path)
+    ## Creating a url for an html file and opening it in the default browser.
+    url = urlparse.urljoin("file:", urllib.pathname2url(path))
+    webbrowser.get("open %s")[:open](url)
 end
 
 end

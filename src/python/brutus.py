@@ -13,6 +13,24 @@ Script to run a Jterator pipeline in parallel mode on Brutus.
 Call this script from your project folder!
 '''
 
+
+def check_precluster(lsf):
+    while True:
+        if os.path.exists(lsf):
+            f = open(lsf)
+            s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+            if s.find('Failed') != -1:
+                failed = True
+            else:
+                failed = False
+            f.close()
+            break
+        else:
+            print('jt - PreCluster step running...')
+            time.sleep(30)
+    return(failed)
+
+
 # 1) Create joblist
 process = Popen(['jt', 'joblist'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
@@ -28,28 +46,16 @@ if not os.path.exists('lsf'):
     os.mkdir('lsf')
 
 # 2) Run 'PreCluster'
-print('jt - PreCluster submission:')
-print('jt - Job # %d' % 1)
 lsf = os.path.abspath(os.path.join('lsf', '%.5d.precluster' % 1))
-call(['bsub', '-W', '8:00', '-o', lsf,
-     '-R', 'rusage[mem=8000,scratch=8000]',
-     'jt', 'run', '--job', '1'])
+if not os.path.exists(lsf):
+    print('jt - PreCluster submission:')
+    print('jt - Job # %d' % 1)
+    call(['bsub', '-W', '8:00', '-o', lsf,
+         '-R', 'rusage[mem=4000,scratch=4000]',
+         'jt', 'run', '--job', '1'])
 
 # 3) Check results of 'PreCluster' step
-while True:
-    if os.path.exists(lsf):
-        f = open(lsf)
-        s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
-        if s.find('Failed') != -1:
-            failed = True
-        else:
-            failed = False
-        f.close()
-        break
-    else:
-        print('jt - PreCluster step running...')
-        time.sleep(30)
-
+failed = check_precluster(lsf)
 if failed:
     raise Exception('PreCluster step failed')
 else:
@@ -64,5 +70,5 @@ for job in joblist:
     print('jt - Job # %d' % job['jobid'])
     lsf = os.path.abspath(os.path.join('lsf', '%.5d.jtcluster' % job['jobid']))
     call(['bsub', '-W', '8:00', '-o', lsf,
-         '-R', 'rusage[mem=8000,scratch=8000]',
+         '-R', 'rusage[mem=4000,scratch=4000]',
          'jt', 'run', '--job', job['jobid']])
