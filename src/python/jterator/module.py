@@ -119,11 +119,11 @@ class Module(object):
             # Write output and errors.
             self.write_output_and_errors(stdoutdata, stderrdata)
             # Modify for nicer output to command line.
-            ignor_list = ['INFO:']
-            if any([re.search(x, stderrdata) for x in ignor_list]):
+            ignore_list = ['INFO:']
+            if any([re.search(x, stderrdata) for x in ignore_list]):
                 newstderrdata = str()
                 for line in stderrdata.split('\n'):
-                    if not any([re.search(x, line) for x in ignor_list]):
+                    if not any([re.search(x, line) for x in ignore_list]):
                         newstderrdata = newstderrdata + line
                 stderrdata = newstderrdata
             print stdoutdata
