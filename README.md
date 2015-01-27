@@ -333,19 +333,21 @@ input_args = checkinputargs(input_args)
 ## prepare output ##
 ####################
 
+data = dict()
+
 output_args = dict()
-output_tmp = dict()
 
 
 ###############################################################################
 ## jterator output
 
-### write output data to HDF5
+### write measurement data to HDF5
+writedata(handles, data)
+
+### write temporary pipeline data to HDF5
 writeoutputargs(handles, output_args)
-writeoutputtmp(handles, output_tmp)
 
 ###############################################################################
-
 ```
 
 Matlab example:     
@@ -396,19 +398,21 @@ input_args = checkinputargs(input_args);
 %% prepare output %%
 %%%%%%%%%%%%%%%%%%%%
 
+data = struct();
+
 output_args = struct();
-output_tmp = struct();
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator output
 
-%%% write output data to HDF5
-writeoutputargs(handles, output_args);
-writeoutputtmp(handles, output_tmp;
+%%% write measurement data to HDF5
+writedata(handles, data)
+
+%%% write temporary pipeline data to HDF5
+writeoutputargs(handles, output_args)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 ```
 Note that Matlab scripts are executed by **Mscript**, a customized Julia-based Matlab engine, which forwards the standard input stream and the current working directory to the Matlab session.     
 

@@ -43,15 +43,18 @@ input_args = checkinputargs(input_args);
 %% prepare output %%
 %%%%%%%%%%%%%%%%%%%%
 
+data = struct();
+
 output_args = struct();
-output_tmp = struct();
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% jterator output
 
-%%% write output data to HDF5
-writeoutputargs(handles, output_args);
-writeoutputtmp(handles, output_tmp;
+%%% write measurement data to HDF5
+writedata(handles, data)
+
+%%% write temporary pipeline data to HDF5
+writeoutputargs(handles, output_args)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
