@@ -4,6 +4,7 @@ import datetime
 import re
 from subprocess32 import (PIPE, Popen, call)
 
+
 # 1) Create joblist
 process = Popen(['jt', 'joblist'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
