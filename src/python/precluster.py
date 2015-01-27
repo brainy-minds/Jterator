@@ -5,6 +5,13 @@ import datetime
 import re
 from subprocess32 import (PIPE, Popen, call)
 
+'''
+'PreCluster submission.
+
+Joblist is created and the first job is send out to test whether the pipeline
+runs successfully.
+'''
+
 
 # 1) Create joblist
 process = Popen(['jt', 'joblist'], stdin=PIPE, stdout=PIPE, stderr=PIPE)

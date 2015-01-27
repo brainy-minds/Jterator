@@ -7,6 +7,13 @@ import datetime
 import glob
 from subprocess32 import call
 
+'''
+'JTCluster submission.
+
+After checking that the PreCluster step finished successfully, all jobs are
+send out for parallel processing.
+'''
+
 
 def check_precluster(lsf):
     while True:
