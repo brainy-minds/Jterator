@@ -25,6 +25,6 @@ st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
 lsf = os.path.abspath(os.path.join('lsf', '%.5d_%s.precluster' % (1, st)))
 if not os.path.exists(lsf):
     print('jt - PreCluster submission:')
-    call(['bsub', '-W', '8:00', '-o', lsf,
+    call(['bsub', '-W', '8:00', '-o', lsf, '-N',
          '-R', 'rusage[mem=4000,scratch=4000]',
          'jt', 'run', '--job', '1'])
