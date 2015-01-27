@@ -30,7 +30,7 @@ class JteratorCheck(object):
         if 'jobs' not in self.description:
             raise JteratorError('Pipeline file must contain the key "%s".' %
                                 'jobs')
-        if 'folder' in self.description['jobs']:
+        if 'folder' not in self.description['jobs']:
             raise JteratorError('Pipeline file must contain the key "%s" '
                                 'as a subkey of "%s"' %
                                 ('folder', 'jobs'))
@@ -87,6 +87,13 @@ class JteratorCheck(object):
         Check handles structure.
         '''
         for module in self.description['pipeline']:
+            # Check whether files exist
+            if not os.path.exists(module['module']):
+                raise JteratorError('Modules file "%s" does not exist.' %
+                                    module['module'])
+            if not os.path.exists(module['handles']):
+                raise JteratorError('Handles file "%s" does not exist.' %
+                                    module['handles'])
             handles = yaml.load(open(module['handles']).read())
             # Check required 'hdf5_filename' section
             if 'hdf5_filename' not in handles:
