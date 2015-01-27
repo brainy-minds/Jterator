@@ -30,14 +30,17 @@ class JteratorRunner(object):
         '''
         Define logs path.
         '''
-        return os.path.join(self.pipeline_folder_path, 'logs')
+        logs_folder = os.path.join(self.pipeline_folder_path, 'logs')
+        if not os.path.exists(logs_folder):
+            os.mkdir(logs_folder)
+        return logs_folder
 
     def locate_pipe_file(self):
         '''
         Get full path to pipeline descriptor file.
         '''
         # Already found.
-        if not self.pipeline_filename is None:
+        if self.pipeline_filename is not None:
             return
         # Find the pipeline description file in project folder.
         pipe_filenames = glob.glob(os.path.join(
