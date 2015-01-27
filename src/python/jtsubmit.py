@@ -39,8 +39,7 @@ print stdoutdata
 print stderrdata
 
 if process.returncode > 0 or re.search('Failed', stderrdata):
-    raise Exception("""Building joblist failed.\n
-Reason: \'%s\'""" % str(stderrdata))
+    raise Exception('\n--> Building joblist failed!')
 
 if not os.path.exists('lsf'):
     os.mkdir('lsf')
@@ -57,7 +56,7 @@ if not os.path.exists(lsf):
 # 3) Check results of 'PreCluster' step
 failed = check_precluster(lsf)
 if failed:
-    raise Exception('PreCluster step failed')
+    raise Exception('\n--> PreCluster step failed!')
 else:
     print('jt - PreCluster step successfully completed')
 
@@ -67,7 +66,7 @@ joblist_filename = glob.glob(os.path.join(os.getcwd(), '*.jobs'))[0]
 joblist = yaml.load(open(joblist_filename))
 
 for job in joblist:
-    print('jt - Job # %d' % job['jobid'])
+    print('jt - Submitting job # %d' % job['jobid'])
     lsf = os.path.abspath(os.path.join('lsf', '%.5d.jtcluster' % job['jobid']))
     call(['bsub', '-W', '8:00', '-o', lsf,
          '-R', 'rusage[mem=4000,scratch=4000]',
