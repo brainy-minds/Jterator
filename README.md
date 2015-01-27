@@ -270,7 +270,7 @@ output:
 ```
 The value of the key **'hdf5_filename'** can be left empty or set to 'None'.
 It will be filled in by *Jterator*. The program generates a temporary file
-and writes its filename into the handles descriptor file in order to make it available to the modules. 
+and adds its filename into the handles descriptor YAML string in order to make it available to the modules. If you want to debug a module, you have to fill in the filename manually!
 Note that the temporary file will currently not get killed when an error occurs to allow debugging of the module that broke. The temporary directory will be cleaned automatically once you shut down your computer.     
 There are two different types of input arguments:
 * **'hdf5_location'** is an argument that has to be produced upstream in the pipeline by another module, which saved the corresponding data into the specified location in the HDF5 file.   
@@ -484,8 +484,7 @@ Example for a python module:
 ```bash
 cat handles/myModule.handles | python modules/myModule.py
 ```
-Note that this command works only after a module has already been executed,
-since it requires the upstream pipeline data and the "hdf5_filename" key in the .handles file must have been updated by *Jterator*.      
+Note that this command works only after you have provided the correct value for the "hdf5_filename" key in the .handles file. The filename of the temporary HDF5 file is printed by *Jterator* into standard output.
 There are some issues with debugging (e.g. in python) because 'cat' keeps the standard input blocked. Working on a solution...
 
 
