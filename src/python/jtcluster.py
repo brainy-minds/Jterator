@@ -55,4 +55,4 @@ for job in joblist:
                           '%.5d_%s.jtcluster' % (job, st)))
     call(['bsub', '-W', '8:00', '-o', lsf,
          '-R', 'rusage[mem=4000,scratch=4000]',
-         'jt', 'run', '--job', str(job)])
+         'jt', 'run', '--job', int(job)])
