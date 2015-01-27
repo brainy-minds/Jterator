@@ -44,7 +44,7 @@ joblist = yaml.load(open(joblist_filename))
 print('jt - JTCluster re-submission:')
 for job in joblist.itervalues():
     if job['jobID'] in resubmit:
-        print('jt - Submitting job # %d' % job['jobID'])
+        print('jt - re-submitting job # %d' % job['jobID'])
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
         lsf = os.path.abspath(os.path.join('lsf',
