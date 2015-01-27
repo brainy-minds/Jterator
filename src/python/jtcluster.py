@@ -45,7 +45,7 @@ for job in joblist:
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
     lsf = os.path.abspath(os.path.join('lsf',
-                          '%.5d_%s.precluster' % (job['jobid'], st)))
+                          '%.5d_%s.jtcluster' % (job['jobid'], st)))
     call(['bsub', '-W', '8:00', '-o', lsf,
          '-R', 'rusage[mem=4000,scratch=4000]',
          'jt', 'run', '--job', job['jobid']])
