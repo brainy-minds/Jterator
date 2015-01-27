@@ -56,4 +56,4 @@ for job in joblist.itervalues():
                           '%.5d_%s.jtcluster' % (job['jobID'], st)))
     call(['bsub', '-W', '8:00', '-o', lsf,
          '-R', 'rusage[mem=4000,scratch=4000]',
-         'jt', 'run', '--job', job['jobID']])
+         'jt', 'run', '--job', '%s' % job['jobID']])
