@@ -16,35 +16,31 @@ send out for parallel processing.
 '''
 
 
-def check_precluster(lsf):
-    while True:
-        if os.path.exists(lsf):
-            f = open(lsf)
-            s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
-            if s.find('Failed') != -1:
-                failed = True
-            else:
-                failed = False
-            f.close()
-            break
-        else:
-            print('jt - PreCluster step running...')
-            time.sleep(30)
-    return(failed)
+def check_precluster(lsf_file):
+    if len(lsf) == 0:
+        raise Exception('\nNo PreCluster lsf files found.')
+    f = open(lsf)
+    s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+    if s.find('Failed. Error message') != -1:
+        failed = True
+    else:
+        failed = False
+    f.close()
+    return failed
 
 
 # 1) Check results of 'PreCluster' step
-lsf = glob.glob('lsf/*.precluster')
-lsf = lsf[-1]  # take the latest
+lsf_file = glob.glob('lsf/*.precluster')
+lsf_file = lsf_file[-1]  # take the latest
 
-failed = check_precluster(lsf)
+failed = check_precluster(lsf_file)
 if failed:
     raise Exception('\n--> PreCluster step failed!')
 else:
     print('jt - PreCluster step successfully completed')
 
 # 2) Run 'JTCluster' step
-print('jt - JTCluster Submission:')
+print('jt - JTCluster submission:')
 joblist_filename = glob.glob(os.path.join(os.getcwd(), '*.jobs'))[0]
 joblist = yaml.load(open(joblist_filename))
 
