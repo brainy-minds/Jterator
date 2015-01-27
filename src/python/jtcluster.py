@@ -1,17 +1,10 @@
-#!/usr/bin/env python
 import os
 import yaml
 import mmap
 import time
-import re
+import datetime
 import glob
-from subprocess32 import (PIPE, Popen, call)
-
-'''
-Script to run a Jterator pipeline in parallel mode on Brutus.
-
-Call this script from your project folder!
-'''
+from subprocess32 import call
 
 
 def check_precluster(lsf):
@@ -31,43 +24,27 @@ def check_precluster(lsf):
     return(failed)
 
 
-# 1) Create joblist
-process = Popen(['jt', 'joblist'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+# 1) Check results of 'PreCluster' step
+lsf = glob.glob('lsf/*.precluster')
+lsf = lsf[-1]  # take the latest
 
-(stdoutdata, stderrdata) = process.communicate()
-print stdoutdata
-print stderrdata
-
-if process.returncode > 0 or re.search('Failed', stderrdata):
-    raise Exception('\n--> Building joblist failed!')
-
-if not os.path.exists('lsf'):
-    os.mkdir('lsf')
-
-# 2) Run 'PreCluster'
-lsf = os.path.abspath(os.path.join('lsf', '%.5d.precluster' % 1))
-if not os.path.exists(lsf):
-    print('jt - PreCluster submission:')
-    print('jt - Job # %d' % 1)
-    call(['bsub', '-W', '8:00', '-o', lsf,
-         '-R', 'rusage[mem=4000,scratch=4000]',
-         'jt', 'run', '--job', '1'])
-
-# 3) Check results of 'PreCluster' step
 failed = check_precluster(lsf)
 if failed:
     raise Exception('\n--> PreCluster step failed!')
 else:
     print('jt - PreCluster step successfully completed')
 
-# 4) Run 'JTCluster'
+# 2) Run 'JTCluster' step
 print('jt - JTCluster Submission:')
 joblist_filename = glob.glob(os.path.join(os.getcwd(), '*.jobs'))[0]
 joblist = yaml.load(open(joblist_filename))
 
 for job in joblist:
     print('jt - Submitting job # %d' % job['jobid'])
-    lsf = os.path.abspath(os.path.join('lsf', '%.5d.jtcluster' % job['jobid']))
+    ts = time.time()
+    st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+    lsf = os.path.abspath(os.path.join('lsf',
+                          '%.5d_%s.precluster' % (job['jobid'], st)))
     call(['bsub', '-W', '8:00', '-o', lsf,
          '-R', 'rusage[mem=4000,scratch=4000]',
          'jt', 'run', '--job', job['jobid']])
