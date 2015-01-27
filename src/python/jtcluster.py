@@ -7,6 +7,7 @@ import datetime
 import glob
 from subprocess32 import call
 
+
 '''
 'JTCluster submission.
 
@@ -47,12 +48,12 @@ print('jt - JTCluster Submission:')
 joblist_filename = glob.glob(os.path.join(os.getcwd(), '*.jobs'))[0]
 joblist = yaml.load(open(joblist_filename))
 
-for job in joblist:
-    print('jt - Submitting job # %d' % job)
+for job in joblist.itervalues():
+    print('jt - Submitting job # %d' % job['jobID'])
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
     lsf = os.path.abspath(os.path.join('lsf',
-                          '%.5d_%s.jtcluster' % (job, st)))
+                          '%.5d_%s.jtcluster' % (job['jobID'], st)))
     call(['bsub', '-W', '8:00', '-o', lsf,
          '-R', 'rusage[mem=4000,scratch=4000]',
-         'jt', 'run', '--job', int(job)])
+         'jt', 'run', '--job', job['jobID']])
