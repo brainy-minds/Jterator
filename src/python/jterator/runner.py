@@ -289,7 +289,6 @@ class JteratorRunner(object):
                 # Initialize the pipeline.
                 self.create_hdf5_files(job)
                 # Run the pipeline.
-                print('\n')
                 for module in self.modules:
                     print('jt - Running module "%s" ...\n' % module.name)
                     module.set_error_output(os.path.join(self.logs_path,
@@ -307,7 +306,6 @@ class JteratorRunner(object):
             # Initialize the pipeline.
             self.create_hdf5_files(job)
             # Run the pipeline.
-            print('\n')
             for module in self.modules:
                 print('jt - Running module "%s" ...\n' % module.name)
                 module.set_error_output(os.path.join(self.logs_path,
