@@ -48,11 +48,11 @@ joblist_filename = glob.glob(os.path.join(os.getcwd(), '*.jobs'))[0]
 joblist = yaml.load(open(joblist_filename))
 
 for job in joblist:
-    print('jt - Submitting job # %d' % job['jobid'])
+    print('jt - Submitting job # %d' % job)
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
     lsf = os.path.abspath(os.path.join('lsf',
-                          '%.5d_%s.jtcluster' % (job['jobid'], st)))
+                          '%.5d_%s.jtcluster' % (job, st)))
     call(['bsub', '-W', '8:00', '-o', lsf,
          '-R', 'rusage[mem=4000,scratch=4000]',
-         'jt', 'run', '--job', job['jobid']])
+         'jt', 'run', '--job', job])
