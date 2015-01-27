@@ -278,19 +278,20 @@ class JteratorRunner(object):
         checker.check_pipeline_io()
         # Build the pipeline.
         self.build_pipeline()
-        print('jt - Log files are stored in directory "./logs"')
+        print('jt - Log files are stored in directory "%s"' % self.logs_path)
         if job_id is None:  # iterative mode
             # Create and get joblist.
             self.create_job_list()
             self.get_job_list()
             # Iterate over job items.
             for job in self.joblist.itervalues():
-                print('\njt - Processing job # %d ...' % job['jobID'])
+                print('\njt - Running job # %d ...' % job['jobID'])
                 # Initialize the pipeline.
                 self.create_hdf5_files(job)
                 # Run the pipeline.
                 print('\n')
                 for module in self.modules:
+                    print('jt - Running module "%s" ...\n' % module.name)
                     module.set_error_output(os.path.join(self.logs_path,
                                             '%s_%.5d.error' % (module.name, job['jobID'])))
                     module.set_standard_output(os.path.join(self.logs_path,
@@ -302,12 +303,13 @@ class JteratorRunner(object):
             # Get joblist (needs to be pre-created calling 'jt joblist').
             self.get_job_list()
             job = self.joblist[job_id]
-            print('\njt - processing job # %d' % job['jobID'])
+            print('\njt - Running job # %d' % job['jobID'])
             # Initialize the pipeline.
             self.create_hdf5_files(job)
             # Run the pipeline.
             print('\n')
             for module in self.modules:
+                print('jt - Running module "%s" ...\n' % module.name)
                 module.set_error_output(os.path.join(self.logs_path,
                                         '%s_%.5d.error' % (module.name, job['jobID'])))
                 module.set_standard_output(os.path.join(self.logs_path,
