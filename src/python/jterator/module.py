@@ -12,7 +12,8 @@ class Module(object):
     Note: a lot of logic is re-thought and borrowed from github:ewiger/pipette.
     '''
 
-    def __init__(self, name, module, handles, interpreter, tmp_filename):
+    def __init__(self, name, module, handles, interpreter, tmp_filename,
+                 logging_level):
         '''
         Initiate a Jterator module.
 
@@ -27,6 +28,8 @@ class Module(object):
         :interpreter:     Path to program that should execute the program file.
 
         :tmp_filename:    Filename of the temporary HDF5 file.
+
+        :logging_level:   Level of logging.
         '''
         self.name = name
         self.module = module
@@ -38,6 +41,7 @@ class Module(object):
             'output': PIPE,
             'error': PIPE,
         }
+        self.logging_level = logging_level
         self.error_log_path = None
         self.output_log_path = None
 
@@ -112,8 +116,9 @@ class Module(object):
                 input_data = ''.join(input_data)
             # Execute sub-process.
             (stdoutdata, stderrdata) = process.communicate(input=input_data)
-            # Write output and errors.
-            self.write_output_and_errors(stdoutdata, stderrdata)
+            # Write output and errors if 'logging' is requested by user
+            if self.logging_level is not None:
+                self.write_output_and_errors(stdoutdata, stderrdata)
             # Modify for nicer output to command line.
             ignore_list = ['INFO:']
             if any([re.search(x, stderrdata) for x in ignore_list]):

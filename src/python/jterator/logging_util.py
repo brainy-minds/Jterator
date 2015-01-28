@@ -33,4 +33,4 @@ def map_log_verbosity(verbosity):
     '''
     if verbosity > len(VERBOSITY_LEVELS):
         verbosity = len(VERBOSITY_LEVELS) - 1
-    return VERBOSITY_TO_LEVELS.get(verbosity, logging.NOTSET)
+    return VERBOSITY_LEVELS.get(verbosity, logging.NOTSET)

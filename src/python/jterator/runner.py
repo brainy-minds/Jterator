@@ -143,7 +143,8 @@ class JteratorRunner(object):
                             module=module_path,
                             handles=handles_path,
                             interpreter=interpreter_path,
-                            tmp_filename=self.tmp_filename)
+                            tmp_filename=self.tmp_filename,
+                            logging_level=self.logging_level)
             self.modules.append(module)
         if not self.modules:
             raise JteratorError('No module description was found in:'
