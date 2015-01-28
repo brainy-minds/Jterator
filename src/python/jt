@@ -19,6 +19,7 @@ import jterator
 from jterator.runner import JteratorRunner
 from jterator.error import JteratorError
 from jterator.checker import JteratorCheck
+from jterator.logging_util import map_log_verbosity
 
 
 LOGO = '''
@@ -42,6 +43,8 @@ class JteratorCli(object):
 
     def __init__(self, args):
         self.args = args
+        # Map verbosity level defined by number to the logging level.
+        self.logging_level = map_log_verbosity(args.verbosity)
         self.print_logo_and_prompt()
 
     def print_logo_and_prompt(self):
@@ -111,13 +114,16 @@ class ArgumentParser(argparse.ArgumentParser):
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Command-line interface for Jterator.')
-    # parser.add_argument('-i', '--interactive', action='store_true',
-    #                     default=False)
-    # parser.add_argument('-v', '--verbosity', action='count', default=1,
-    #                     help='Increase logging verbosity (-v WARN, -vv INFO, '
-    #                     '-vvv DEBUG)')
     parser.add_argument('--version', action='version',
                         version='%(prog)s ' + jterator.__version__)
+    # Note that by default the verbosity is not set == `no logging`, minimal
+    # logging level requires at least  a single '-v'. More 'v's results in
+    # greater verbosity
+    parser.add_argument('-v', '--verbosity', action='count', default=0,
+                        help='Increase logging verbosity (-v WARN, -vv INFO, '
+                        '-vvv DEBUG)')
+    # parser.add_argument('-i', '--interactive', action='store_true',
+    #                     default=False)
 
     subparsers = parser.add_subparsers()
 
@@ -153,12 +159,14 @@ if __name__ == '__main__':
 
     # Parse arguments.
     args = parser.parse_args()
+
     # On error this will print help and cause exit with explanation message.
     # is_interactive = args.interactive
 
     # Configure logging.
     # if is_interactive:
     #     set_interactive_logging(args.verbosity)
+
 
     try:
         if args.handler:
