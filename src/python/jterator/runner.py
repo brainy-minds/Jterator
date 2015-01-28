@@ -17,7 +17,8 @@ class JteratorRunner(object):
     Main component for running a Jterator pipeline.
     '''
 
-    def __init__(self, pipeline_folder_path):
+    def __init__(self, pipeline_folder_path, logging_level):
+        self.logging_level = logging_level
         self.pipeline_folder_path = os.getcwd()
         self.modules = list()
         self.__description = None
