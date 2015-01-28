@@ -31,14 +31,17 @@ class JteratorRunner(object):
         '''
         Define logs path.
         '''
-        return os.path.join(self.pipeline_folder_path, 'logs')
+        logs_folder = os.path.join(self.pipeline_folder_path, 'logs')
+        if not os.path.exists(logs_folder):
+            os.mkdir(logs_folder)
+        return logs_folder
 
     def locate_pipe_file(self):
         '''
         Get full path to pipeline descriptor file.
         '''
         # Already found.
-        if not self.pipeline_filename is None:
+        if self.pipeline_filename is not None:
             return
         # Find the pipeline description file in project folder.
         pipe_filenames = glob.glob(os.path.join(
@@ -276,37 +279,40 @@ class JteratorRunner(object):
         checker.check_pipeline_io()
         # Build the pipeline.
         self.build_pipeline()
-        print('jt - Log files are stored in directory "./logs"')
+        print('jt - Log files are stored in directory "%s"' % self.logs_path)
         if job_id is None:  # iterative mode
             # Create and get joblist.
             self.create_job_list()
             self.get_job_list()
             # Iterate over job items.
             for job in self.joblist.itervalues():
-                print('\njt - Processing job # %d ...' % job['jobID'])
+                print('\njt - Running job # %d ...' % job['jobID'])
                 # Initialize the pipeline.
                 self.create_hdf5_files(job)
                 # Run the pipeline.
-                print('\n')
                 for module in self.modules:
+                    print('jt - Running module "%s" ...\n' % module.name)
                     module.set_error_output(os.path.join(self.logs_path,
                                             '%s_%.5d.error' % (module.name, job['jobID'])))
                     module.set_standard_output(os.path.join(self.logs_path,
                                                '%s_%.5d.output' % (module.name, job['jobID'])))
                     module.run()
-                os.remove(self.tmp_filename)  # necessary for python modules??
+                # Delete temporary pipeline file
+                os.remove(self.tmp_filename)
         else:  # parallel mode
             # Get joblist (needs to be pre-created calling 'jt joblist').
             self.get_job_list()
             job = self.joblist[job_id]
-            print('\njt - processing job # %d' % job['jobID'])
+            print('\njt - Running job # %d' % job['jobID'])
             # Initialize the pipeline.
             self.create_hdf5_files(job)
             # Run the pipeline.
-            print('\n')
             for module in self.modules:
+                print('jt - Running module "%s" ...\n' % module.name)
                 module.set_error_output(os.path.join(self.logs_path,
                                         '%s_%.5d.error' % (module.name, job['jobID'])))
                 module.set_standard_output(os.path.join(self.logs_path,
                                            '%s_%.5d.output' % (module.name, job['jobID'])))
                 module.run()
+            # Delete temporary pipeline file
+            os.remove(self.tmp_filename)

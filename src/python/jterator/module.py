@@ -98,7 +98,6 @@ class Module(object):
             if self.streams['input'] == PIPE:
                 input_data = open(self.handles).readlines()
                 # We have to provide the temporary filename to the modules.
-                # Let's write it into handles and save the changes to the file.
                 i = -1
                 for line in input_data:
                     i = i + 1
@@ -109,11 +108,8 @@ class Module(object):
                         hdf5_key['hdf5_filename'] = self.tmp_filename
                         input_data[i] = yaml.dump(hdf5_key,
                                                   default_flow_style=False)
-                # Write the new handles file.
+                # Create the new handles string.
                 input_data = ''.join(input_data)
-                new_handles = open(self.handles, 'w')
-                new_handles.write(input_data)
-                new_handles.close()
             # Execute sub-process.
             (stdoutdata, stderrdata) = process.communicate(input=input_data)
             # Write output and errors.

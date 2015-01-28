@@ -58,7 +58,7 @@ class JteratorCli(object):
         if os.path.exists(self.args.skel):
             repo_content = os.listdir(self.args.skel)
             for folder in repo_content:
-                if folder in ['skeleton', 'src', 'tests']:
+                if folder in ['skeleton']:
                     folder_path = os.path.join(self.args.skel, folder)
                     shutil.copytree(folder_path, self.args.path)
                     print(folder)

@@ -1,13 +1,11 @@
-library(yaml)
-library(rhdf5)
-
-
 #' Jterator API. 
 #' Reading "handles" stream from YAML file.
 #'
 #' @param handles_stream YAML stream from standard input.
 #' @return List of module input/output information.
 gethandles <- function(handles_stream) {
+
+    require(yaml)
 
     mfilename <- "gethandles"
     handles <- yaml.load_file(handles_stream)
@@ -26,6 +24,8 @@ gethandles <- function(handles_stream) {
 #' @param handles List of module input/output information.
 #' @return List of input arguments read from HDF5 file.
 readinputargs <- function(handles) {
+
+    require(rhdf5)
 
     mfilename <- "readinputargs"
 
@@ -105,13 +105,14 @@ checkinputargs <- function(input_args) {
 #' @param List of data output arguments that should be written to HDF5 file.
 writedata <- function(handles, data) {
 
+    require(rhdf5)
+
     mfilename <- "writedata"
 
     hdf5_filename <- h5read(handles$hdf5_filename, '/datafile')
 
     for (key in names(data)) {
       hdf5_location <- key
-      h5createGroup(hdf5_filename, dirname(hdf5_location))
       h5createDataset(hdf5_filename, hdf5_location, 
                       dims = dim(data[[key]]),
                       storage.mode = storage.mode(data[[key]]))
@@ -127,6 +128,8 @@ writedata <- function(handles, data) {
 #' @param handles List of module input/output information.
 #' @param List of temporary pipeline output arguments that should be written to HDF5 file.
 writeoutputargs <- function(handles, output_args) {
+
+    require(rhdf5)
 
     mfilename <- "writeoutputargs"
 

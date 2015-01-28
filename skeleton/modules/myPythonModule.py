@@ -45,15 +45,19 @@ input_args = checkinputargs(input_args)
 ## prepare output ##
 ####################
 
+data = dict()
+
 output_args = dict()
-output_tmp = dict()
 
 
 ###############################################################################
 ## jterator output
 
-### write output data to HDF5
+### write measurement data to HDF5
+writedata(handles, data)
+
+### write temporary pipeline data to HDF5
 writeoutputargs(handles, output_args)
-writeoutputtmp(handles, output_tmp)
 
 ###############################################################################
+

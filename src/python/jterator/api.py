@@ -7,8 +7,6 @@ import urllib
 import webbrowser
 from jterator.error import JteratorError
 
-# from IPython.core.debugger import Tracer
-
 
 def gethandles(handles_stream):
     '''
@@ -136,6 +134,8 @@ def writeoutputargs(handles, output_args):
 
 
 def figure2browser(path):
+    '''
+    Creating a url for a html file and opening it in the default browser.
+    '''
     url = urlparse.urljoin('file:', urllib.pathname2url(path))
     webbrowser.get("open %s").open(url)
-
