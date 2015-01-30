@@ -62,7 +62,7 @@ class Module(object):
         else:
             return ['/usr/bin/env', self.interpreter, self.module]
 
-    def get_error_message(self, process, input_data):
+    def get_error_message(self, process, input_data, stdoutdata, stderrdata):
         message = ('Execution of module %s failed with error ' +
                    '(Return code: %s).') % \
                   (str(self), process.returncode)
@@ -71,11 +71,9 @@ class Module(object):
                 message += '\n' + '---[ Handles input ]---' \
                     .ljust(80, '-') + '\n' + input_data
             message += '\n' + '---[ Standard output ]---' \
-                .ljust(80, '-') + '\n' + \
-                open(self.output_log_path).read()
+                .ljust(80, '-') + '\n' + stdoutdata
             message += '\n' + '---[ Error output ]---' \
-                .ljust(80, '-') + '\n' + \
-                open(self.error_log_path).read()
+                .ljust(80, '-') + '\n' + stderrdata
         return message
 
     def write_output_and_errors(self, stdoutdata, stderrdata):
@@ -134,7 +132,7 @@ class Module(object):
             # Take care of any errors during the execution.
             if process.returncode > 0 or re.search('Error', stderrdata):
                 raise JteratorError(self.get_error_message(process,
-                                    input_data))
+                                    input_data, stdoutdata, stderrdata))
         except ValueError as error:
             raise JteratorError('Failed running \'%s\'. Reason: \'%s\'' %
                                 (command, str(error)))
