@@ -18,7 +18,7 @@ function input_args = readinputargs(handles)
         field = handles.input.(key);
 
         if isfield(field, 'hdf5_location')
-            input_args.(key).variable = h5varget(fid, field.hdf5_location);
+            input_args.(key).variable = h5varget(fid, field.hdf5_location)';
             fprintf(sprintf('jt -- %s: loaded dataset ''%s'' from HDF5 location: "%s"\n', ...
                     mfilename, key, field.hdf5_location))
         elseif isfield(field, 'parameter')

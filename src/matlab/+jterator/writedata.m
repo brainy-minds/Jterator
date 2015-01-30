@@ -21,8 +21,8 @@ function writedata(handles, data)
         hdf5_location = keys{key};
         value = data.(keys{key});
         h5datacreate(fid, hdf5_location, ...
-                     'type', class(value), 'size', size(value));
-        h5varput(fid, hdf5_location, value);
+                     'type', class(value), 'size', size(value)');
+        h5varput(fid, hdf5_location, value');
         fprintf(sprintf('jt -- %s: wrote dataset ''%s'' to HDF5 location: "%s"\n', ...
                         mfilename, keys{key}, hdf5_location));
     end

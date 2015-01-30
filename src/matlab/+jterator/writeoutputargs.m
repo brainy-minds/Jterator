@@ -22,8 +22,8 @@ function writeoutputargs(handles, output_args)
         hdf5_location = handles.output.(keys{key}).hdf5_location;
         value = output_args.(keys{key});
         h5datacreate(fid, hdf5_location, ...
-                     'type', class(value), 'size', size(value));
-        h5varput(fid, hdf5_location, value);
+                     'type', class(value), 'size', size(value)');
+        h5varput(fid, hdf5_location, value');
         fprintf(sprintf('jt -- %s: wrote tmp dataset ''%s'' to HDF5 location: "%s"\n', ...
                     mfilename, keys{key}, hdf5_location));
     end

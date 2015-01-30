@@ -9,9 +9,9 @@ using PyCall
 
 export gethandles, readinputargs, checkinputargs, writeoutputargs, writedata, figure2browser
 
-###################################################################
-## Note: the HDF5 package doesn't handle dimensions correctly!!! ##
-###################################################################
+#####################################################################
+## Note: the HDF5 package doesn't handle dimensions 'correctly'!!! ##
+#####################################################################
 
 function gethandles(handles_stream)
     ## Reading "handles" from YAML file.
@@ -47,7 +47,7 @@ function readinputargs(handles)
             if haskey(field, "hdf5_location")
                 input_args[key]["variable"] = read(fid, field["hdf5_location"])
                 if ismatch(r"Array", string(typeof(input_args[key]["variable"])))
-                    input_args[key]["variable"] = input_args[key]["variable"]'
+                    input_args[key]["variable"] = input_args[key]["variable"]
                 end
                 @printf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n", mfilename, key, field["hdf5_location"])
             elseif haskey(field, "parameter")
@@ -117,7 +117,7 @@ function writedata(handles, data)
         for key in keys(data)
             hdf5_location = keys(key)
             if ismatch(r"Array", string(typeof(data[key])))
-                write(hdf5_data, hdf5_location, data[key]')
+                write(hdf5_data, hdf5_location, data[key])
             else
                 write(hdf5_data, hdf5_location, data[key])
             end
@@ -143,7 +143,7 @@ function writeoutputargs(handles, output_args)
         for key in keys(output_args)
             hdf5_location = handles["output"][key]["hdf5_location"]
             if ismatch(r"Array", string(typeof(output_args[key])))
-                write(hdf5_tmp, hdf5_location, output_args[key]')
+                write(hdf5_tmp, hdf5_location, output_args[key])
             else
                 write(hdf5_tmp, hdf5_location, output_args[key])
             end
