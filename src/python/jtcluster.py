@@ -17,9 +17,9 @@ send out for parallel processing.
 
 
 def check_precluster(lsf_file):
-    if len(lsf) == 0:
+    if len(lsf_file) == 0:
         raise Exception('\nNo PreCluster lsf files found.')
-    f = open(lsf)
+    f = open(lsf_file)
     s = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
     if s.find('Failed. Error message') != -1:
         failed = True
