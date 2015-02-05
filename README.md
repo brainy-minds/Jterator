@@ -152,7 +152,7 @@ To this end, include the following lines in your *.bash_profile* file:
     ```bash
     export MATLABPATH=$MATLABPATH:$HOME/jterator/src/matlab
     ```
-No you should be ready to go.   
+Now you should be ready to go.   
 
 
 Pipeline
