@@ -422,7 +422,7 @@ Getting started
 To *download* Jterator clone this repository:
 
 ```bash
-git clone git@github.com:HackerMD/Jterator.git ~/jterator
+git clone https://github.com/HackerMD/Jterator.git ~/jterator
 ```
 
 To *install* the Jterator command line interface, do
