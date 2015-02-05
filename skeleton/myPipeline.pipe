@@ -19,9 +19,12 @@ project:
 # Define how jobs are created and processed:
 jobs:
 
-    folder: 
+    folder: path/to/myFolder
     pattern: 
-    mode: jterate  # options: "jterate", "parallel"
+        - name: myImage
+          expression: .*\.png
+        - name: myOtherImage
+          expression: .*\.tiff?
 
 
 # Define path to modules (executable files) and handles (YAML files)
