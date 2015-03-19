@@ -118,20 +118,22 @@ class ArgumentParser(argparse.ArgumentParser):
 if __name__ == '__main__':
     parser = ArgumentParser(description='Command-line interface for Jterator.')
     parser.add_argument('--version', action='version',
-                        version='%(prog)s ' + jterator.__version__)
+                        version='%(prog)s ' + jterator.__version__,
+                        help='Display version')
     # Note that by default the verbosity is not set == `no logging`, minimal
     # logging level requires at least  a single '-v'. More 'v's results in
     # greater verbosity
     parser.add_argument('-v', '--verbosity', action='count', default=0,
-                        help='Increase logging verbosity (-v WARN, -vv INFO, '
-                        '-vvv DEBUG)')
+                        help='increase logging verbosity (-v WARN, -vv INFO \
+                                                          -vvv DEBUG)')
     # parser.add_argument('-i', '--interactive', action='store_true',
     #                     default=False)
 
     subparsers = parser.add_subparsers()
 
     # 'jt create' parser
-    create_command_parser = subparsers.add_parser('create')
+    create_command_parser = subparsers.add_parser('create',
+                                                  help='create a new project based on a "skeleton"')
     create_command_parser.add_argument('path', default=os.getcwd(),
                                        nargs='?', type=str)
     create_command_parser.add_argument('--skel', type=str)
@@ -139,21 +141,24 @@ if __name__ == '__main__':
         JteratorCli.process_commands, subparser=create_command_parser))
 
     # 'jt joblist' parser
-    joblist_command_parser = subparsers.add_parser('joblist')
+    joblist_command_parser = subparsers.add_parser('joblist',
+                                                   help='create a list of jobs for parallel computing')
     joblist_command_parser.add_argument('path', default=os.getcwd(),
                                         nargs='?', type=str)
     joblist_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=joblist_command_parser))
 
     # 'jt check' parser
-    check_command_parser = subparsers.add_parser('check')
+    check_command_parser = subparsers.add_parser('check',
+                                                 help='check pipeline and handles descriptor files')
     check_command_parser.add_argument('path', default=os.getcwd(),
                                       nargs='?', type=str)
     check_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=check_command_parser))
 
     # 'jt run' parser
-    run_command_parser = subparsers.add_parser('run')
+    run_command_parser = subparsers.add_parser('run',
+                                               help='run pipeline')
     run_command_parser.add_argument('path', default=os.getcwd(),
                                     nargs='?', type=str)
     run_command_parser.add_argument('--job', default=None, type=int)

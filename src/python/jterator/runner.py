@@ -8,6 +8,7 @@ import tempfile
 from jterator.error import JteratorError
 from jterator.checker import JteratorCheck
 from jterator.module import Module
+import jterator.utils as util
 
 # from IPython.core.debugger import Tracer
 
@@ -109,10 +110,14 @@ class JteratorRunner(object):
         Build pipeline in modular form.
         '''
         # Interpret module description.
+        libpath = self.description['project']['libpath']
         for module_description in self.description['pipeline']:
             # Get path to module (executable file containing actual code)
-            module_path = os.path.join(self.pipeline_folder_path,
-                                       module_description['module'])
+            module_path = module_description['module']
+            module_path = util.complete_yaml_path(module_path, libpath)
+            if not os.path.isabs(module_path):
+                module_path = os.path.join(self.pipeline_folder_path,
+                                           module_path)
             # Does module file exist?
             if not os.path.exists(module_path):
                 raise JteratorError('Missing module: %s' %

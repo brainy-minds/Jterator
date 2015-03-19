@@ -1,8 +1,10 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 import os
 import yaml
 from jterator.error import JteratorError
-
-# from IPython.core.debugger import Tracer
+import jterator.utils as util
 
 
 class JteratorCheck(object):
@@ -26,6 +28,11 @@ class JteratorCheck(object):
             raise JteratorError('Pipeline file must contain the key "%s" '
                                 'as a subkey of "%s"' %
                                 ('name', 'project'))
+        if 'libpath' in self.description['project']:
+            if not os.path.exists(self.description['project']['libpath']):
+                raise JteratorError('The path defined by "%s" in your '
+                                    'pipeline description is not valid.'
+                                    % 'libpath')
         # Check required 'jobs' section
         if 'jobs' not in self.description:
             raise JteratorError('Pipeline file must contain the key "%s".' %
@@ -80,7 +87,7 @@ class JteratorCheck(object):
                                     'in the pipeline descriptor file '
                                     'needs to contain the key "%s"' %
                                     'interpreter')
-        print('jt - Pipeline check successful!')
+        print('🍺   Pipeline check successful!')
 
     def check_handles(self):
         '''
@@ -88,9 +95,13 @@ class JteratorCheck(object):
         '''
         for module in self.description['pipeline']:
             # Check whether files exist
-            if not os.path.exists(module['module']):
-                raise JteratorError('Modules file "%s" does not exist.' %
-                                    module['module'])
+            module_path = module['module']
+            libpath = self.description['project']['libpath']
+            module_path = util.complete_yaml_path(module_path, libpath)
+            # module_path = os.path.expanduser(module_path)
+            if not os.path.exists(module_path):
+                raise JteratorError('Module file "%s" does not exist.' %
+                                    module_path)
             if not os.path.exists(module['handles']):
                 raise JteratorError('Handles file "%s" does not exist.' %
                                     module['handles'])
@@ -107,7 +118,7 @@ class JteratorCheck(object):
             if 'output' not in handles:
                 raise JteratorError('Handles file must contain the key "%s".' %
                                     'output')
-        print('jt - Handles check successful!')
+        print('🍺   Handles check successful!')
 
     def check_pipeline_io(self):
         '''
@@ -137,4 +148,4 @@ class JteratorCheck(object):
                     raise JteratorError('Input "%s" of module "%s" is not '
                                         'created upstream in the pipeline.' %
                                         (input_arg, module['name']))
-        print('jt - Input/output check successful!')
+        print('🍺   Input/output check successful!')
