@@ -67,8 +67,8 @@ class JteratorCli(object):
         '''
         Create a list of jobs for parallel computing.
         '''
-        jt = JteratorRunner(pipeline_folder_path=self.args.path,
-                            logging_level=self.logging_level)
+        jt = JteratorRunner(logging_level=self.logging_level,
+                            pipeline_folder_path=self.args.path)
         jt.description
         jt.create_job_list()
 
@@ -76,16 +76,16 @@ class JteratorCli(object):
         '''
         Run Jterator pipe if it is found in the current working folder.
         '''
-        jt = JteratorRunner(pipeline_folder_path=self.args.path,
-                            logging_level=self.logging_level)
+        jt = JteratorRunner(logging_level=self.logging_level,
+                            pipeline_folder_path=self.args.path)
         jt.run_pipeline(self.args.job)
 
     def check(self):
         '''
         Check pipeline and handles descriptor files.
         '''
-        jt = JteratorRunner(pipeline_folder_path=self.args.path,
-                            logging_level=self.logging_level)
+        jt = JteratorRunner(logging_level=self.logging_level,
+                            pipeline_folder_path=self.args.path)
         jt.description
         jt.init_hdf5_files()
         checker = JteratorCheck(jt.description, jt.tmp_filename)
