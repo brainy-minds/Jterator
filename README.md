@@ -1,19 +1,15 @@
-Jterator
-========
+# Jterator #
 
 [![Build Status](https://travis-ci.org/HackerMD/Jterator.svg?branch=master)](https://travis-ci.org/HackerMD/Jterator)
 
-A minimalistic pipeline engine for scientific computing. It is designed to be flexible, but at the same time handy to work with. Jterator is a command-line tool for Unix systems. It comes without a GUI, but rather makes use of easily readable and modifiable YAML files. Figures can either be saved as PDF files or displayed in the browser using d3 technology.
+A minimalistic pipeline engine for scientific computing. It is designed to be flexible and easily customizable, while being at the same time handy to work with. Jterator is a command-line tool for Unix systems. The program itself is written in Python, but it can process code in different languages. It comes without a GUI, but rather makes use easily readable and modifiable YAML files to define projects and d3 technology to visualize figures in a web browser. This keeps the list of dependencies short and makes it easy to develop new workflows in Jterator.
 
 
-External libraries
-------------------
+## Dependencies ##
 
 Jterator depends on the following languages and external libraries:
 
-* **Python**   
-    
-    https://www.python.org/downloads/   
+* **Python**      
 
     *Jterator* is written in python. For a full list of python package dependencies see setup.py.   
 
@@ -26,34 +22,28 @@ Jterator depends on the following languages and external libraries:
 * **HDF5**
 
     OSX:
-    install via homebrew (https://github.com/Homebrew/homebrew-science)
-
-    ```bash
+    ```{bash}
     brew tap homebrew/science; brew install hdf5
     ```
 
     Linux:
-
-    ```bash
+    ```{bash}
     apt-get -u install hdf5-tools
     ```
 
     Note for Brutus users:      
     Import HDF5 module
-    ```
+    ```{bash}
     module load hdf5
     ```
 
-optional
---------
+### optional ###
 
-* **Julia** (required for Mscript, i.e. execution of Matlab modules)
+* **Julia** (required for Mscript in order to execute Matlab modules)
 
-    http://julialang.org/downloads/
+    Download [here](http://julialang.org/downloads/) or install form source:
 
-    To install from source:
-
-    ```bash
+    ```{bash}
     git clone git://github.com/JuliaLang/julia.git ~/julia
     cd ~/julia
     git checkout release-0.3
@@ -63,24 +53,23 @@ optional
     Note for Brutus users:  
     You need to install Julia in your home directory.
     To this end, create a 'Make.user' file and add the following lines 
-    ```
+    ```{bash}
     OPENBLAS_NO_AVX=1
     OPENBLAS_NO_AVX2=1
     OPENBLAS_DYNAMIC_ARCH=1
     ```
 * **R**     
     
-    http://www.r-project.org
+    Download [here](http://www.r-project.org).
 
     Note for Brutus users:  
     Import R module (use version 3.1.2) 
-    ```
+    ```{bash}
     module load new openblas/0.2.8_seq r/3.1.2
     ```
 
 
-APIs
-----
+## APIs ##
 
 Jterator is written in Python, but can pipe custom code in different languages. APIs for input/output handling are currently implemented in the following languages: 
 * Python
@@ -92,13 +81,12 @@ APIs depend on the following packages:
 * Python 
     - *PyYAML*    
     - *h5py*  
-    - *matplotlib*
-    - *mpld3*   
+    - *matplotlib* and *mpld3* for plotting     
     Note for Brutus users:  
     Install packages as follows 
-    ```
-    pip install --user [package]
-    ```      
+        ```{bash}
+        pip install --user [package]
+        ```      
 * Julia     
     - *YAML*    
     - *HDF5*    
@@ -107,15 +95,18 @@ APIs depend on the following packages:
         ```
         checkcmd in (:wget, :curl, :fetch)
         ```
+    Mscript additionally requires   
     - *MATLAB*  
-    - *PyCall*
-    - *PyPlot*
-* Matlab (already provided)
-    - *mhdf5tools* (includes important extensions!)
-    - *yamlmatlab*  
+* Matlab    
+    - *yamlmatlab*
+    - *mhdf5tools*        
+    These packages are already provided and include important extensions.
 * R     
     - *yaml*    
     - *rhdf5*  
+
+
+### Functions ###
 
 The following functions are available for modules in all above listed languages: 
 
@@ -131,32 +122,33 @@ Ultimately, we will provide the APIs via packages for each language using the la
 To this end, include the following lines in your *.bash_profile* file:   
 - Python    
 
-    ```bash
+    ```{bash}
     export PYTHONPATH=$PYTHONPATH:$HOME/jterator/src/python
-    ```
-
-- R     
-
-    ```bash
-    export R_LIBS=$R_LIBS:$HOME/jterator/src/r/jterator
     ```
 
 - Julia     
 
-    ```bash
+    ```{bash}
     export JULIA_LOAD_PATH=$JULIA_LOAD_PATH:$HOME/jterator/src/julia/jterator
     ```
 
 - Matlab    
 
-    ```bash
+    ```{bash}
     export MATLABPATH=$MATLABPATH:$HOME/jterator/src/matlab
     ```
-Now you should be ready to go.   
+
+- R     
+
+    ```{bash}
+    export R_LIBS=$R_LIBS:$HOME/jterator/src/r/jterator
+    ```
+
+Now you should be ready to go...  
 
 
-Pipeline
-========
+## Pipeline ##
+
 
 Think of your pipeline as a sequence of connected modules (a linked list). 
 The sequence and structure of your pipeline is defined in a YAML pipeline descriptor file. The input/output settings for each module are provided by additional YAML handles descriptor files. Each module represents a program that reads YAML from standard input (STDIN) and stores outputs in HDF5 files.
@@ -166,8 +158,7 @@ There are two different HDF5 files:
 Thereby, measurement data, which you would ultimately like to obtain, and pipeline data, which are only passed form module to module, are completely separated from each other. Note that the temporary pipeline file and with it all its data will be deleted after successful completion of the pipeline! However, the file will remain in case of an error that breaks your pipeline, so that you are able to debug the corresponding module without having to re-run the whole pipeline allover again. The file will however get deleted automatically once you shut down or restart your computer.     
 
 
-Project layout 
---------------
+### Project layout  ###
 
 Each project folder has the following layout on the disk:
 
@@ -184,12 +175,11 @@ These folders are created by *Jterator* in the project directory once you run th
 So far, *Jterator* allows only very simplistic type of work-flow -  *pipeline* (somewhat similar to a UNIX-world pipeline). Description of such work-flow must be put sibling to the folder structure described about, i.e. inside the project folder. Recognizable file name must be **'[ProjectName].pipe'**. Description is a YAML format. 
 
 
-Pipeline descriptor file
-------------------------
+### Pipeline descriptor file ###
 
 Describe your pipeline in the .pipe (YAML) descriptor file:
 
-```yaml
+```{yaml}
 project:
 
     name: myJteratorProject
@@ -231,13 +221,12 @@ Also note that the working directory is by default the project folder. You can p
 The names of the **'jobs'** will be written into the temporary pipeline data HDF5 file in order to make them available for modules.     
 
 
-Handles descriptor files
-------------------------
+## Handles descriptor files ##
 
 Describe your modules in the .handles (YAML) descriptor files:  
 Python example:          
 
-```yaml
+```{yaml}
 hdf5_filename: None
 
 input:
@@ -278,14 +267,13 @@ There are two different types of input arguments:
 Note that you can provide the optional **'class'** key, which asserts the datatype of the passed argument. It is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R.
 
 
-Modules
--------
+## Modules ##
 
 The Jterator APIs are written in way that enables more or less the same syntax in each language.
 
 Python example:     
 
-```python
+```{python}
 from jterator.api import *
 import os
 import sys
@@ -352,7 +340,7 @@ writeoutputargs(handles, output_args)
 
 Matlab example:     
 
-```matlab
+```{matlab}
 import jterator.*;
 
 
@@ -416,24 +404,24 @@ writeoutputargs(handles, output_args)
 ```
 Note that Matlab scripts are executed by **Mscript**, a customized Julia-based Matlab engine, which forwards the standard input stream and the current working directory to the Matlab session.     
 
-Getting started
----------------
+
+## Getting started ##
 
 To *download* Jterator clone this repository:
 
-```bash
+```{bash}
 git clone https://github.com/HackerMD/Jterator.git ~/jterator
 ```
 
 To *install* the Jterator command line interface, do
-```bash
+```{bash}
 cd ~/jterator
 pip install -e .
 ```
 
 Alternatively, you can add the Jterator directory to your executable path:
 
-```bash
+```{bash}
 export PATH=$PATH:~/jterator/src/python
 ```
 To add the executable path permanently, include this command in your .bash_profile file.
@@ -441,59 +429,73 @@ To add the executable path permanently, include this command in your .bash_profi
 
 To *use* Mscript - a custom tool based on the Julia Matlab interface (https://github.com/JuliaLang/MATLAB.jl) in order to transform Matlab scripts into real executables - create a softlink in a directory on your PATH (e.g. /usr/bin):
 
-```bash
+```{bash}
 cd /usr/bin
 sudo ln -s ~/jterator/src/julia/mscript.jl Mscript
 ```
 
+## How to ##
+
+The command for Jterator is `jt`.
+
+To display the help message, do
+```{bash}
+jt -h
+```
+
+To display the help message for subroutines (e.g. 'run'), do
+```{bash}
+jt run -h
+```
+
 To *create* a new Jterator project, do:
 
-```bash
-jt create [/my/new/project/folder] --skel [/repository/containing/jterator/skeleton]
+```{bash}
+jt create --skel [skeleton_dir] [project_dir]
 ```
 
 This will create your project folder and include skeletons for YAML descriptor files and modules.
 Now you can place your custom code into the module skeletons and define the pipeline in the .pipe file as well as input/output arguments in the corresponding .handles files. And shabam! you are ready to go...
 
-To *check* your existing project (YAML descriptor files), do:
 
-```bash
-jt check [/my/jterator/project/folder]
+To *check* your YAML descriptor files (.pipe and .handles), do:
+
+```{bash}
+jt check [project_dir]
 ```
 
-To *run* your pipeline in iterative model, do:
+To *run* your pipeline in iterative mode, do:
 
-```bash
-jt run [/my/jterator/project/folder]
+```{bash}
+jt run [project_dir]
 ```
 
 To create a *joblist* for parallel computing, do:
 
-```bash
-jt joblist [/my/jterator/project/folder]
+```{bash}
+jt joblist [project_dir]
 ```
 
 To *run* individual jobs (parallel mode), do:
 
-```bash
-jt run [/my/jterator/project/folder] --job [jobID]
+```{bash}
+jt run --job [jobID] [project_dir]
 ```
 
 To *run* a module individually for debugging purposes, do:
 
-```bash
+```{bash}
 cat [handles_name] | [interpreter] [modules_name]
 ```
 Example for a python module:
-```bash
+```{bash}
 cat handles/myModule.handles | python modules/myModule.py
 ```
-Note that this command works only after you have provided the correct value for the "hdf5_filename" key in the .handles file. The filename of the temporary HDF5 file is printed by *Jterator* into standard output.
+Note that this command works only after you have provided the correct value for the "hdf5_filename" key in the .handles file. 
 There are some issues with debugging (e.g. in python) because 'cat' keeps the standard input blocked. Working on a solution...
 
 
-Developing Jterator
-===================
+## Developing Jterator ##
 
 Modules can be written in any programming language that provides libraries for for *YAML* and *HDF5* file formats.
 You are welcome to further extent the list of languages by writing additional APIs.
@@ -504,7 +506,7 @@ Nose tests
 
 We use nose framework to achieve code coverage with unit tests. In order to run tests, do
 
-```bash
+```{bash}
 cd tests && nosetests
 ```
 
