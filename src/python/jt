@@ -65,7 +65,7 @@ class JteratorCli(object):
 
     def joblist(self):
         '''
-        Create a list of jobs for parallel computing.
+        Create a list of jobs in yaml format for parallel computing.
         '''
         jt = JteratorRunner(logging_level=self.logging_level,
                             pipeline_folder_path=self.args.path)
@@ -74,7 +74,7 @@ class JteratorCli(object):
 
     def run(self):
         '''
-        Run Jterator pipe if it is found in the current working folder.
+        Run pipeline for the defined project (default: current working dir).
         '''
         jt = JteratorRunner(logging_level=self.logging_level,
                             pipeline_folder_path=self.args.path)
@@ -131,37 +131,44 @@ if __name__ == '__main__':
 
     subparsers = parser.add_subparsers()
 
-    # 'jt create' parser
+    # 'jt create' subparser
     create_command_parser = subparsers.add_parser('create',
-                                                  help='create a new project based on a "skeleton"')
+                                                  help='create a new project based on a skeleton')
     create_command_parser.add_argument('path', default=os.getcwd(),
-                                       nargs='?', type=str)
-    create_command_parser.add_argument('--skel', type=str)
+                                       nargs='?', type=str,
+                                       help='project directory')
+    create_command_parser.add_argument('--skel', type=str,
+                                       help='directory containing project skeleton')
     create_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=create_command_parser))
 
-    # 'jt joblist' parser
+    # 'jt joblist' subparser
     joblist_command_parser = subparsers.add_parser('joblist',
                                                    help='create a list of jobs for parallel computing')
     joblist_command_parser.add_argument('path', default=os.getcwd(),
-                                        nargs='?', type=str)
+                                        nargs='?', type=str,
+                                        help='project directory')
     joblist_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=joblist_command_parser))
 
-    # 'jt check' parser
+    # 'jt check' subparser
     check_command_parser = subparsers.add_parser('check',
                                                  help='check pipeline and handles descriptor files')
     check_command_parser.add_argument('path', default=os.getcwd(),
-                                      nargs='?', type=str)
+                                      nargs='?', type=str,
+                                      help='project directory')
     check_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=check_command_parser))
 
-    # 'jt run' parser
+    # 'jt run' subparser
     run_command_parser = subparsers.add_parser('run',
                                                help='run pipeline')
     run_command_parser.add_argument('path', default=os.getcwd(),
-                                    nargs='?', type=str)
-    run_command_parser.add_argument('--job', default=None, type=int)
+                                    nargs='?', type=str,
+                                    help='project directory')
+    run_command_parser.add_argument('--job', default=None, type=int,
+                                    dest='jobid',
+                                    help='run individual job')
     run_command_parser.set_defaults(handler=partial(
         JteratorCli.process_commands, subparser=run_command_parser))
 
@@ -174,7 +181,6 @@ if __name__ == '__main__':
     # Configure logging.
     # if is_interactive:
     #     set_interactive_logging(args.verbosity)
-
 
     try:
         if args.handler:
