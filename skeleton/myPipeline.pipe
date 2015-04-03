@@ -12,8 +12,7 @@
 project:
 
   name: skeleton
-  description: skeleton pipeline for initiation of jterator project
-  version: 0.0.1
+  libpath: path/to/myRepository
 
 
 # Define how jobs are created and processed:
@@ -32,17 +31,17 @@ jobs:
 pipeline:
 
   - name: myMatlabModule
-    module: modules/myMatlabModule.m
+    module: "{libpath}/modules/myMatlabModule.m"
     handles: handles/myMatlabModule.handles
     interpreter: Mscript
 
   - name: myPythonModule
-    module: modules/myPythonModule.py
+    module: some/other/path/modules/myPythonModule.py
     handles: handles/myPythonModule.handles
     interpreter: python
 
   - name: myRModule
-    module: modules/myRModule.R
+    module: "{libpath}/modules/myRModule.R"
     handles: handles/myRModule.handles
     interpreter: Rscript
 
