@@ -151,11 +151,13 @@ Now you should be ready to go...
 
 
 Think of your pipeline as a sequence of connected modules (a linked list). 
-The sequence and structure of your pipeline is defined in a YAML pipeline descriptor file. The input/output settings for each module are provided by additional YAML handles descriptor files. Each module represents a program that reads YAML from standard input (STDIN) and stores outputs in HDF5 files.
-There are two different HDF5 files:             
-    - .data file for measurement data: located in your project directory      
-    - .tmp file for temporary pipeline data: located in a temporary directory  
-Thereby, measurement data, which you would ultimately like to obtain, and pipeline data, which are only passed form module to module, are completely separated from each other. Note that the temporary pipeline file and with it all its data will be deleted after successful completion of the pipeline! However, the file will remain in case of an error that breaks your pipeline, so that you are able to debug the corresponding module without having to re-run the whole pipeline allover again. The file will however get deleted automatically once you shut down or restart your computer.     
+The sequence and structure of your pipeline is defined in a YAML **pipeline descriptor file**. The input/output settings for each module are provided by additional YAML **handles descriptor files**.
+
+Each module represents a program that reads YAML from standard input (STDIN) and stores output in HDF5 files.
+There are two different HDF5 files that handle different kind of data:    
+    - *.data* file for **measurement data**: located in your project directory      
+    - *.tmp* file for **temporary pipeline data**: located in a temporary directory  
+Measurement data represent data that you would ultimately like to obtain from your analysis. Pipeline data on the other hand are only passed form module to module. **Note that the temporary pipeline file and all its data will be deleted after successful completion of the pipeline!** The file will remain in case of an error that breaks your pipeline, however, so that you are able to debug the corresponding module without having to re-run the whole pipeline allover again. But the file will ultimately get deleted automatically once you shut down or restart your computer.     
 
 
 ### Project layout  ###
@@ -167,15 +169,15 @@ Each project folder has the following layout on the disk:
 * **subfunctions** folder contains additional executable code (e.g. custom packages), which is required by modules.      
 These folders are simply suggestions and will be created in case you call 'jt create' (see below). The corresponding files also don't have to be within your project directory. Feel free to put them wherever you like, you can specify the full path to these files in the pipeline descriptor file. Note that it's your responsibility, however, to ensure that the '*subfunctions*' directory is on your path!
 
-* **logs** folder contains all the output from STDOUT and STERR streams, obtained for each executable that has been executed.
-* **data** folder contains all the data output in form of HDF5 files.   
-* **figures** folder contains PDF or HTML files of figures saved by modules.   
-These folders are created by *Jterator* in the project directory once you run the pipeline.     
-
-So far, *Jterator* allows only very simplistic type of work-flow -  *pipeline* (somewhat similar to a UNIX-world pipeline). Description of such work-flow must be put sibling to the folder structure described about, i.e. inside the project folder. Recognizable file name must be **'[ProjectName].pipe'**. Description is a YAML format. 
+* **data** folder contains all the data output in form of HDF5 files. Jterator will automatically create this folder in your project directory.     
+* **logs** folder contains all the output from STDOUT and STERR streams, obtained for each executable that has been executed in the pipeline.  Jterator will automatically create this folder in your project directory, but it will remain empty unless you use the `-v` verbosity command.
+* **figures** folder contains figure files saved by modules. This folder is optional and you have to create it manually. 
+These folders are created by Jterator in the project directory once you run the pipeline.     
 
 
 ### Pipeline descriptor file ###
+
+Jterator allows only very simplistic types of work-flow -  *pipeline* (somewhat similar to a UNIX-world pipeline). Description of such work-flow must be put sibling to the folder structure described about, i.e. inside the project folder. Recognizable file name must be **'[ProjectName].pipe'**. Description is a YAML format. 
 
 Describe your pipeline in the .pipe (YAML) descriptor file:
 
@@ -183,7 +185,7 @@ Describe your pipeline in the .pipe (YAML) descriptor file:
 project:
 
     name: myJteratorProject
-    description: this is what this project is about
+    libpath: path/to/myRepository
 
 jobs:
 
@@ -197,7 +199,7 @@ jobs:
 pipeline:
 
     -   name: myModule1
-        module: modules/myModule1.py
+        module: "{libpath}/modules/myModule1.py"
         handles: handles/myModule1.handles
         interpreter: /usr/bin/python
 
@@ -207,7 +209,7 @@ pipeline:
         interpreter: Rscript
 
     -   name: myModule3
-        module: modules/myModule3.m
+        module: "{libpath}/modules/myModule3.m"
         handles: handles/myModule3.handles
         interpreter: Mscript
 
@@ -217,8 +219,8 @@ pipeline:
         interpreter: julia
 ```
 Note that the value for the **'interpreter'** key can be either a full path to the interpreter program (e.g. /usr/bin/python) or a command that can be interpreted by /usr/bin/env (e.g. python). 
-Also note that the working directory is by default the project folder. You can provide either a full path to modules and handles files or a path relative to the project folder.    
-The names of the **'jobs'** will be written into the temporary pipeline data HDF5 file in order to make them available for modules.     
+Also note that the working directory is by default the project folder. You can provide either a full path to modules and handles files or a path relative to the project folder. You can also make use of the `libpath` "variable" within the pipeline descriptor file to specify the location where you keep your module files. Best practice is to have the `handles` folder in you project directory, because the specifications in the handles descriptor files are usually project specific.   
+The **'jobs'** section will create a list of jobs with filenames and id for each job that will be stored in a `[ProjectName].jobs` file in YAML format. This information will also automatically be written into the temporary pipeline data HDF5 file in order to make it available for the modules.     
 
 
 ## Handles descriptor files ##
@@ -258,18 +260,19 @@ output:
         class: float64
 ```
 The value of the key **'hdf5_filename'** can be left empty or set to 'None'.
-It will be filled in by *Jterator*. The program generates a temporary file
-and adds its filename into the handles descriptor YAML string in order to make it available to the modules. If you want to debug a module, you have to fill in the filename manually!
-Note that the temporary file will currently not get killed when an error occurs to allow debugging of the module that broke. The temporary directory will be cleaned automatically once you shut down your computer.     
-There are two different types of input arguments:
-* **'hdf5_location'** is an argument that has to be produced upstream in the pipeline by another module, which saved the corresponding data into the specified location in the HDF5 file.   
-* **'parameter'** is an argument that is used to control the behavior of the module. It is module-specific and hence independent of other modules.    
-Note that you can provide the optional **'class'** key, which asserts the datatype of the passed argument. It is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R.
+This information will be filled in by Jterator automatically; the program generates a temporary hdf5 file and adds its filename into the handles descriptor YAML string in order to make it available to the modules. **Note that if you want to debug a module, you have to fill in the filename manually.**
+Also note that the temporary file will currently not get killed when an error occurs to allow debugging of the module that broke the pipe. The temporary file will always be overwritten and the temporary directory will be cleaned automatically once you shut down your computer. So you don't have to worry about data accumulating.    
+
+#### Input/output arguments ####
+
+There are two different types of arguments:
+* **'hdf5_location'** corresponds to data that has to be produced upstream in the pipeline by another module, which saved it at the specified location in the HDF5 file. It is a string in the format of unix path, e.g. "/myGroup/myDataset".
+* **'parameter'** is an argument that is used to control the behavior of the module. It is module-specific and hence independent of other modules. It can be of any type (integer, string, array, ...). You can provide the optional **'class'** key to assert a specific datatype for the passed argument. Note that this is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R.
 
 
 ## Modules ##
 
-The Jterator APIs are written in way that enables more or less the same syntax in each language.
+Jterator APIs are written in a way that enables more or less the same syntax in each language.  
 
 Python example:     
 
@@ -362,12 +365,17 @@ writeoutputargs(handles, output_args)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ```
-Note that Matlab scripts are executed by **Mscript**, a customized Julia-based Matlab engine, which forwards the standard input stream and the current working directory to the Matlab session.     
+
+### Mscript ###
+
+Note that you need **Mscript** for the execution of Matlab scripts. Matlab scripts are no real executables and require a Matlab engine. In addition, they cannot accept STDIN. The standard Matlab engine also changes the current working directory to the location of the executed .m file. Mscript is a customized Julia-based Matlab engine based on [Julia's Matlab interface](https://github.com/JuliaLang/MATLAB.jl) that works around these annoying issues. It receives the standard input stream from Jterator and forwards it the Matlab session, enforces the current working directory and executes the module script. It also returns Matlab STDOUT and STDERR. 
+
+We have also tried several existing Python Matlab engines, but didn't get any of them to work stably across platforms (Linux and OSX). Note that newer versions of Matlab (>2014b) come with a build in python matlab engine. But there is no backward compatibility. So for now, we stick to the Julia solution. 
 
 
 ## Getting started ##
 
-To *download* Jterator clone this repository:
+To *download* Jterator clone this repository, do
 
 ```{bash}
 git clone https://github.com/HackerMD/Jterator.git ~/jterator
@@ -384,14 +392,14 @@ Alternatively, you can add the Jterator directory to your executable path:
 ```{bash}
 export PATH=$PATH:~/jterator/src/python
 ```
-To add the executable path permanently, include this command in your .bash_profile file.
+To make this permanent, include this line above in your .bash_profile file.
     
 
-To *use* Mscript - a custom tool based on the Julia Matlab interface (https://github.com/JuliaLang/MATLAB.jl) in order to transform Matlab scripts into real executables - create a softlink in a directory on your PATH (e.g. /usr/bin):
+To *use Mscript* create a softlink in a directory on your PATH:
 
 ```{bash}
-cd /usr/bin
-sudo ln -s ~/jterator/src/julia/mscript.jl Mscript
+cd /usr/local/bin
+ln -s ~/jterator/src/julia/mscript.jl Mscript
 ```
 
 ## How to ##
@@ -415,8 +423,9 @@ jt create --skel [skeleton_dir] [project_dir]
 ```
 
 This will create your project folder and include skeletons for YAML descriptor files and modules.
-Now you can place your custom code into the module skeletons and define the pipeline in the .pipe file as well as input/output arguments in the corresponding .handles files. And shabam! you are ready to go...
+Now you can place your custom code into the module skeletons and define the pipeline in the .pipe file as well as input/output arguments in the corresponding .handles files.
 
+Now you are ready to go...
 
 To *check* your YAML descriptor files (.pipe and .handles), do:
 
@@ -461,8 +470,7 @@ Modules can be written in any programming language that provides libraries for f
 You are welcome to further extent the list of languages by writing additional APIs.
 
 
-Nose tests
-----------
+## Nose tests ##
 
 We use nose framework to achieve code coverage with unit tests. In order to run tests, do
 
@@ -470,8 +478,7 @@ We use nose framework to achieve code coverage with unit tests. In order to run 
 cd tests && nosetests
 ```
 
-To do
------
+## To do ##
 
 Package management for external dependencies and APIs in different languages. 
 
