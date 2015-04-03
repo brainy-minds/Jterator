@@ -162,17 +162,20 @@ Measurement data represent data that you would ultimately like to obtain from yo
 
 ### Project layout  ###
 
-Each project folder has the following layout on the disk:
+Each project folder has the following layout on disk:
 
-* **handles** folder contains all the YAML handles files, they are passed as STDIN stream to *modules*.
-* **modules** folder contains all the executable code for programs.     
-* **subfunctions** folder contains additional executable code (e.g. custom packages), which is required by modules.      
-These folders are simply suggestions and will be created in case you call 'jt create' (see below). The corresponding files also don't have to be within your project directory. Feel free to put them wherever you like, you can specify the full path to these files in the pipeline descriptor file. Note that it's your responsibility, however, to ensure that the '*subfunctions*' directory is on your path!
-
+* **handles** folder contains all the YAML handles files, they are passed as STDIN stream to *modules*. This folder has to be created manually. You can do this using the `jt create` command (see below).
 * **data** folder contains all the data output in form of HDF5 files. Jterator will automatically create this folder in your project directory.     
 * **logs** folder contains all the output from STDOUT and STERR streams, obtained for each executable that has been executed in the pipeline.  Jterator will automatically create this folder in your project directory, but it will remain empty unless you use the `-v` verbosity command.
 * **figures** folder contains figure files saved by modules. This folder is optional and you have to create it manually. 
-These folders are created by Jterator in the project directory once you run the pipeline.     
+These folders are created by Jterator in the project directory once you run the pipeline.    
+
+The actual code can also reside in the project directory, but you can also put this at any other location. This may be more convenient, because the code is usually reused and independent of the actual project. The layout could be as follows:    
+
+* **modules** folder contains all the executable code for programs.     
+* **subfunctions** folder contains additional executable code (e.g. custom packages), which is required by modules.  
+
+This layout is simply a suggestion and will be created in case you call `jt create` (see below). Feel free to put these files wherever you like, you can specify the full path to these files in the pipeline descriptor file. The code in the *subfunctions* folder can be seen as additionally required custom packages that you import in your modules. **Note that it's your responsibility to ensure that 'subfunctions' are on your path!**
 
 
 ### Pipeline descriptor file ###
