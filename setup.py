@@ -17,8 +17,7 @@ def readme():
 
 
 def get_version():
-    src_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            'src', 'python')
+    src_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src')
     sys.path.append(src_path)
     import jterator
     return jterator.__version__
@@ -33,11 +32,11 @@ setup(
     author_email='markusdherrmann at gmail dot com',
     url='https://github.com/HackerMD/Jterator',
     license='MIT',
-    scripts=['src/python/jt'],
+    scripts=['src/jt'],
     packages=[
         'jterator',
     ],
-    package_dir={'': 'src/python'},
+    package_dir={'': 'src'},
     # package_data={
     #     '': ['*.html', '*.svg', '*.js'],
     # },
