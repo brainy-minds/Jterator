@@ -15,9 +15,10 @@ Jterator depends on the following languages and external libraries:
 
     Note for Brutus users:      
     Import Python module (use 2.7.2)
-    ```
-    module load python/2.7.2
-    ```
+        ```
+        module load python/2.7.2
+        ```
+
 
 * **HDF5**
 
@@ -33,9 +34,10 @@ Jterator depends on the following languages and external libraries:
 
     Note for Brutus users:      
     Import HDF5 module
-    ```{bash}
-    module load hdf5
-    ```
+        ```
+        module load hdf5
+        ```
+
 
 ### optional ###
 
@@ -52,21 +54,22 @@ Jterator depends on the following languages and external libraries:
 
     Note for Brutus users:  
     You need to install Julia in your home directory.
-    To this end, create a 'Make.user' file and add the following lines 
+    To this end, create a 'Make.user' file and add the following lines      
     ```{bash}
     OPENBLAS_NO_AVX=1
     OPENBLAS_NO_AVX2=1
     OPENBLAS_DYNAMIC_ARCH=1
     ```
+
 * **R**     
     
     Download [here](http://www.r-project.org).
 
     Note for Brutus users:  
     Import R module (use version 3.1.2) 
-    ```{bash}
-    module load new openblas/0.2.8_seq r/3.1.2
-    ```
+        ```
+        module load new openblas/0.2.8_seq r/3.1.2
+        ```
 
 
 ## APIs ##
@@ -81,35 +84,45 @@ The code can be found in `api`.
 
 APIs depend on the following packages:   
 * Python 
-    - *PyYAML*   
+    - *PyYAML*      
+
         ```{bash}
         pip install PyYaml
         ``` 
+
     - *h5py*  
+
         ```{bash}
         pip install h5py
         ```     
+
     Note for Brutus users:  
     Install packages as follows 
-        ```{bash}
+        ```
         pip install --user [package]
         ```      
 * Julia     
     - *YAML*    
+
         ```{julia}
         Pkg.add("YAML")
         ```
+
     - *HDF5*  
+
         ```{julia}
         Pkg.add("HDF5")
         ```  
+
         Note for Brutus users:      
-        Modify line 48 in BinDeps.jl (put :wget at first position)    
-        ```
-        checkcmd in (:wget, :curl, :fetch)
-        ```
+        Modify line 48 in BinDeps.jl (put :wget at first position)        
+            ```
+            checkcmd in (:wget, :curl, :fetch)
+            ```     
+
     Mscript additionally requires   
     - *MATLAB*  
+
         ```{julia}
         Pkg.add("MATLAB")
         ```
@@ -119,10 +132,13 @@ APIs depend on the following packages:
     These packages are already provided and include important extensions to the original versions.
 * R     
     - *yaml*   
+
         ```{R}
         install.packages("yaml")
         ```
+
     - *rhdf5*  
+
         ```{R}
         source("http://bioconductor.org/biocLite.R")
         biocLite("rhdf5")
