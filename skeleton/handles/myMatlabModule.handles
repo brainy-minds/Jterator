@@ -1,39 +1,35 @@
 # full path to HDF5 file
-hdf5_filename: tmp/myProject.tmp
+hdf5_filename: None
 
 # module input arguments
-input_keys:
+input:
 
     InputVar1: 
         hdf5_location: /Output/myPreviousModule/OutputVar
-        class: double
-        attributes: positive
+        type: double
 
     InputVar2:
         parameter: Otsu Global
-        class: char
+        type: char
 
     InputVar3:
         parameter: 1
-        class: double
+        type: double
 
     InputVar4:
         parameter: [0, 1]
-        class: double
+        type: double
 
     InputVar5:
         parameter: 10%
-        class: char
+        type: char
 
     InputVar6:
         parameter: Yes
-        class: logical
+        type: logical
 
 # module output arguments
-output_keys:
+output:
 
     OutputVar1:
         hdf5_location: /Output/myCurrentModule/OutputVar1
-        class: double
-        attributes: positive
-

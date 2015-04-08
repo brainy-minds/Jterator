@@ -43,8 +43,8 @@ function input_args = readinputargs(handles)
             error('Possible variable keys are ''hdf5_location'' or ''parameter''');
         end 
 
-        if isfield(field, 'class')
-            input_args.(key).class = field.class;
+        if isfield(field, 'type')
+            input_args.(key).type = field.type;
         end
 
     end

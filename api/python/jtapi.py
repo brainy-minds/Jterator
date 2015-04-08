@@ -50,8 +50,8 @@ def readinputargs(handles):
             raise JteratorError('Possible variable keys are '
                                 '\'hdf5_location\' or \'parameter\'')
 
-        if 'class' in field:
-            input_args[key]['class'] = field['class']
+        if 'type' in field:
+            input_args[key]['type'] = field['type']
 
         if 'attributes' in field:
             input_args[key]['attributes'] = field['attributes']
@@ -63,27 +63,27 @@ def readinputargs(handles):
 
 def checkinputargs(input_args):
     '''
-    Checks input arguments for correct class (i.e. type).
+    Checks input arguments for correct type (i.e. type).
     '''
     mfilename = sys._getframe().f_code.co_name
 
     checked_input_args = dict()
     for key in input_args:
 
-        # checks are only done if "class" is specified
-        if 'class' in input_args[key]:
-            expected_class = input_args[key]['class']
-            loaded_class = type(input_args[key]['variable'])
+        # checks are only done if "type" is specified
+        if 'type' in input_args[key]:
+            expected_type = input_args[key]['type']
+            loaded_type = type(input_args[key]['variable'])
 
-            if 'h5py' in str(loaded_class):
-                loaded_class = input_args[key]['variable'].dtype
+            if 'h5py' in str(loaded_type):
+                loaded_type = input_args[key]['variable'].dtype
             else:
-                loaded_class = loaded_class.__name__
+                loaded_type = loaded_type.__name__
 
-            if str(loaded_class) != expected_class:
-                raise JteratorError('argument \'%s\' is of "class" \'%s\' '
+            if str(loaded_type) != expected_type:
+                raise JteratorError('argument \'%s\' is of "type" \'%s\' '
                                     'instead of expected \'%s\''
-                                    % (key, loaded_class, expected_class))
+                                    % (key, loaded_type, expected_type))
 
             print('jt -- %s: argument \'%s\' passed check' % (mfilename, key))
 

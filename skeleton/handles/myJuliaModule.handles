@@ -1,24 +1,23 @@
 # full path to HDF5 file
-hdf5_filename: tmp/myProject.tmp
+hdf5_filename: None
 
 # module input arguments
-input_keys:
+input:
 
     InputVar1: 
         hdf5_location: /Output/myPreviousModule/OutputVar1
-        class: "Array{Float64,2}"
+        type: "Array{Float64,2}"
 
     InputVar2:
         parameter: Yes
-        class: Bool
+        type: Bool
 
     InputVar3:
         parameter: /just/an/example/directory
-        class: ASCIIString
+        type: ASCIIString
 
 # module output arguments
-output_keys:
+output:
 
     CorrImage:
         hdf5_location: /Output/myCurrentModule/OutputVar
-        class: "Array{Float64,2}"

@@ -50,8 +50,8 @@ readinputargs <- function(handles) {
         stop("Possible variable keys are \'hdf5_location\' or \'parameter\'")
       }
 
-      if ("class" %in% names(field)) {
-        input_args[[key]]$class <- field$class
+      if ("type" %in% names(field)) {
+        input_args[[key]]$type <- field$type
       }
       
       if ("attributes" %in% names(field)) {
@@ -64,7 +64,7 @@ readinputargs <- function(handles) {
 
 
 #' Jterator API. 
-#' Checks input arguments for correct class and attributes.
+#' Checks input arguments for correct type.
 #'
 #' @param input_args List of input arguments.
 #' @return List of checked input arguments.
@@ -76,13 +76,13 @@ checkinputargs <- function(input_args) {
     for (key in names(input_args)) {
       field <- input_args[[key]]
       
-      if ("class" %in% names(field)) {
-        expected_class <- input_args[[key]]$class
-        loaded_class <- class(input_args[[key]]$variable)
+      if ("type" %in% names(field)) {
+        expected_type <- input_args[[key]]$type
+        loaded_type <- type(input_args[[key]]$variable)
         
-        if (expected_class != loaded_class) {
-          stop(sprintf("argument '%s' is of \"class\" '%s' instead of expected '%s'", 
-                       key, loaded_class, expected_class))
+        if (expected_type != loaded_type) {
+          stop(sprintf("argument '%s' is of \"type\" '%s' instead of expected '%s'", 
+                       key, loaded_type, expected_type))
         }
         cat(sprintf("jt -- %s: argument '%s' passed check\n", mfilename, key))
       }

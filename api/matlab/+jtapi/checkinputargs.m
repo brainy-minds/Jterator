@@ -1,14 +1,14 @@
-%% Checks input arguments for correct class and attributes.
+%% Checks input arguments for correct type (i.e. class).
 
 function checked_input_args = checkinputargs(input_args)
 
     names = fieldnames(input_args); 
     for i = 1:length(names)
         arg = input_args.(names{i});
-        if isfield(arg, 'class')
-            if ~strcmp(arg.class, class(arg.variable))
+        if isfield(arg, 'type')
+            if ~strcmp(arg.type, class(arg.variable))
                 error('argument "%s" is of class "%s" instead of expected "%s"', ...
-                      names{i}, class(arg.variable), arg.class)
+                      names{i}, class(arg.variable), arg.type)
             end
             fprintf(sprintf('jt -- %s: argument ''%s'' passed check\n', ...
                     mfilename, names{i}));

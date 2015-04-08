@@ -50,8 +50,8 @@ function readinputargs(handles)
                 error("Possible variable keys are \"hdf5_location\" or \"parameter\"")
             end 
 
-            if haskey(field, "class")
-                input_args[key]["class"] = field["class"]
+            if haskey(field, "type")
+                input_args[key]["type"] = field["type"]
             end 
         end
     end
@@ -64,7 +64,7 @@ end
 
 
 function checkinputargs(input_args)
-    ##Checks input arguments for correct class and attributes.
+    ##Checks input arguments for correct type and attributes.
     
     mfilename = "checkinputargs"
 
@@ -72,14 +72,14 @@ function checkinputargs(input_args)
     if ~isempty(input_args)
         for key in keys(input_args)
 
-            # checks are only done if "class" is specified
-            if haskey(input_args[key], "class")
-                expected_class = input_args[key]["class"]
-                loaded_class = typeof(input_args[key]["variable"])
+            # checks are only done if "type" is specified
+            if haskey(input_args[key], "type")
+                expected_type = input_args[key]["type"]
+                loaded_type = typeof(input_args[key]["variable"])
 
-                if ~isequal(string(loaded_class), expected_class) 
-                    error(@sprintf("argument '%s' is of class \"%s\" instead of expected \"%s\"", 
-                          key, loaded_class, expected_class))
+                if ~isequal(string(loaded_type), expected_type) 
+                    error(@sprintf("argument '%s' is of type \"%s\" instead of expected \"%s\"", 
+                          key, loaded_type, expected_type))
                 end
 
                 @printf("jt -- %s: argument '%s' passed check\n", mfilename, key)

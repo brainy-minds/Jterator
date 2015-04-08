@@ -3,7 +3,7 @@
 \name{checkinputargs}
 \alias{checkinputargs}
 \title{Jterator API.
-Checks input arguments for correct class and attributes.}
+Checks input arguments for correct type.}
 \usage{
 checkinputargs(input_args)
 }
@@ -15,6 +15,6 @@ List of checked input arguments.
 }
 \description{
 Jterator API.
-Checks input arguments for correct class and attributes.
+Checks input arguments for correct type.
 }
 

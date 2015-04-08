@@ -277,29 +277,29 @@ input:
 
     StringExample:
         parameter: myString
-        class: str
+        type: str
 
     IntegerExample:
         parameter: 1
-        class: int
+        type: int
 
     Hdf5InputExample:
         hdf5_location: /myModule/InputDataset
-        class: ndarray
+        type: ndarray
 
     ListExample:
         parameter: ["myString1", "myString2", "myString3"]
-        class: list
+        type: list
 
     BoolExample:
         parameter: Yes
-        class: bool
+        type: bool
 
 output:
 
     Hdf5OutputExample:
         hdf5_location: /myModule/OutputDataset
-        class: float64
+        type: float64
 ```
 The value of the key **'hdf5_filename'** can be left empty or set to 'None'.
 This information will be filled in by Jterator automatically; the program generates a temporary hdf5 file and adds its filename into the handles descriptor YAML string in order to make it available to the modules. **Note that if you want to debug a module, you have to fill in the filename manually.**
@@ -309,7 +309,7 @@ Also note that the temporary file will currently not get killed when an error oc
 
 There are two different types of arguments:
 * **'hdf5_location'** corresponds to data that has to be produced upstream in the pipeline by another module, which saved it at the specified location in the HDF5 file. It is a string in the format of unix path, e.g. "/myGroup/myDataset".
-* **'parameter'** is an argument that is used to control the behavior of the module. It is module-specific and hence independent of other modules. It can be of any type (integer, string, array, ...). You can provide the optional **'class'** key to assert a specific datatype for the passed argument. Note that this is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R.
+* **'parameter'** is an argument that is used to control the behavior of the module. It is module-specific and hence independent of other modules. It can be of any type (integer, string, array, ...). You can provide the optional **'type'** key to assert a specific data type for the passed argument. Note that this is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R. This could also be done in yaml syntax, but it seems saver to keep it in the syntax of the corresponding module.
 
 
 ## Modules ##

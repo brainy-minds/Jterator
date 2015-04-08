@@ -1,4 +1,4 @@
-#! Rscript
+#! /usr/bin/env Rscript
 
 library(devtools)
 library(roxygen2)

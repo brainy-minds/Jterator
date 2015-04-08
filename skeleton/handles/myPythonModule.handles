@@ -1,28 +1,27 @@
 # full path to HDF5 file
-hdf5_filename: tmp/myProject.tmp
+hdf5_filename: None
 
 # module input arguments
-input_keys:
+input:
 
     InputVar1: 
         hdf5_location: /Output/myPreviousModule/OutputVar
-        class: float64
+        type: float64
 
     InputVar2:
         parameter: 4
-        class: int
+        type: int
 
     InputVar3:
         parameter: hello
-        class: str
+        type: str
 
     InputVar4:
         parameter: [0, 1]
-        class: list
+        type: list
 
 # module output arguments
-output_keys:
+output:
 
     OutputVar:
         hdf5_location: /Output/myCurrenModule/OutputVar
-        class: float64
