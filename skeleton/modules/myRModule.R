@@ -1,4 +1,4 @@
-library(jterator)
+library(jtapi)
 
 mfilename <- basename(sub("--file=(.*).R", "\\1",
                       grep("--file=.*R", commandArgs(), value=TRUE)))

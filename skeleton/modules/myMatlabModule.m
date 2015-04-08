@@ -1,4 +1,4 @@
-import jterator.*;
+import jtapi.*;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7,7 +7,7 @@ import jterator.*;
 fprintf(sprintf('jt - %s:\n', mfilename));
 
 %%% read standard input
-handles_stream = input_stream; % input_stream is provided by Mscript!
+handles_stream = STDIN; % STDIN is provided by Mscript!
 
 %%% change current working directory
 cd(currentDirectory)
