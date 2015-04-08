@@ -77,11 +77,18 @@ Jterator is written in Python, but can pipe custom code in different languages. 
 * Matlab
 * R
 
+The code can be found in `api`.
+
 APIs depend on the following packages:   
 * Python 
-    - *PyYAML*    
+    - *PyYAML*   
+        ```{bash}
+        pip install PyYaml
+        ``` 
     - *h5py*  
-    - *matplotlib* and *mpld3* for plotting     
+        ```{bash}
+        pip install h5py
+        ```     
     Note for Brutus users:  
     Install packages as follows 
         ```{bash}
@@ -89,7 +96,13 @@ APIs depend on the following packages:
         ```      
 * Julia     
     - *YAML*    
-    - *HDF5*    
+        ```{julia}
+        Pkg.add("YAML")
+        ```
+    - *HDF5*  
+        ```{julia}
+        Pkg.add("HDF5")
+        ```  
         Note for Brutus users:      
         Modify line 48 in BinDeps.jl (put :wget at first position)    
         ```
@@ -97,13 +110,23 @@ APIs depend on the following packages:
         ```
     Mscript additionally requires   
     - *MATLAB*  
+        ```{julia}
+        Pkg.add("MATLAB")
+        ```
 * Matlab    
     - *yamlmatlab*
     - *mhdf5tools*        
-    These packages are already provided and include important extensions.
+    These packages are already provided and include important extensions to the original versions.
 * R     
-    - *yaml*    
+    - *yaml*   
+        ```{R}
+        install.packages("yaml")
+        ```
     - *rhdf5*  
+        ```{R}
+        source("http://bioconductor.org/biocLite.R")
+        biocLite("rhdf5")
+        ```
 
 
 ### Functions ###
@@ -116,20 +139,20 @@ Input/output:
 * **checkinputargs**: Checking input arguments for correct "class" (i.e. type).
 * **writeoutputargs**: Writing output arguments to HDF5 file using the location specified in "handles".
 * **writedata**: Writing data to HDF5 file.     
-* **figure2browser**: Displaying d3 figures in the browser (so far only implemented for Python and Julia).
+* **figure2browser**: Displaying d3 figures in the browser (so far only implemented for Python).
 
 Ultimately, we will provide the APIs via packages for each language using the language specific platform, such as CRAN, PyPI, etc (see TODO). For now, you have to add the path to the APIs.
 To this end, include the following lines in your *.bash_profile* file:   
 - Python    
 
     ```{bash}
-    export PYTHONPATH=$PYTHONPATH:$HOME/jterator/src/python
+    export PYTHONPATH=$PYTHONPATH:$HOME/jterator/api/python
     ```
 
 - Julia     
 
     ```{bash}
-    export JULIA_LOAD_PATH=$JULIA_LOAD_PATH:$HOME/jterator/src/julia/jterator
+    export JULIA_LOAD_PATH=$JULIA_LOAD_PATH:$HOME/jterator/api/julia
     ```
 
 - Matlab    
@@ -141,7 +164,7 @@ To this end, include the following lines in your *.bash_profile* file:
 - R     
 
     ```{bash}
-    export R_LIBS=$R_LIBS:$HOME/jterator/src/r/jterator
+    export R_LIBS=$R_LIBS:$HOME/jterator/api/r/jtapi
     ```
 
 Now you should be ready to go...  

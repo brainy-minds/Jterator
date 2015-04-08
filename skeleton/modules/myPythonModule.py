@@ -1,4 +1,4 @@
-from jterator.api import *
+from jtapi import *
 import os
 import sys
 import re

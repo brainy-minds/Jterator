@@ -29,7 +29,7 @@ s1 = MSession()
 
 # send standard input stream into Matlab session
 print("Mscript: Forward standard input to Matlab\n")
-put_variable(s1, :input_stream, input_stream)
+put_variable(s1, :STDIN, input_stream)
 
 # send current working directory into Matlab session
 print("Mscript: Forward current working directory to Matlab\n")
