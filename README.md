@@ -299,7 +299,6 @@ output:
 
     Hdf5OutputExample:
         hdf5_location: /myModule/OutputDataset
-        type: float64
 ```
 The value of the key **'hdf5_filename'** can be left empty or set to 'None'.
 This information will be filled in by Jterator automatically; the program generates a temporary hdf5 file and adds its filename into the handles descriptor YAML string in order to make it available to the modules. **Note that if you want to debug a module, you have to fill in the filename manually.**
