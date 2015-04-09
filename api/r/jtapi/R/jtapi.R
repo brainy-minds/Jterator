@@ -31,13 +31,13 @@ readinputargs <- function(handles) {
 
     hdf5_filename <- handles$hdf5_filename
 
-    required_keys <- ["name", "value", "class"]
+    required_keys <- c("name", "value", "class")
 
     input_args <- list()
     for (arg in handles$input) {
       key <- arg$name
       for (k in required_keys) {
-        if ~(k %in% names(arg)) {
+        if (!(k %in% names(arg))) {
           stop(sprintf("Input argument '%s' requires '%s' key.", key, k))
         }
       }
