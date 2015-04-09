@@ -127,25 +127,30 @@ class JteratorCheck(object):
         outputs = list()
         for module in self.description['pipeline']:
             handles = yaml.load(open(module['handles']).read())
-            if handles['output'] is not None:
-                for output_arg in handles['output']:
-                    output = handles['output'][output_arg]['hdf5_location']
-                    outputs.append(output)
-            for input_arg in handles['input']:
-                if 'hdf5_location' not in handles['input'][input_arg]:
-                    # We only check for pipeline data passed via the HDF5 file.
-                    # So there is no need to check them here.
+            # Store all upstream output arguments
+            if handles['output'] is None:
+                continue
+            for output_arg in handles['output']:
+                if output_arg['class'] != 'hdf5_location':
                     continue
-                name = os.path.basename(handles['input'][input_arg]['hdf5_location'])
+                output = output_arg['value']
+                outputs.append(output)
+            # Check whether input arguments for current module were produced
+            # upstream in the pipeline
+            for input_arg in handles['input']:
+                if input_arg['class'] != 'hdf5_location':
+                    # We only check for pipeline data passed via the HDF5 file.
+                    continue
+                name = os.path.basename(input_arg['value'])
                 pattern_names = [pattern['name'] for pattern
                                  in self.description['jobs']['pattern']]
                 if name in pattern_names:
-                    # They are written into the HDF5 file by Jterator himself
+                    # These names are written into the HDF5 file by Jterator
                     # and are therefore not created in the pipeline.
                     # So there is no need to check them here.
                     continue
-                if handles['input'][input_arg]['hdf5_location'] not in outputs:
+                if input_arg['value'] not in outputs:
                     raise JteratorError('Input "%s" of module "%s" is not '
                                         'created upstream in the pipeline.' %
-                                        (input_arg, module['name']))
+                                        (input_arg['name'], module['name']))
         print('🍺   Input/output check successful!')
