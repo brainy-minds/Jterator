@@ -1,27 +1,32 @@
-# full path to HDF5 file
+# full path to temporary HDF5 file
 hdf5_filename: None
 
 # module input arguments
 input:
 
-    InputVar1: 
-        hdf5_location: /Output/myPreviousModule/OutputVar
-        type: float64
+    - name: InputVar1 
+      class: hdf5_location
+      value: /Output/myPreviousModule/OutputVar
+      type: float64
 
-    InputVar2:
-        parameter: 4
-        type: int
+    - name: InputVar2
+      class: parameter
+      value: 4
+      type: int
 
-    InputVar3:
-        parameter: hello
-        type: str
+    - name: InputVar3
+      class: parameter
+      value: hello
+      type: str
 
-    InputVar4:
-        parameter: [0, 1]
-        type: list
+    - name: InputVar4
+      class: parameter
+      value: [0, 1]
+      type: list
 
 # module output arguments
 output:
 
-    OutputVar:
-        hdf5_location: /Output/myCurrenModule/OutputVar
+    - name: OutputVar
+      class: hdf5_location
+      value: /Output/myCurrenModule/OutputVar

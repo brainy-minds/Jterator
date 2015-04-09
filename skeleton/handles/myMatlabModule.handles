@@ -1,35 +1,42 @@
-# full path to HDF5 file
+# full path to temporary HDF5 file
 hdf5_filename: None
 
 # module input arguments
 input:
 
-    InputVar1: 
-        hdf5_location: /Output/myPreviousModule/OutputVar
-        type: double
+    - name: InputVar1 
+      value: /Output/myPreviousModule/OutputVar
+      class: hdf5_location
+      type: double
 
-    InputVar2:
-        parameter: Otsu Global
-        type: char
+    - name: InputVar2
+      class: parameter
+      value: Otsu Global
+      type: char
 
-    InputVar3:
-        parameter: 1
-        type: double
+    - name: InputVar3
+      class: parameter
+      value: 1
+      type: double
 
-    InputVar4:
-        parameter: [0, 1]
-        type: double
+    - name: InputVar4
+      class: parameter
+      value: [0, 1]
+      type: double
 
-    InputVar5:
-        parameter: 10%
-        type: char
+    - name: InputVar5
+      class: parameter
+      value: 10%
+      type: char
 
-    InputVar6:
-        parameter: Yes
-        type: logical
+    - name: InputVar6
+      class: parameter
+      value: Yes
+      type: logical
 
 # module output arguments
 output:
 
-    OutputVar1:
-        hdf5_location: /Output/myCurrentModule/OutputVar1
+    - name: OutputVar1
+      class: hdf5_location
+      value: /Output/myCurrentModule/OutputVar1

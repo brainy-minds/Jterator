@@ -31,31 +31,34 @@ readinputargs <- function(handles) {
 
     hdf5_filename <- handles$hdf5_filename
 
-    input_args <- list()
-    for (key in names(handles$input)) {
-      field <- handles$input[[key]]
-      input_args[[key]] <- list()
+    required_keys <- ["name", "value", "class"]
 
-      if ("hdf5_location" %in% names(field)) {
-        input_args[[key]]$variable <- h5read(hdf5_filename, field$hdf5_location)
-        cat(sprintf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n",
-                mfilename, key, field$hdf5_location))
+    input_args <- list()
+    for (arg in handles$input) {
+      key <- arg$name
+      for (k in required_keys) {
+        if ~(k %in% names(arg)) {
+          stop(sprintf("Input argument '%s' requires '%s' key.", key, k))
+        }
       }
-      else if ("parameter" %in% names(field)) {
-        input_args[[key]]$variable <- field$parameter
+
+      input_args[[key]] <- list()
+      if (arg$class == "hdf5_location") {
+        input_args[[key]]$variable <- h5read(hdf5_filename, arg$value)
+        cat(sprintf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n",
+                mfilename, key, arg$value))
+      }
+      else if (arg$class == "parameter") {
+        input_args[[key]]$variable <- arg$value
         cat(sprintf("jt -- %s: parameter '%s': \"%s\"\n",
-                    mfilename, key, paste(field$parameter, collapse=",")))
+                    mfilename, key, paste(arg$value, collapse=",")))
       }
       else {
         stop("Possible variable keys are \'hdf5_location\' or \'parameter\'")
       }
 
-      if ("type" %in% names(field)) {
-        input_args[[key]]$type <- field$type
-      }
-      
-      if ("attributes" %in% names(field)) {
-        input_args[[key]]$attributes <- field$attributes
+      if ("type" %in% names(arg)) {
+        input_args[[key]]$type <- arg$type
       }
     }
 

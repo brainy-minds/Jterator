@@ -31,27 +31,34 @@ function readinputargs(handles)
 
     fid = h5open(hdf5_filename, "r")
 
+    required_keys = ["name", "value", "class"]
+
     input_args = Dict()
     if ~isempty(handles)
-        for key in keys(handles["input"])
-            field = handles["input"][key]
-            input_args[key] = Dict()
+        for arg in handles["input"]
+            key = arg["name"]
+            for k in required_keys
+                if ~haskey(arg, k)
+                    error(@sprintf("Input argument '%s' requires '%s' key.", key, k))
+                end
+            end
 
-            if haskey(field, "hdf5_location")
-                input_args[key]["variable"] = read(fid, field["hdf5_location"])
+            input_args[key] = Dict()
+            if arg["class"] == "hdf5_location"
+                input_args[key]["variable"] = read(fid, arg["value"])
                 if ismatch(r"Array", string(typeof(input_args[key]["variable"])))
                     input_args[key]["variable"] = input_args[key]["variable"]
                 end
-                @printf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n", mfilename, key, field["hdf5_location"])
-            elseif haskey(field, "parameter")
-                input_args[key]["variable"] = field["parameter"]
-                @printf("jt -- %s: parameter '%s': \"%s\"\n", mfilename, key, input_args[key]["variable"])          
+                @printf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n", mfilename, key, arg["hdf5_location"])
+            elseif arg["class"] ==  "parameter"
+                input_args[key]["variable"] = arg["value"]
+                @printf("jt -- %s: parameter '%s': \"%s\"\n", mfilename, key, arg["value"])          
             else
-                error("Possible variable keys are \"hdf5_location\" or \"parameter\"")
+                error("Possible values for 'class' key are 'hdf5_location' or 'parameter'")
             end 
 
-            if haskey(field, "type")
-                input_args[key]["type"] = field["type"]
+            if haskey(arg, "type")
+                input_args[key]["type"] = arg["type"]
             end 
         end
     end

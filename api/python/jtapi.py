@@ -30,31 +30,37 @@ def readinputargs(handles):
     hdf5_filename = handles['hdf5_filename']
     hdf5_root = h5py.File(hdf5_filename, 'r+')
 
+    required_keys = ['name', 'value', 'class']
+
     input_args = dict()
-    for key in handles['input']:
-        field = handles['input'][key]
+    for arg in handles['input']:
+        key = arg['name']
+        # Make sure that required keys are provided
+        for k in required_keys:
+            if k not in arg:
+                raise JteratorError('Input argument \'%s\' requires '
+                                    'a \'%s\' key.' % (key, k))
+
         input_args[key] = dict()
 
-        if 'hdf5_location' in field:
-            # note: we index into the dataset to retrieve its content,
+        if arg['class'] == 'hdf5_location':
+            # Note: we index into the dataset to retrieve its content,
             # otherwise it would be loaded as hdf5 object
-            input_args[key]['variable'] = hdf5_root[field['hdf5_location']][()]
+            input_args[key]['variable'] = hdf5_root[arg['value']][()]
             print('jt -- %s: loaded dataset \'%s\' from HDF5 location: "%s"'
-                  % (mfilename, key, field['hdf5_location']))
-        elif 'parameter' in field:
-            input_args[key]['variable'] = field['parameter']
+                  % (mfilename, key, arg['value']))
+        elif arg['class'] == 'parameter':
+            input_args[key]['variable'] = arg['value']
             print('jt -- %s: parameter \'%s\': "%s"'
-                  % (mfilename, key, str(field['parameter'])))
+                  % (mfilename, key, str(arg['value'])))
         else:
             hdf5_root.close()
-            raise JteratorError('Possible variable keys are '
+            raise JteratorError('Possible values for \'class\' key are '
                                 '\'hdf5_location\' or \'parameter\'')
 
-        if 'type' in field:
-            input_args[key]['type'] = field['type']
-
-        if 'attributes' in field:
-            input_args[key]['attributes'] = field['attributes']
+        if 'type' in arg:
+            # Optional key
+            input_args[key]['type'] = arg['type']
 
     hdf5_root.close()
 
