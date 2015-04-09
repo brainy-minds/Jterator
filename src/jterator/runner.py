@@ -111,6 +111,7 @@ class JteratorRunner(object):
         '''
         # Interpret module description.
         libpath = self.description['project']['libpath']
+        libpath = os.path.expanduser(libpath)
         for module_description in self.description['pipeline']:
             # Get path to module (executable file containing actual code)
             module_path = module_description['module']
