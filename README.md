@@ -275,31 +275,36 @@ hdf5_filename: None
 
 input:
 
-    StringExample:
-        parameter: myString
-        type: str
+    - name: StringExample:
+      class: parameter
+      value: myString
+      type: str
 
-    IntegerExample:
-        parameter: 1
-        type: int
+    - name: IntegerExample
+      class: parameter
+      value: 1
+      type: int
 
-    Hdf5InputExample:
-        hdf5_location: /myModule/InputDataset
-        type: ndarray
+    - name: Hdf5InputExample
+      class: hdf5_location
+      value: /myModule/InputDataset
+      type: ndarray
 
-    ListExample:
-        parameter: ["myString1", "myString2", "myString3"]
-        type: list
+    - name: ListExample
+      class: parameter
+      value: ["myString1", "myString2", "myString3"]
+      type: list
 
-    BoolExample:
-        parameter: Yes
-        type: bool
+    - BoolExample:
+      class: parameter
+      value: Yes
+      type: bool
 
 output:
 
-    Hdf5OutputExample:
-        hdf5_location: /myModule/OutputDataset
-        type: float64
+    - name: Hdf5OutputExample
+      class: hdf5_location
+      value: /myModule/OutputDataset
 ```
 The value of the key **'hdf5_filename'** can be left empty or set to 'None'.
 This information will be filled in by Jterator automatically; the program generates a temporary hdf5 file and adds its filename into the handles descriptor YAML string in order to make it available to the modules. **Note that if you want to debug a module, you have to fill in the filename manually.**
@@ -307,9 +312,9 @@ Also note that the temporary file will currently not get killed when an error oc
 
 #### Input/output arguments ####
 
-There are two different types of arguments:
-* **'hdf5_location'** corresponds to data that has to be produced upstream in the pipeline by another module, which saved it at the specified location in the HDF5 file. It is a string in the format of unix path, e.g. "/myGroup/myDataset".
-* **'parameter'** is an argument that is used to control the behavior of the module. It is module-specific and hence independent of other modules. It can be of any type (integer, string, array, ...). You can provide the optional **'type'** key to assert a specific data type for the passed argument. Note that this is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R. This could also be done in yaml syntax, but it seems saver to keep it in the syntax of the corresponding module.
+There are two different **classes** of arguments:
+* **'hdf5_location'** corresponds to data that has to be produced upstream in the pipeline by another module, which saved it at the specified location in the HDF5 file. It is a string in the format of a unix path, e.g. "/myGroup/myDataset".
+* **'parameter'** is an argument that is used to control the behavior of the module. It is module-specific and hence independent of other modules. It can be of any type (integer, string, array, ...). You can provide the optional **type** key to assert a specific data type for the passed argument. Note that this "type" is not YAML syntax but language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R. Alternatively, this could be done in YAML syntax or in a custom data type syntax which will be mapped by the APIs. For now, we keep it in the syntax of the corresponding module.
 
 
 ## Modules ##
@@ -319,7 +324,7 @@ Jterator APIs are written in a way that enables more or less the same syntax in 
 Python example:     
 
 ```{python}
-from jterator.api import *
+from jtapi import *
 import os
 import sys
 import re
@@ -366,7 +371,7 @@ writeoutputargs(handles, output_args)
 Matlab example:     
 
 ```{matlab}
-import jterator.*;
+import jtapi.*;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
