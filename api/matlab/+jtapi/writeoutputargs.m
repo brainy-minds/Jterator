@@ -18,14 +18,17 @@ function writeoutputargs(handles, output_args)
     fid = H5F.open(hdf5_filename, 'H5F_ACC_RDWR','H5P_DEFAULT');
 
     keys = fieldnames(output_args);
-    for key = 1:length(keys)
-        hdf5_location = handles.output.(keys{key}).hdf5_location;
-        value = output_args.(keys{key});
+    for i = 1:length(keys)
+        key = keys{i};
+        ix = cellfun(@(x) strcmp(x.name, key) ...
+                       && strcmp(x.class, 'hdf5_location'), handles.output);
+        hdf5_location = handles.output{ix}.value;
+        value = output_args.(key);
         h5datacreate(fid, hdf5_location, ...
                      'type', class(value), 'size', size(value)');
         h5varput(fid, hdf5_location, value');
         fprintf(sprintf('jt -- %s: wrote tmp dataset ''%s'' to HDF5 location: "%s"\n', ...
-                    mfilename, keys{key}, hdf5_location));
+                    mfilename, key, hdf5_location));
     end
 
     H5F.close(fid);

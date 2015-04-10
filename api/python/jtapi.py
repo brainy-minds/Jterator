@@ -76,7 +76,7 @@ def checkinputargs(input_args):
     checked_input_args = dict()
     for key in input_args:
 
-        # checks are only done if "type" is specified
+        # checks are only done if "type" key is specified
         if 'type' in input_args[key]:
             expected_type = input_args[key]['type']
             loaded_type = type(input_args[key]['variable'])
@@ -85,6 +85,10 @@ def checkinputargs(input_args):
                 loaded_type = input_args[key]['variable'].dtype
             else:
                 loaded_type = loaded_type.__name__
+
+            # hack around numpy data type issue
+            if str(loaded_type) == 'ndarray':
+                loaded_type = input_args[key]['variable'].dtype
 
             if str(loaded_type) != expected_type:
                 raise JteratorError('argument \'%s\' is of "type" \'%s\' '
@@ -131,7 +135,9 @@ def writeoutputargs(handles, output_args):
     # Open the file and write temporary pipeline data into it.
     hdf5_tmp = h5py.File(handles['hdf5_filename'], 'r+')
     for key in output_args:
-        hdf5_location = handles['output'][key]['hdf5_location']
+        hdf5_location = [x['value'] for x in handles['output']
+                            if x['name'] == key
+                            and x['class'] == 'hdf5_location'][0]
         hdf5_tmp.create_dataset(hdf5_location, data=output_args[key])
         print('jt -- %s: wrote tmp dataset \'%s\' to HDF5 location: "%s"'
               % (mfilename, key, hdf5_location))

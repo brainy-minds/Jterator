@@ -17,7 +17,8 @@ function writedata(handles, data)
     fid = H5F.open(hdf5_filename, 'H5F_ACC_RDWR','H5P_DEFAULT');
 
     keys = fieldnames(data);
-    for key = 1:length(keys)
+    for i = 1:length(keys)
+        key = keys{i};
         hdf5_location = keys{key};
         value = data.(keys{key});
         h5datacreate(fid, hdf5_location, ...

@@ -47,6 +47,9 @@ readinputargs <- function(handles) {
         input_args[[key]]$variable <- h5read(hdf5_filename, arg$value)
         cat(sprintf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n",
                 mfilename, key, arg$value))
+        if (!is.null(dim(input_args[[key]]$variable))) {
+          input_args[[key]]$variable <- t(input_args[[key]]$variable)
+        }
       }
       else if (arg$class == "parameter") {
         input_args[[key]]$variable <- arg$value
@@ -81,7 +84,7 @@ checkinputargs <- function(input_args) {
       
       if ("type" %in% names(field)) {
         expected_type <- input_args[[key]]$type
-        loaded_type <- type(input_args[[key]]$variable)
+        loaded_type <- typeof(input_args[[key]]$variable)
         
         if (expected_type != loaded_type) {
           stop(sprintf("argument '%s' is of \"type\" '%s' instead of expected '%s'", 
@@ -115,11 +118,17 @@ writedata <- function(handles, data) {
     hdf5_filename <- h5read(handles$hdf5_filename, '/datafile')
 
     for (key in names(data)) {
+      if (!is.null(dim(data[[key]]))) {
+        out <- t(data[[key]])
+      }
+      else {
+        out <- data[[key]]
+      }
       hdf5_location <- key
       h5createDataset(hdf5_filename, hdf5_location, 
-                      dims = dim(data[[key]]),
-                      storage.mode = storage.mode(data[[key]]))
-      h5write(data[[key]], hdf5_filename, hdf5_location)
+                      dims = dim(out),
+                      storage.mode = storage.mode(out))
+      h5write(out, hdf5_filename, hdf5_location)
       cat(sprintf("jt -- %s: wrote dataset '%s' to HDF5 location: \"%s\"\n",
                 mfilename, key, hdf5_location))
     }
@@ -139,12 +148,19 @@ writeoutputargs <- function(handles, output_args) {
     hdf5_filename <- handles$hdf5_filename
 
     for (key in names(output_args)) {
-      hdf5_location <- handles$output[[key]]$hdf5_location
+      if (!is.null(dim(output_args[[key]]))) {
+        out <- t(output_args[[key]])
+      }
+      else {
+        out <- output_args[[key]]
+      }
+      ix <- which(sapply(handles$output, function(x) x$name == key))
+      hdf5_location <- handles$output[[ix]]$value
       h5createGroup(hdf5_filename, dirname(hdf5_location))
       h5createDataset(hdf5_filename, hdf5_location, 
-                      dims = dim(output_args[[key]]),
-                      storage.mode = storage.mode(output_args[[key]]))
-      h5write(output_args[[key]], hdf5_filename, hdf5_location)
+                      dims = dim(out),
+                      storage.mode = storage.mode(out))
+      h5write(out, hdf5_filename, hdf5_location)
       cat(sprintf("jt -- %s: wrote tmp dataset '%s' to HDF5 location: \"%s\"\n",
                 mfilename, key, hdf5_location))
     }

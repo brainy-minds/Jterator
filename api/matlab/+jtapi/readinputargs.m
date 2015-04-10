@@ -14,7 +14,8 @@ function input_args = readinputargs(handles)
     required_keys = {'name', 'value', 'class'};
 
     input_args = struct();
-    for arg = handles.input
+    for i = 1:length(handles.input)
+        arg = handles.input{i};
         key = arg.name;
         for k = required_keys
             if ~isfield(arg, k)
@@ -24,13 +25,9 @@ function input_args = readinputargs(handles)
 
         if strcmp(arg.class, 'hdf5_location')
             input_args.(key).variable = h5varget(fid, arg.value)';
-            fprintf(sprintf('jt -- %s: loaded dataset ''%s'' from HDF5 location: "%s"\n', ...
-                    mfilename, key, arg.hdf5_location))
+            fprintf('jt -- %s: loaded dataset ''%s'' from HDF5 location: "%s"\n', ...
+                    mfilename, key, arg.value);
         elseif strcmp(arg.class, 'parameter')
-            input_args.(key).variable = arg.value;
-            fprintf(sprintf('jt -- %s: parameter ''%s'': "%s"\n', ...
-                        mfilename, key, arg.value))
-
             % Temporary hack around bug: wrong handling of arrays (i.e. matrices)
             % This could also be fixed in ReadYaml.m
             % (more specifically in subfunction makematrices.m)
@@ -38,14 +35,16 @@ function input_args = readinputargs(handles)
                 if all(cellfun(@isnumeric, arg.value))
                     input_args.(key).variable = cell2mat(arg.value);
                 end
+            else
+                input_args.(key).variable = arg.value;
             end
 
             if ischar(arg.value)
-                fprintf(sprintf('jt -- %s: parameter ''%s'': "%s"\n', ...
-                        mfilename, key, input_args.(key).variable))
+                fprintf('jt -- %s: parameter ''%s'': "%s"\n', ...
+                        mfilename, key, input_args.(key).variable);
             else
-                fprintf(sprintf('jt -- %s: parameter ''%s'': %s\n', ...
-                        mfilename, key, vec2str(input_args.(key).variable)))
+                fprintf('jt -- %s: parameter ''%s'': %s\n', ...
+                        mfilename, key, vec2str(input_args.(key).variable));
             end
         else
             error('Possible values for ''class'' key are ''hdf5_location'' or ''parameter''');
@@ -54,7 +53,6 @@ function input_args = readinputargs(handles)
         if isfield(arg, 'type')
             input_args.(key).type = arg.type;
         end
-
     end
 
     H5F.close(fid);
