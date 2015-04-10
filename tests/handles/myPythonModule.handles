@@ -1,0 +1,32 @@
+# full path to temporary HDF5 file
+hdf5_filename: None
+
+# module input arguments
+input:
+
+    - name: InputVar1 
+      class: hdf5_location
+      value: /Output/myMatlabModule/OutputVar
+      type: float64
+
+    - name: InputVar2
+      class: parameter
+      value: 4
+      type: int
+
+    - name: InputVar3
+      class: parameter
+      value: hello
+      type: str
+
+    - name: InputVar4
+      class: parameter
+      value: [0, 1]
+      type: list
+
+# module output arguments
+output:
+
+    - name: OutputVar
+      class: hdf5_location
+      value: /Output/myPythonModule/OutputVar

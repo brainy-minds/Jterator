@@ -1,0 +1,22 @@
+# full path to temporary HDF5 file
+hdf5_filename: None
+
+# module input arguments
+input:
+
+    - name: InputVar1 
+      class: hdf5_location
+      value: /Output/myPythonModule/OutputVar
+      type: double
+
+    - name: InputVar2
+      class: parameter
+      value: Yes
+      type: logical
+
+# module output arguments
+output:
+
+    - name: OutputVar
+      class: hdf5_location
+      value: /Output/myRModule/OutputVar

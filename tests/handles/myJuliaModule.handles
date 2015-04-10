@@ -1,0 +1,31 @@
+# full path to temporary HDF5 file
+hdf5_filename: None
+
+# module input arguments
+input:
+
+    - name: InputVar1 
+      value: /Output/myRModule/OutputVar
+      class: hdf5_location
+      type: "Array{Float64,2}"
+
+    - name: InputVar2
+      value: Yes
+      class: parameter
+      type: Bool
+
+    - name: InputVar3
+      value: /just/an/example/directory
+      class: parameter
+      type: ASCIIString
+
+# module output arguments
+output:
+
+    - name: OutputVar1
+      value: /Output/myJuliaModule/OutputVar1
+      class: hdf5_location
+
+    - name: OutputVar2
+      value: /Output/myJuliaModule/OutputVar2
+      class: hdf5_location

@@ -1,0 +1,16 @@
+# full path to temporary HDF5 file
+hdf5_filename: None
+
+# module input arguments
+input:
+
+    - name: myImageFilename
+      class: hdf5_location
+      value: /myImage
+
+# module output arguments
+output:
+
+    - name: OutputVar
+      class: hdf5_location
+      value: /Output/myInitialPythonModule/OutputVar

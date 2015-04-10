@@ -1,0 +1,42 @@
+# full path to temporary HDF5 file
+hdf5_filename: None
+
+# module input arguments
+input:
+
+    - name: InputVar1 
+      value: /Output/myInitialPythonModule/OutputVar
+      class: hdf5_location
+      type: double
+
+    - name: InputVar2
+      class: parameter
+      value: Otsu Global
+      type: char
+
+    - name: InputVar3
+      class: parameter
+      value: 1
+      type: double
+
+    - name: InputVar4
+      class: parameter
+      value: [0, 1]
+      type: double
+
+    - name: InputVar5
+      class: parameter
+      value: 10%
+      type: char
+
+    - name: InputVar6
+      class: parameter
+      value: Yes
+      type: logical
+
+# module output arguments
+output:
+
+    - name: OutputVar
+      class: hdf5_location
+      value: /Output/myMatlabModule/OutputVar
