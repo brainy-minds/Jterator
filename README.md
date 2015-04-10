@@ -152,7 +152,7 @@ The following functions are available for modules in all above listed languages:
 Input/output:      
 * **gethandles**: Reading "handles" stream (standard input) from YAML file.
 * **readinputargs**: Reading input arguments from HDF5 file using the location specified in "handles".
-* **checkinputargs**: Checking input arguments for correct "class" (i.e. type).
+* **checkinputargs**: Checking input arguments for correct data type.
 * **writeoutputargs**: Writing output arguments to HDF5 file using the location specified in "handles".
 * **writedata**: Writing data to HDF5 file.     
 * **figure2browser**: Displaying d3 figures in the browser (so far only implemented for Python).
