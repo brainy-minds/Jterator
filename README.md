@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/HackerMD/Jterator.svg?branch=master)](https://travis-ci.org/HackerMD/Jterator)
 
-A minimalistic pipeline engine for scientific computing. It is designed to be flexible and easily customizable, while being at the same time handy to work with. Jterator is a command-line tool for Unix systems. The program itself is written in Python, but it can process code in different languages. It comes without a GUI, but rather makes use easily readable and modifiable YAML files to define projects and d3 technology to visualize figures in a web browser. This keeps the list of dependencies short and makes it easy to develop new workflows in Jterator.
+A minimalistic pipeline engine for scientific computing. It is designed to be flexible and easily customizable, while being at the same time handy to work with. Jterator is a command-line tool for Unix systems. The program itself is written in Python, but it can process code in different languages. It comes without a GUI, but rather makes use of easily readable and modifiable YAML files to define projects and pipeline logic. Figures can be visualized in a web browser using d3 technology. This approach keeps the list of dependencies short and makes it easy to develop and test new workflows.
 
 
 ## Dependencies ##
@@ -152,7 +152,7 @@ The following functions are available for modules in all above listed languages:
 Input/output:      
 * **gethandles**: Reading "handles" stream (standard input) from YAML file.
 * **readinputargs**: Reading input arguments from HDF5 file using the location specified in "handles".
-* **checkinputargs**: Checking input arguments for correct "class" (i.e. type).
+* **checkinputargs**: Checking input arguments for correct data type.
 * **writeoutputargs**: Writing output arguments to HDF5 file using the location specified in "handles".
 * **writedata**: Writing data to HDF5 file.     
 * **figure2browser**: Displaying d3 figures in the browser (so far only implemented for Python).
