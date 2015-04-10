@@ -26,6 +26,7 @@ input_args = checkinputargs(input_args)
 
 myImageFilename = input_args['myImageFilename']
 
+print '>>>>> loading "myImage" from "%s"' % myImageFilename
 myImage = np.array(misc.imread(myImageFilename), dtype='float64')
 
 print('>>>>> "myImage" has type "%s" and dimensions "%s".' %
