@@ -168,7 +168,7 @@ To this end, include the following lines in your *.bash_profile* file:
 - Julia     
 
     ```{bash}
-    export JULIA_LOAD_PATH=$JULIA_LOAD_PATH:$HOME/jterator/api/julia
+    export JULIA_LOAD_PATH=$JULIA_LOAD_PATH:$HOME/jterator/api/julia/jtapi
     ```
 
 - Matlab    
