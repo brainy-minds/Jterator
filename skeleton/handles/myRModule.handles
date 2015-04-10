@@ -1,16 +1,18 @@
-# full path to HDF5 file
+# full path to temporary HDF5 file
 hdf5_filename: None
 
 # module input arguments
 input:
 
-    InputVar1: 
-        hdf5_location: /Output/myPreviousModule/OutputVar
-        type: array
+    - name: InputVar1 
+      class:  hdf5_location
+      value: /Output/myPreviousModule/OutputVar
+      type: array
 
-    InputVar2:
-        parameter: Yes
-        type: logical
+    - name: InputVar2
+      class: parameter
+      value: Yes
+      type: logical
 
 # module output arguments
 output:

@@ -30,31 +30,37 @@ def readinputargs(handles):
     hdf5_filename = handles['hdf5_filename']
     hdf5_root = h5py.File(hdf5_filename, 'r+')
 
+    required_keys = ['name', 'value', 'class']
+
     input_args = dict()
-    for key in handles['input']:
-        field = handles['input'][key]
+    for arg in handles['input']:
+        key = arg['name']
+        # Make sure that required keys are provided
+        for k in required_keys:
+            if k not in arg:
+                raise JteratorError('Input argument \'%s\' requires '
+                                    'a \'%s\' key.' % (key, k))
+
         input_args[key] = dict()
 
-        if 'hdf5_location' in field:
-            # note: we index into the dataset to retrieve its content,
+        if arg['class'] == 'hdf5_location':
+            # Note: we index into the dataset to retrieve its content,
             # otherwise it would be loaded as hdf5 object
-            input_args[key]['variable'] = hdf5_root[field['hdf5_location']][()]
+            input_args[key]['variable'] = hdf5_root[arg['value']][()]
             print('jt -- %s: loaded dataset \'%s\' from HDF5 location: "%s"'
-                  % (mfilename, key, field['hdf5_location']))
-        elif 'parameter' in field:
-            input_args[key]['variable'] = field['parameter']
+                  % (mfilename, key, arg['value']))
+        elif arg['class'] == 'parameter':
+            input_args[key]['variable'] = arg['value']
             print('jt -- %s: parameter \'%s\': "%s"'
-                  % (mfilename, key, str(field['parameter'])))
+                  % (mfilename, key, str(arg['value'])))
         else:
             hdf5_root.close()
-            raise JteratorError('Possible variable keys are '
+            raise JteratorError('Possible values for \'class\' key are '
                                 '\'hdf5_location\' or \'parameter\'')
 
-        if 'type' in field:
-            input_args[key]['type'] = field['type']
-
-        if 'attributes' in field:
-            input_args[key]['attributes'] = field['attributes']
+        if 'type' in arg:
+            # Optional key
+            input_args[key]['type'] = arg['type']
 
     hdf5_root.close()
 
@@ -70,7 +76,7 @@ def checkinputargs(input_args):
     checked_input_args = dict()
     for key in input_args:
 
-        # checks are only done if "type" is specified
+        # checks are only done if "type" key is specified
         if 'type' in input_args[key]:
             expected_type = input_args[key]['type']
             loaded_type = type(input_args[key]['variable'])
@@ -79,6 +85,10 @@ def checkinputargs(input_args):
                 loaded_type = input_args[key]['variable'].dtype
             else:
                 loaded_type = loaded_type.__name__
+
+            # hack around numpy data type issue
+            if str(loaded_type) == 'ndarray':
+                loaded_type = input_args[key]['variable'].dtype
 
             if str(loaded_type) != expected_type:
                 raise JteratorError('argument \'%s\' is of "type" \'%s\' '
@@ -125,7 +135,9 @@ def writeoutputargs(handles, output_args):
     # Open the file and write temporary pipeline data into it.
     hdf5_tmp = h5py.File(handles['hdf5_filename'], 'r+')
     for key in output_args:
-        hdf5_location = handles['output'][key]['hdf5_location']
+        hdf5_location = [x['value'] for x in handles['output']
+                            if x['name'] == key
+                            and x['class'] == 'hdf5_location'][0]
         hdf5_tmp.create_dataset(hdf5_location, data=output_args[key])
         print('jt -- %s: wrote tmp dataset \'%s\' to HDF5 location: "%s"'
               % (mfilename, key, hdf5_location))

@@ -78,7 +78,7 @@ class JteratorCli(object):
         '''
         jt = JteratorRunner(logging_level=self.logging_level,
                             pipeline_folder_path=self.args.path)
-        jt.run_pipeline(self.args.job)
+        jt.run_pipeline(self.args.jobid)
 
     def check(self):
         '''

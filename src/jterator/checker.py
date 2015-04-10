@@ -29,7 +29,9 @@ class JteratorCheck(object):
                                 'as a subkey of "%s"' %
                                 ('name', 'project'))
         if 'libpath' in self.description['project']:
-            if not os.path.exists(self.description['project']['libpath']):
+            libpath = self.description['project']['libpath']
+            libpath = os.path.expanduser(libpath)
+            if not os.path.exists(libpath):
                 raise JteratorError('The path defined by "%s" in your '
                                     'pipeline description is not valid.'
                                     % 'libpath')
@@ -105,19 +107,31 @@ class JteratorCheck(object):
             if not os.path.exists(module['handles']):
                 raise JteratorError('Handles file "%s" does not exist.' %
                                     module['handles'])
-            handles = yaml.load(open(module['handles']).read())
-            # Check required 'hdf5_filename' section
-            if 'hdf5_filename' not in handles:
-                raise JteratorError('Handles file must contain the key "%s".' %
-                                    'hdf5_filename')
-            # Check required 'input' section
-            if 'input' not in handles:
-                raise JteratorError('Handles file must contain the key "%s".' %
-                                    'input')
-            # Check required 'output' section
-            if 'output' not in handles:
-                raise JteratorError('Handles file must contain the key "%s".' %
-                                    'output')
+            try:
+                handles = yaml.load(open(module['handles']).read())
+            except Exception as e:
+                raise JteratorError('Could not read handles file "%s".\n'
+                                    'Original error message:\n%s' %
+                                    (module['handles'], str(e)))
+            # Check required keys
+            required_keys = ['hdf5_filename', 'input', 'output']
+            for key in required_keys:
+                if key not in handles:
+                    raise JteratorError('Handles file must contain the key '
+                                        '"%s".' % key)
+            required_subkeys = ['name', 'value', 'class']
+            for input_arg in handles['input']:
+                for key in required_subkeys:
+                    if key not in input_arg:
+                        raise JteratorError('Input argument in handles file '
+                                            '"%s" misses required key "%s".' %
+                                            (module['handles'], key))
+            for output_arg in handles['output']:
+                for key in required_subkeys:
+                    if key not in output_arg:
+                        raise JteratorError('Output argument in handles file '
+                                            '"%s" misses required key "%s".' %
+                                            (module['handles'], key))
         print('🍺   Handles check successful!')
 
     def check_pipeline_io(self):
@@ -127,25 +141,30 @@ class JteratorCheck(object):
         outputs = list()
         for module in self.description['pipeline']:
             handles = yaml.load(open(module['handles']).read())
-            if handles['output'] is not None:
-                for output_arg in handles['output']:
-                    output = handles['output'][output_arg]['hdf5_location']
-                    outputs.append(output)
-            for input_arg in handles['input']:
-                if 'hdf5_location' not in handles['input'][input_arg]:
-                    # We only check for pipeline data passed via the HDF5 file.
-                    # So there is no need to check them here.
+            # Store all upstream output arguments
+            if handles['output'] is None:
+                continue
+            for output_arg in handles['output']:
+                if output_arg['class'] != 'hdf5_location':
                     continue
-                name = os.path.basename(handles['input'][input_arg]['hdf5_location'])
+                output = output_arg['value']
+                outputs.append(output)
+            # Check whether input arguments for current module were produced
+            # upstream in the pipeline
+            for input_arg in handles['input']:
+                if input_arg['class'] != 'hdf5_location':
+                    # We only check for pipeline data passed via the HDF5 file.
+                    continue
+                name = os.path.basename(input_arg['value'])
                 pattern_names = [pattern['name'] for pattern
                                  in self.description['jobs']['pattern']]
                 if name in pattern_names:
-                    # They are written into the HDF5 file by Jterator himself
+                    # These names are written into the HDF5 file by Jterator
                     # and are therefore not created in the pipeline.
                     # So there is no need to check them here.
                     continue
-                if handles['input'][input_arg]['hdf5_location'] not in outputs:
+                if input_arg['value'] not in outputs:
                     raise JteratorError('Input "%s" of module "%s" is not '
                                         'created upstream in the pipeline.' %
-                                        (input_arg, module['name']))
+                                        (input_arg['name'], module['name']))
         print('🍺   Input/output check successful!')

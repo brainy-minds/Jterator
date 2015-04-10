@@ -1,0 +1,12 @@
+1:
+  jobID: 1
+  myImage: 150316-30min-PBS_01_s0001_r01_c01_DAPI_C01.png
+  myOtherImage: 150316-30min-PBS_01_s0001_r01_c01_RFP_C02.png
+2:
+  jobID: 2
+  myImage: 150316-30min-PBS_01_s0002_r01_c02_DAPI_C01.png
+  myOtherImage: 150316-30min-PBS_01_s0002_r01_c02_RFP_C02.png
+3:
+  jobID: 3
+  myImage: 150316-30min-PBS_01_s0003_r01_c03_DAPI_C01.png
+  myOtherImage: 150316-30min-PBS_01_s0003_r01_c03_RFP_C02.png

@@ -31,27 +31,41 @@ function readinputargs(handles)
 
     fid = h5open(hdf5_filename, "r")
 
+    required_keys = ["name", "value", "class"]
+
     input_args = Dict()
     if ~isempty(handles)
-        for key in keys(handles["input"])
-            field = handles["input"][key]
-            input_args[key] = Dict()
-
-            if haskey(field, "hdf5_location")
-                input_args[key]["variable"] = read(fid, field["hdf5_location"])
-                if ismatch(r"Array", string(typeof(input_args[key]["variable"])))
-                    input_args[key]["variable"] = input_args[key]["variable"]
+        for arg in handles["input"]
+            key = arg["name"]
+            for k in required_keys
+                if ~haskey(arg, k)
+                    error(@sprintf("Input argument '%s' requires '%s' key.", key, k))
                 end
-                @printf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n", mfilename, key, field["hdf5_location"])
-            elseif haskey(field, "parameter")
-                input_args[key]["variable"] = field["parameter"]
-                @printf("jt -- %s: parameter '%s': \"%s\"\n", mfilename, key, input_args[key]["variable"])          
+            end
+
+            input_args[key] = Dict()
+            if arg["class"] == "hdf5_location"
+                input_args[key]["variable"] = read(fid, arg["value"])
+                if ismatch(r"Array", string(typeof(input_args[key]["variable"])))
+                    # ???
+                    input_args[key]["variable"] = input_args[key]["variable"]'
+                end
+                @printf("jt -- %s: loaded dataset '%s' from HDF5 location: \"%s\"\n",
+                        mfilename, key, arg["value"])
+            elseif arg["class"] ==  "parameter"
+                if arg["value"] == "Yes"
+                    # hack around bug in YAML package (boolean not recognized)
+                    input_args[key]["variable"] = true
+                else
+                    input_args[key]["variable"] = arg["value"]
+                end
+                @printf("jt -- %s: parameter '%s': \"%s\"\n", mfilename, key, arg["value"])          
             else
-                error("Possible variable keys are \"hdf5_location\" or \"parameter\"")
+                error("Possible values for 'class' key are 'hdf5_location' or 'parameter'")
             end 
 
-            if haskey(field, "type")
-                input_args[key]["type"] = field["type"]
+            if haskey(arg, "type")
+                input_args[key]["type"] = arg["type"]
             end 
         end
     end
@@ -110,7 +124,7 @@ function writedata(handles, data)
         for key in keys(data)
             hdf5_location = keys(key)
             if ismatch(r"Array", string(typeof(data[key])))
-                write(hdf5_data, hdf5_location, data[key])
+                write(hdf5_data, hdf5_location, data[key]')
             else
                 write(hdf5_data, hdf5_location, data[key])
             end
@@ -134,9 +148,10 @@ function writeoutputargs(handles, output_args)
     if ~isempty(output_args) 
         hdf5_tmp = h5open(hdf5_filename, "r+")
         for key in keys(output_args)
-            hdf5_location = handles["output"][key]["hdf5_location"]
+            ix = find([i["name"] == key for i in handles["output"]])[1]
+            hdf5_location = handles["output"][ix]["value"]
             if ismatch(r"Array", string(typeof(output_args[key])))
-                write(hdf5_tmp, hdf5_location, output_args[key])
+                write(hdf5_tmp, hdf5_location, output_args[key]')
             else
                 write(hdf5_tmp, hdf5_location, output_args[key])
             end

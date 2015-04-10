@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/HackerMD/Jterator.svg?branch=master)](https://travis-ci.org/HackerMD/Jterator)
 
-A minimalistic pipeline engine for scientific computing. It is designed to be flexible and easily customizable, while being at the same time handy to work with. Jterator is a command-line tool for Unix systems. The program itself is written in Python, but it can process code in different languages. It comes without a GUI, but rather makes use easily readable and modifiable YAML files to define projects and d3 technology to visualize figures in a web browser. This keeps the list of dependencies short and makes it easy to develop new workflows in Jterator.
+A minimalistic pipeline engine for scientific computing. It is designed to be flexible and easily customizable, while being at the same time handy to work with. Jterator is a command-line tool for Unix systems. The program itself is written in Python, but it can process code in different languages. It comes without a GUI, but rather makes use of easily readable and modifiable YAML files to define projects and pipeline logic. Figures can be visualized in a web browser using d3 technology. This approach keeps the list of dependencies short and makes it easy to develop and test new workflows.
 
 
 ## Dependencies ##
@@ -152,7 +152,7 @@ The following functions are available for modules in all above listed languages:
 Input/output:      
 * **gethandles**: Reading "handles" stream (standard input) from YAML file.
 * **readinputargs**: Reading input arguments from HDF5 file using the location specified in "handles".
-* **checkinputargs**: Checking input arguments for correct "class" (i.e. type).
+* **checkinputargs**: Checking input arguments for correct data type.
 * **writeoutputargs**: Writing output arguments to HDF5 file using the location specified in "handles".
 * **writedata**: Writing data to HDF5 file.     
 * **figure2browser**: Displaying d3 figures in the browser (so far only implemented for Python).
@@ -168,7 +168,7 @@ To this end, include the following lines in your *.bash_profile* file:
 - Julia     
 
     ```{bash}
-    export JULIA_LOAD_PATH=$JULIA_LOAD_PATH:$HOME/jterator/api/julia
+    export JULIA_LOAD_PATH=$JULIA_LOAD_PATH:$HOME/jterator/api/julia/jtapi
     ```
 
 - Matlab    
@@ -275,30 +275,37 @@ hdf5_filename: None
 
 input:
 
-    StringExample:
-        parameter: myString
-        type: str
+    - name: StringExample:
+      class: parameter
+      value: myString
+      type: str
 
-    IntegerExample:
-        parameter: 1
-        type: int
+    - name: IntegerExample
+      class: parameter
+      value: 1
+      type: int
 
-    Hdf5InputExample:
-        hdf5_location: /myModule/InputDataset
-        type: ndarray
+    - name: Hdf5InputExample
+      class: hdf5_location
+      value: /myModule/InputDataset
+      type: ndarray
 
-    ListExample:
-        parameter: ["myString1", "myString2", "myString3"]
-        type: list
+    - name: ListExample
+      class: parameter
+      value: ["myString1", "myString2", "myString3"]
+      type: list
 
-    BoolExample:
-        parameter: Yes
-        type: bool
+    - BoolExample:
+      class: parameter
+      value: Yes
+      type: bool
 
 output:
 
-    Hdf5OutputExample:
-        hdf5_location: /myModule/OutputDataset
+    - name: Hdf5OutputExample
+      class: hdf5_location
+      value: /myModule/OutputDataset
+
 ```
 The value of the key **'hdf5_filename'** can be left empty or set to 'None'.
 This information will be filled in by Jterator automatically; the program generates a temporary hdf5 file and adds its filename into the handles descriptor YAML string in order to make it available to the modules. **Note that if you want to debug a module, you have to fill in the filename manually.**
@@ -306,9 +313,9 @@ Also note that the temporary file will currently not get killed when an error oc
 
 #### Input/output arguments ####
 
-There are two different types of arguments:
-* **'hdf5_location'** corresponds to data that has to be produced upstream in the pipeline by another module, which saved it at the specified location in the HDF5 file. It is a string in the format of unix path, e.g. "/myGroup/myDataset".
-* **'parameter'** is an argument that is used to control the behavior of the module. It is module-specific and hence independent of other modules. It can be of any type (integer, string, array, ...). You can provide the optional **'type'** key to assert a specific data type for the passed argument. Note that this is language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R. This could also be done in yaml syntax, but it seems saver to keep it in the syntax of the corresponding module.
+There are two different **classes** of arguments:
+* **'hdf5_location'** corresponds to data that has to be produced upstream in the pipeline by another module, which saved it at the specified location in the HDF5 file. It is a string in the format of a unix path, e.g. "/myGroup/myDataset".
+* **'parameter'** is an argument that is used to control the behavior of the module. It is module-specific and hence independent of other modules. It can be of any type (integer, string, array, ...). You can provide the optional **type** key to assert a specific data type for the passed argument. Note that this "type" is not YAML syntax but language specific, e.g. 'float64' in Python, 'double' in Matlab, 'Array{Float64,2}' in Julia or 'array' in R. Alternatively, this could be done in YAML syntax or in a custom data type syntax which will be mapped by the APIs. For now, we keep it in the syntax of the corresponding module.
 
 
 ## Modules ##
@@ -318,7 +325,7 @@ Jterator APIs are written in a way that enables more or less the same syntax in 
 Python example:     
 
 ```{python}
-from jterator.api import *
+from jtapi import *
 import os
 import sys
 import re
@@ -326,85 +333,73 @@ import re
 
 mfilename = re.search('(.*).py', os.path.basename(__file__)).group(1)
 
-###############################################################################
-## jterator input
+
+#########
+# input #
+#########
 
 print('jt - %s:' % mfilename)
 
-### standard input
 handles_stream = sys.stdin
-
-### retrieve handles from .YAML files
 handles = gethandles(handles_stream)
-
-### read input arguments from .HDF5 files
 input_args = readinputargs(handles)
-
-### check whether input arguments are valid
 input_args = checkinputargs(input_args)
 
-###############################################################################
+
+##############
+# processing #
+##############
 
 # here comes your code
 
 data = dict()
 output_args = dict()
 
-###############################################################################
-## jterator output
 
-### write measurement data to HDF5
+##########
+# output #
+##########
+
 writedata(handles, data)
-
-### write temporary pipeline data to HDF5
 writeoutputargs(handles, output_args)
 
-###############################################################################
 ```
 
 Matlab example:     
 
 ```{matlab}
-import jterator.*;
+import jtapi.*;
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% jterator input
+%%%%%%%%%
+% input %
+%%%%%%%%%
 
 fprintf(sprintf('jt - %s:\n', mfilename));
-
-%%% read standard input
-handles_stream = input_stream; % input_stream is provided by Mscript!
-
-%%% change current working directory
 cd(currentDirectory)
-
-%%% retrieve handles from .YAML files
+handles_stream = input_stream; % input_stream is provided by Mscript!
 handles = gethandles(handles_stream);
-
-%%% read input arguments from .HDF5 files
 input_args = readinputargs(handles);
-
-%%% check whether input arguments are valid
 input_args = checkinputargs(input_args);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%
+% processing %
+%%%%%%%%%%%%%%
 
 % here comes your code
 
 data = struct();
 output_args = struct();
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% jterator output
 
-%%% write measurement data to HDF5
+%%%%%%%%%%
+% output %
+%%%%%%%%%%
+
 writedata(handles, data)
-
-%%% write temporary pipeline data to HDF5
 writeoutputargs(handles, output_args)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ```
 
 ### Mscript ###
