@@ -27,6 +27,8 @@ InputVar1 = input_args['InputVar1']
 print('>>>>> "InputVar1" has type "%s" and dimensions "%s".' %
       (str(InputVar1.dtype), str(InputVar1.shape)))
 
+print '>>>>> position [1, 2] (0-based): %d' % InputVar1[1, 2]
+
 
 data = dict()
 output_args = dict()

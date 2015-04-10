@@ -23,6 +23,8 @@ InputVar1 = input_args["InputVar1"]
 @printf(">>>>> \"InputVar1\" has type \"%s\" and dimensions \"%s\".\n",
         string(typeof(InputVar1)), string(size(InputVar1)))
 
+println(">>>>> position [2, 3] (1-based): $(InputVar1[2, 3])")
+
 
 data = Dict()
 output_args = Dict()

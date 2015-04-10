@@ -31,6 +31,8 @@ myImage = np.array(misc.imread(myImageFilename), dtype='float64')
 print('>>>>> "myImage" has type "%s" and dimensions "%s".' %
       (str(myImage.dtype), str(myImage.shape)))
 
+print '>>>>> position [1, 2] (0-based): %d' % myImage[1, 2]
+
 data = dict()
 output_args = dict()
 output_args['OutputVar'] = myImage

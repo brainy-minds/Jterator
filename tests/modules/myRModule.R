@@ -21,8 +21,10 @@ input_args <- checkinputargs(input_args)
 
 InputVar1 <- input_args$InputVar1
 
-cat(sprintf('>>>> "InputVar1" has type "%s" and dimensions "%s".\n',
+cat(sprintf('>>>>> "InputVar1" has type "%s" and dimensions "%s".\n',
       		toString(typeof(InputVar1)), toString(dim(InputVar1))))
+
+cat(sprintf('>>>>> position [2, 3] (1-based): %d\n', InputVar1[2, 3]))
 
 data <- list()
 output_args <- list()
